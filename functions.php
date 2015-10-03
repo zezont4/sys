@@ -223,12 +223,13 @@ $all_groups = "admin,edarh,er,ms,mktbr,t3lem";
 if (!function_exists("array_2_string")) {
 	function array_2_string($my_array, $start_index = 0)
 	{
+		$ar='';
 		$length = count($my_array);
 		for ($i = $start_index; $i < $length; $i++) {
 			if ($i == $start_index) {
 				$ar = $my_array[$i];
 			} else {
-				$ar = $ar . ',' . $my_array[$i];
+				$ar .= ',' . $my_array[$i];
 			}
 		}
 
