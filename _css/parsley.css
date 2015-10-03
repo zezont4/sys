@@ -1,0 +1,4 @@
+@charset "UTF-8";input.parsley-success,textarea.parsley-success{color:#468847 !important;background-color:#DFF0D8 !important;border:1px solid #D6E9C6 !important;}
+input.parsley-error,textarea.parsley-error{color:rgb(155,62,61) !important;border:1px solid rgb(209,143,146) !important;box-shadow:0 0 5px rgb(231,129,133) !important;}
+ul.parsley-error-list{font-size:14px;margin:1px!important;padding:1px!important;list-style-type:none;float:none!important;clear:both!important;}
+ul.parsley-error-list li{line-height:16px;color:#F00;font-size:12px;}

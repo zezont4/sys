@@ -1,0 +1,28 @@
+/*.FieldsButton .note {color: #4FA64B}
+.LabelAndFieldContainer {width: 98%;min-height: 60px;overflow:hidden; padding-bottom: 10px;-webkit-box-shadow: rgba(0,0,0,0.0980392) 0 2px 1px,rgba(0,0,0,0.0980392) 0 0 2px;box-shadow: rgba(0,0,0,0.0980392) 0 2px 1px,rgba(0,0,0,0.0980392) 0 0 2px;border-radius: 2px;background-color: #FAFAFA;margin: 5px;}
+.ff{width: 48%}
+input[type="text"],.FullWidthCombo{width:100px;clear: both;display: block;}
+.LabelContainer{margin-bottom:5px;min-height: 20px;overflow:hidden}
+.LabelContainer span{display: block;float: right;}
+.LabelAndFieldContainer .title{color:#333;padding:0 3px}
+.LabelAndFieldContainer .divide{padding:0 8px}
+.rdf{color:#C30}
+
+.txt_group {overflow: hidden;}
+.txt_group .bnd_group {float: right;overflow: hidden;padding: 10px;}
+.bnd_group .txt_title {float: right;line-height: 26px;padding-left: 5px;width: 180px;}
+.bnd_group .txt {float: right;overflow: hidden;}
+.txt_group .bnd_div{float:left}
+.bnd_div .txt_title{text-align:left}
+.CSSTableGenerator tr:first-child td,table tr th {background-color: #EEE;color: #3C3C3C;}
+.CSSTableGenerator input[type="text"] {height: 16px;width:98%; border: 1px solid rgba(0,0,0,0.17);background-color: rgba(255,255,255,0);color: #000FC0;cursor:default }*/
+.dep {color: #093;padding: 1px 6px;border-left: 1px solid #CCC;font-family: 'Droid Arabic Naskh',serif;}
+.columns.ex {color: #000;font-family: 'Droid Arabic Naskh',serif;background-color: #FFFEE7;border: 1px solid #CECEA4;line-height: 20px;text-align:right;margin-top: 8px;}
+.y_bg{background-color:#FFFEE7;font-family: 'Droid Arabic Kufi';}
+.top_padding{
+    padding: 10px 0 3px 0;
+}
+input.bnd_degree {
+background-color: #EFEFEF;
+border: 1px solid #BBB;
+}

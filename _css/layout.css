@@ -1,0 +1,24 @@
+@media only screen and (min-width:1039px){.only_mobile{display:none}
+}
+@media only screen and (max-width:1039px){.only_mobile{display:none}
+}
+@media only screen and (min-width:828px) and (max-width:1039px){.only_mobile{display:none}
+}
+@media only screen and (max-width:827px){.only_mobile{display:none}
+}
+@media only screen and (min-width:520px) and (max-width:827px){.content{font-size:110%}
+.NoMobile{display:none}
+.only_mobile{display:table-cell;}
+.CSSTableGenerator tr:first-child td{padding:5px 0;}
+}
+@media only screen and (max-width:520px){.content{font-size:110%}
+#logo img{width:130px;}
+#header #p1 img{width:140px;}
+#header #p2{font-size:12px;word-spacing:-1px;}
+#header #p3{font-size:12px;padding:5px 0px;}
+#header #p1{height:36px;}
+.NoMobile{display:none}
+.only_mobile{display:table-cell;}
+.CSSTableGenerator tr:first-child td{padding:5px 0;}
+.content{padding:10px;margin:10px;}
+}

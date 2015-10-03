@@ -1,0 +1,161 @@
+<?php
+//áÅÎÊíÇÑ ÇáÏÇáÉ ÇáãäÇÓÈÉ  ÍÓÈ ÎÕÇÆÕ ãæÞÚß	
+include("function/checkSendPorts.php");
+if(fsockopenTest() == 5)
+{
+	//ÅÎÊÈÇÑ ÏÇáÉ fsockopen
+	include("function/fsockopen.php");
+}
+elseif(curlTest() == 5)
+{
+	//ÅÎÊÈÇÑ ÏÇáÉ curl
+	include("function/curl.php");
+}
+elseif(fopenTest() == 3)
+{
+	//ÅÎÊÈÇÑ ÏÇáÉ fopen
+	include("function/fopen.php");
+}
+elseif(fileTest() == 3)
+{
+	//ÅÎÊÈÇÑ ÏÇáÉ curl
+	include("function/file.php");
+}
+elseif(filegetcontentsTest() == 3)
+{
+	//ÅÎÊÈÇÑ ÏÇáÉ fopen
+	include("function/filegetcontents.php");
+}
+else
+{
+	//ááÎÑæÌ ãä ÚãáíÉ ÇáÅÑÓÇá Ýí ÍÇá áã íßä åäÇáß Ãí ÏÇáÉ ãÝÚáå
+	echo "áÇ íæÌÏ áÏíß ÏæÇá ãÝÚáÉ<br>ÑÇÌÚ ÇáÅÓÊÖÇÝÉ æÝÚá ÅÍÏì ÇáÈæÇÈÇÊ ÇáËáÇË fsockopen æ curlSMS æ fopenSMS";
+}
+//áØÈÇÚÉ ÇáÞíãÉ ÇáäÇÊÌå ãä ÈæÇÈÉ ÇáÅÑÓÇá Úáì Ôßá äÕ
+include("function/functionPrintResult.php");
+
+//ÏÇáÉ ÊÔÝíÑ äÕ ÇáÑÓÇáå Åáì ÇáÊÑãíÒ UNICODE
+include("function/functionUnicode.php");
+
+//ÊÓÊÎÏã åÐå ÇáÞíãÉ Ýí ÍÇá ßÇäÊ äÊíÌÉ ÇáÚãáíå ÛíÑ ãÚÑÝå
+$undefinedResult = "äÊíÌÉ ÇáÚãáíÉ ÛíÑ ãÚÑÝå¡ ÇáÑÌÇÁ ÇáãÍÇæá ãÌÏÏÇ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÝÍÕ ÅÑÓÇá ãæÈÇíáí
+$arraySendStatus = array();
+$arraySendStatus[0] = "äÚÊÐÑ ÇáÅÑÓÇá ãÊæÞÝ ÇáÂä";
+$arraySendStatus[1] = "íãßäß ÇáÅÑÓÇá ÇáÂä";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÊÛííÑ ßáãÉ ÇáãÑæÑ 
+$arrayChangePassword = array();
+$arrayChangePassword[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayChangePassword[1] = "ÅÓã ÇáÍÓÇÈ ÇáãÓÊÎÏã ÛíÑ ÕÍíÍ";
+$arrayChangePassword[2] = "ßáãÉ ÇáãÑæÑ ÇáÎÇÕÉ ÈÇáÍÓÇÈ ÛíÑ ÕÍíÍÉ";
+$arrayChangePassword[3] = "ÊãÊ ÚãáíÉ ÊÛííÑ ßáãÉ ÇáãÑæÑ ÈäÌÇÍ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÅÓÊÑÌÇÚ ßáãÉ ÇáãÑæÑ
+$arrayForgetPassword = array();
+$arrayForgetPassword[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayForgetPassword[1] = "ÅÓã ÇáÍÓÇÈ ÇáãÓÊÎÏã ÛíÑ ÕÍíÍ";
+$arrayForgetPassword[2] = "ÇáÅíãíá ÇáÎÇÕ ÈÇáÍÓÇÈ ÛíÑ ãÊæÝÑ";
+$arrayForgetPassword[3] = "Êã ÅÑÓÇá ßáãÉ ÇáãÑæÑ Úáì ÇáÌæÇá ÈäÌÇÍ";
+$arrayForgetPassword[4] = "ÑÕíÏß ÛíÑ ßÇÝí áÅÊãÇã ÚãáíÉ ÇáÅÑÓÇá";
+$arrayForgetPassword[5] = "Êã ÅÑÓÇá ßáãÉ ÇáãÑæÑ Úáì ÇáÅíãíá ÈäÌÇÍ";
+$arrayForgetPassword[6] = "ÇáÅíãíá ÇáÎÇÕ ÈÇáÍÓÇÈ ÛíÑ ÕÍíÍ";
+$arrayForgetPassword[7] = "ÅÓã ÇáÍÓÇÈ ÇáãÓÊÎÏã ÛíÑ ÕÍíÍ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÇáÅÑÓÇá
+$arraySendMsg = array();
+$arraySendMsg[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arraySendMsg[1] = "ÊãÊ ÚãáíÉ ÇáÅÑÓÇá ÈäÌÇÍ";
+$arraySendMsg[2] = "ÑÕíÏß 0,ÇáÑÌÇÁ ÅÚÇÏÉ ÇáÊÚÈÆÉ ÍÊì ÊÊãßä ãä ÅÑÓÇá ÇáÑÓÇÆá";
+$arraySendMsg[3] = "ÑÕíÏß ÛíÑ ßÇÝí áÅÊãÇã ÚãáíÉ ÇáÅÑÓÇá";
+$arraySendMsg[4] = "ÅÓã ÇáÍÓÇÈ ÇáãÓÊÎÏã ÛíÑ ÕÍíÍ";
+$arraySendMsg[5] = "ßáãÉ ÇáãÑæÑ ÇáÎÇÕÉ ÈÇáÍÓÇÈ ÛíÑ ÕÍíÍÉ";
+$arraySendMsg[6] = "ÕÝÍÉ ÇáÇäÊÑäÊ ÛíÑ ÝÚÇáÉ,ÍÇæá ÇáÇÑÓÇá ãä ÌÏíÏ";
+$arraySendMsg[7] = "äÙÇã ÇáãÏÇÑÓ ÛíÑ ÝÚÇá";
+$arraySendMsg[8] = "ÊßÑÇÑ ÑãÒ ÇáãÏÑÓÉ áäÝÓ ÇáãÓÊÎÏã";
+$arraySendMsg[9] = "ÇäÊåÇÁ ÇáÝÊÑÉ ÇáÊÌÑíÈíÉ";
+$arraySendMsg[10] = "ÚÏÏ ÇáÇÑÞÇã áÇ íÓÇæí ÚÏÏ ÇáÑÓÇÆá";
+$arraySendMsg[11] = "ÇÔÊÑÇßß áÇ íÊíÍ áß ÇÑÓÇá ÑÓÇÆá áåÐå ÇáãÏÑÓÉ. íÌÈ Úáíß ÊÝÚíá ÇáÇÔÊÑÇß áåÐå ÇáãÏÑÓÉ";
+$arraySendMsg[12] = "ÅÕÏÇÑ ÇáÈæÇÈÉ ÛíÑ ÕÍíÍ";
+$arraySendMsg[13] = "ÇáÑÞã ÇáãÑÓá Èå ÛíÑ ãÝÚá Ãæ áÇ íæÌÏ ÇáÑãÒ BS Ýí äåÇíÉ ÇáÑÓÇáÉ";
+$arraySendMsg[14] = "ÛíÑ ãÕÑÍ áß ÈÇáÅÑÓÇá ÈÅÓÊÎÏÇã åÐÇ ÇáãÑÓá";
+$arraySendMsg[15] = "ÇáÃÑÞÇã ÇáãÑÓá áåÇ ÛíÑ ãæÌæÏå Ãæ ÛíÑ ÕÍíÍå";
+$arraySendMsg[16] = "ÅÓã ÇáãÑÓá ÝÇÑÛ¡ Ãæ ÛíÑ ÕÍíÍ";
+$arraySendMsg[17] = "äÕ ÇáÑÓÇáÉ ÛíÑ ãÊæÝÑ Ãæ ÛíÑ ãÔÝÑ ÈÔßá ÕÍíÍ";
+
+$arrayDeleteSMS = array();
+$arrayDeleteSMS[1] = "ÊãÊ ÚãáíÉ ÇáÍÐÝ ÈäÌÇÍ";
+$arrayDeleteSMS[2] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayDeleteSMS[3] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+$arrayDeleteSMS[4] = "ÇáÅÑÓÇáíå ÇáãØáæÈ ÍÐÝåÇ ÛíÑ ãÊæÝÑå¡ Ãæ ÑÞã deleteKey ÎÇØÆ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ØáÈ ÇáÑÕíÏ
+$arrayBalance = array();
+$arrayBalance[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayBalance[1] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayBalance[2] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+$arrayBalance[3] = "ÑÕíÏß ÇáÍÇáí åæ %s äÞØå ãä ÇÕá %s äÞØÉ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÇáÊÍÞÞ ãä ØáÈ ÅÓã ÇáãÑÓá - ÇáÃÍÑÝ ÇáåÌÇÆíÉ
+$arrayCheckAlphasSender = array();
+$arrayCheckAlphasSender[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayCheckAlphasSender[1] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayCheckAlphasSender[2] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ØáÈ ÅÓã ÇáãÑÓá - ÇáÃÍÑÝ ÇáåÌÇÆíÉ
+$arrayAddAlphaSender = array();
+$arrayAddAlphaSender[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayAddAlphaSender[1] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayAddAlphaSender[2] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+$arrayAddAlphaSender[3] = "Øæá ÇÓã ÇáãÑÓá ÇáãØáæÈ ÃßÈÑ ãä 11 ÎÇäÉ";
+$arrayAddAlphaSender[4] = "Êã ÅÖÇÝÉ ÇáØáÈ ÈäÌÇÍ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ØáÈ ÅÓã ÇáãÑÓá - ÑÞã ÇáÌæÇá
+$arrayAddSender = array();
+$arrayAddSender[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayAddSender[1] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayAddSender[2] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+$arrayAddSender[3] = "ÅÓã ÇáãÑÓá 'ÇáÑÞã ÇáÏæáí' ÛíÑ ÕÍíÍ";
+$arrayAddSender[4] = "ÅÓã ÇáãÑÓá áÇ íÍÊÇÌ Åáì ÊÝÚíá ! ";
+$arrayAddSender[5] = "ÑÕíÏß ÛíÑ ßÇÝí áÅÑÓÇá ßæÏ ÇáÊÝÚíá";
+$arrayAddSender[6] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÇáÊÍÞÞ ãä ØáÈ ÊÝÚíá ÅÓã ÇáãÑÓá - ÑÞã ÌæÇá
+$arrayCheckSender = array();
+$arrayCheckSender[0] = "ÇÓã ÇáãÑÓá ÛíÑ ãÝÚá";
+$arrayCheckSender[1] = "ÅÓã ÇáãÑÓá ãÝÚá";
+$arrayCheckSender[2] = "ÅÓã ÇáãÑÓá ãÑÝæÖ";
+$arrayCheckSender[3] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayCheckSender[4] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÊÝÚíá ØáÈ ÅÓã ÇáãÑÓá - ÑÞã ÌæÇá
+$arrayActiveSender = array();
+$arrayActiveSender[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arrayActiveSender[1] = "ÑÞã ÇáÌæÇá ÛíÑ ÕÍíÍ";
+$arrayActiveSender[2] = "ßáãÉ ÇáãÑæÑ ÛíÑ ÕÍíÍå";
+$arrayActiveSender[3] = "Êã ÊÝÚíá ÅÓã ÇáãÑÓá";
+$arrayActiveSender[4] = "ßæÏ ÇáÊÝÚíá ÛíÑ ÕÍíÍ";
+$arrayActiveSender[5] = "senderId ÎÇØÆ";
+
+//ÇáÑÓÇÆá ÇáäÇÊÌå ãä ÏÇáÉ ÞÇáÈ ÇáÅÑÓÇá
+$arraySendMsgWK = array();
+$arraySendMsgWK[0] = "áã íÊã ÇáÇÊÕÇá ÈÇáÎÇÏã";
+$arraySendMsgWK[1] = "ÊãÊ ÚãáíÉ ÇáÅÑÓÇá ÈäÌÇÍ";
+$arraySendMsgWK[2] = "ÑÕíÏß 0,ÇáÑÌÇÁ ÅÚÇÏÉ ÇáÊÚÈÆÉ ÍÊì ÊÊãßä ãä ÅÑÓÇá ÇáÑÓÇÆá";
+$arraySendMsgWK[3] = "ÑÕíÏß ÛíÑ ßÇÝí áÅÊãÇã ÚãáíÉ ÇáÅÑÓÇá";
+$arraySendMsgWK[4] = "ÅÓã ÇáÍÓÇÈ ÇáãÓÊÎÏã ÛíÑ ÕÍíÍ";
+$arraySendMsgWK[5] = "ßáãÉ ÇáãÑæÑ ÇáÎÇÕÉ ÈÇáÍÓÇÈ ÛíÑ ÕÍíÍÉ";
+$arraySendMsgWK[6] = "ÕÝÍÉ ÇáÇäÊÑäÊ ÛíÑ ÝÚÇáÉ,ÍÇæá ÇáÇÑÓÇá ãä ÌÏíÏ";
+$arraySendMsgWK[7] = "äÙÇã ÇáãÏÇÑÓ ÛíÑ ÝÚÇá";
+$arraySendMsgWK[8] = "ÊßÑÇÑ ÑãÒ ÇáãÏÑÓÉ áäÝÓ ÇáãÓÊÎÏã";
+$arraySendMsgWK[9] = "ÇäÊåÇÁ ÇáÝÊÑÉ ÇáÊÌÑíÈíÉ";
+$arraySendMsgWK[10] = "ÚÏÏ ÇáÇÑÞÇã áÇ íÓÇæí ÚÏÏ ÇáÑÓÇÆá";
+$arraySendMsgWK[11] = "ÇÔÊÑÇßß áÇ íÊíÍ áß ÇÑÓÇá ÑÓÇÆá áåÐå ÇáãÏÑÓÉ. íÌÈ Úáíß ÊÝÚíá ÇáÇÔÊÑÇß áåÐå ÇáãÏÑÓÉ";
+$arraySendMsgWK[12] = "ÅÕÏÇÑ ÇáÈæÇÈÉ ÛíÑ ÕÍíÍ";
+$arraySendMsgWK[13] = "ÇáÑÞã ÇáãÑÓá Èå ÛíÑ ãÝÚá Ãæ áÇ íæÌÏ ÇáÑãÒ BS Ýí äåÇíÉ ÇáÑÓÇáÉ";
+$arraySendMsgWK[14] = "ÛíÑ ãÕÑÍ áß ÈÇáÅÑÓÇá ÈÅÓÊÎÏÇã åÐÇ ÇáãÑÓá";
+$arraySendMsgWK[15] = "ÇáÃÑÞÇã ÇáãÑÓá áåÇ ÛíÑ ãæÌæÏå Ãæ ÛíÑ ÕÍíÍå";
+$arraySendMsgWK[16] = "ÅÓã ÇáãÑÓá ÝÇÑÛ¡ Ãæ ÛíÑ ÕÍíÍ";
+$arraySendMsgWK[17] = "äÕ ÇáÑÓÇáÉ ÛíÑ ãÊæÝÑ Ãæ ÛíÑ ãÔÝÑ ÈÔßá ÕÍíÍ";
+?>
