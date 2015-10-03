@@ -111,7 +111,6 @@ if (! function_exists ( "login_check" )) {
 				if($login_check == $login_string) {
 					$arrAllowdGroups = Explode ( ",",$allowdgroupes );
 					if (in_array ( $user_group,$arrAllowdGroups )) {
-						$isValid = true;
 						// Logged In!!!!
 						return true;
 					}
