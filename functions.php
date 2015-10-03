@@ -262,10 +262,6 @@ if (!function_exists("create_text")) {
 if (!function_exists("create_chkbox")) {
 	function create_chkbox($input_name, $other_optins = "")
 	{
-		if ($is_required == true) {
-			$isRequired = 'data-required="true"';
-		}
-
 		return sprintf('<input name="%s" id="%s" type="checkbox" value="1" %s>', $input_name, $input_name, $other_optins);
 	}
 }
