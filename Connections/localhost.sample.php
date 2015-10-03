@@ -4,7 +4,7 @@
 # Type="MYSQL"
 # HTTP="true"
 $hostname_localhost = "localhost";
-$database_localhost = "quranzulfiold";
+$database_localhost = "database";
 $username_localhost = "root";
 $password_localhost = "";
 $localhost = mysqli_connect($hostname_localhost, $username_localhost, $password_localhost) or trigger_error(mysqli_error($localhost), E_USER_ERROR);
@@ -68,7 +68,7 @@ if (!function_exists("sec_session_start")) {
 sec_session_start();
 //}
 
-$smsUser = '966500511556';
-$smsPass = 'XXXKlm124816';
+$smsUser = '9665555555';
+$smsPass = 'password';
 $smsSender = 'QuranZulfi';
 ?>
