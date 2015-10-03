@@ -358,14 +358,14 @@ $all_groups_space = 'admin t3lem er ms mktbr edarh';
 if (!function_exists("ar_search_helper")) {
 	function ar_search_helper($ar_name = '')
 	{
-		$ar_name = $ar_name;
-		$ar_name = str_replace(' ', '', $ar_name);
-		$ar_name = str_replace('أ', 'ا', $ar_name);
-		$ar_name = str_replace('إ', 'ا', $ar_name);
-		$ar_name = str_replace('ة', 'ه', $ar_name);
-		$ar_name = str_replace('ى', 'ا', $ar_name);
+		$new_ar_name = $ar_name;
+		$new_ar_name = str_replace(' ', '', $new_ar_name);
+		$new_ar_name = str_replace('أ', 'ا', $new_ar_name);
+		$new_ar_name = str_replace('إ', 'ا', $new_ar_name);
+		$new_ar_name = str_replace('ة', 'ه', $new_ar_name);
+		$new_ar_name = str_replace('ى', 'ا', $new_ar_name);
 
-		return $ar_name;
+		return $new_ar_name;
 	}
 }
 
