@@ -40,6 +40,7 @@
                 <li class="admin edarh ms er mktbr t3lem"><a href="/sys/ertiqa/statistics/edarah_points.php" tabindex="-1">(الارتقاء) نقاط <?php echo get_gender_label('e', 'ال'); ?></a></li>
                 <li class="admin edarh ms er mktbr t3lem"><a href="/sys/ertiqa/statistics/teachers_points.php" tabindex="-1">(الارتقاء) نقاط <?php echo get_gender_label('ts', 'ال'); ?></a></li>
                 <li class="admin edarh ms er mktbr t3lem"><a href="/sys/ertiqa/statistics/teachers_points_2.php" tabindex="-1">(الارتقاء) نقاط <?php echo get_gender_label('ts', 'ال'); ?>  - حسب <?php echo get_gender_label('e', 'ال'); ?></a></li>
+                <li class=""><a href="/sys/basic/statistics/st_levels.php" tabindex="-1">احصائية بالمراحل الدراسية للطلاب والطالبات </a></li>
             </ul>
         </li>
         <li class="admin edarh t3lem"><a href="/sys/basic/kashf/kashf_form.php" tabindex="-1">كشوفات</a></li>

@@ -16,7 +16,7 @@
 		<!--PageTitle-->
 		  <div class="content lp">
 			<?php if(login_check($all_groups) == true) { ?>
-				<form name="form1" method="POST" action="absent.php" data-validate="parsley">
+				<form name="form1" method="POST" action="redirect.php" data-validate="parsley">
 				<div class="FieldsTitle">حدد التاريخ والحلقة</div>
 				<div class="four columns alpha">
 					<div class="LabelContainer">
@@ -40,8 +40,11 @@
 				</div>
 				<br class="clear" />
 				<div class="four columns omega left">
-						<input name="submit" type="submit" class="button-primary" id="submit" value="عرض الكشف"/>
-					</div>
+                    <input name="absent" type="submit" class="button-primary"  value="كشف التحضير"/>
+                </div>
+                <div class="four columns omega left">
+                    <input name="students_data" type="submit" class="button-primary" value="بيانات <?php echo get_gender_label('sts','ال'); ?>"/>
+                </div>
 			</form>
 			<?php }else{echo 'عفوا... لاتملك صلاحيات للدخول لهذه الصفحة.';}?>
 

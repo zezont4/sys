@@ -1,7 +1,6 @@
 <?php require_once('../../Connections/localhost.php'); ?>
 <?php require_once("../../functions.php"); ?>
 <?php
-
 if (isset($_POST['EdarahID'])) {
   $EdarahID = $_POST['EdarahID'];
 }
@@ -30,7 +29,7 @@ $totalRows_halakat = mysqli_num_rows($halakat);
 <style>
 .reportContent {font-size:14px}
 </style>
-<?php do { 
+<?php do {
 mysqli_select_db($localhost,$database_localhost);
 $query_teachers = sprintf("SELECT TID FROM 0_teachers where THalaqah=%s and hide=0",
 							  $row_halakat['AutoNo']);
@@ -49,7 +48,7 @@ if ($totalRows_st_count>0){
 ?>
 <div class="reportWrapper">
 	<div class="reportContent">
-		<p class="report_description"> كشف تحضير - ( <?php echo $h_date; ?> )		</p>
+		<p class="report_description">بيانات <?php echo get_gender_label('sts','ال'); ?></p>
 			<table width="100%">
 				<tr>
 					<th><?php echo get_gender_label('e','ال'); ?></th>
@@ -65,41 +64,33 @@ if ($totalRows_st_count>0){
 			<tr>
 				<th><p>م</p></th>
 				<th><p><?php echo get_gender_label('st','ال'); ?></p></th>
-				<th><p>جوال الولي</p></th>
-				<th><p>أحــد</p></th>
-				<th><p>اثنين</p></th>
-				<th><p>ثلاثاء</p></th>
-				<th><p>أربعاء</p></th>
-				<th><p>خميس</p></th>
-				<th><p>ملاحظــــــــــات</p></th>
+				<th><p>السجل المدني</p></th>
+				<th><p>جوال ولي الأمر</p></th>
+				<th><p>تاريخ الميلاد</p></th>
 			</tr>
 			<?php
 //ertiqa  #############################################
 mysqli_select_db($localhost,$database_localhost);
-$query_st_money = sprintf("SELECT * FROM 0_students WHERE StHalaqah = %s and hide=0",
+$query_st_data = sprintf("SELECT * FROM view_0_students WHERE StHalaqah = %s and hide=0",
 							  $row_halakat['AutoNo']);
 
-$st_money = mysqli_query($localhost,$query_st_money)or die('absent.php 3 - '.mysqli_error($localhost));
-$row_st_money = mysqli_fetch_assoc($st_money);
-$totalRows_st_money = mysqli_num_rows($st_money);
-	
+$st_data = mysqli_query($localhost,$query_st_data)or die('absent.php 3 - '.mysqli_error($localhost));
+$row_st_data = mysqli_fetch_assoc($st_data);
+$totalRows_st_data = mysqli_num_rows($st_data);
+
 	$i=1;
 	//$total_money=0;
 	do{
-		//$total_money+=$row_st_money['Money'];
+		//$total_money+=$row_st_data['Money'];
 		?>
 			<tr>
 				<th><?php echo $i;?></th>
-				<td><?php echo get_student_name($row_st_money['StID']);?></td>
-				<td><?php echo $row_st_money['FatherMobileNo'];?></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
+				<td><?php echo $row_st_data['Stfullname'];?></td>
+				<td><?php echo $row_st_data['StID'];?></td>
+				<td><?php echo $row_st_data['FatherMobileNo'];?></td>
+				<td><?php echo $row_st_data['O_BurthDate'];?></td>
 			</tr>
-			<?php $i++; } while ($row_st_money = mysqli_fetch_assoc($st_money)); ?>
+			<?php $i++; } while ($row_st_data = mysqli_fetch_assoc($st_data)); ?>
 <!--			<tr>
 				<th colspan="6"><p>المجموع</p></th>
 				<th><p><?php //echo $total_money;?></p></th>

@@ -9,7 +9,7 @@ $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
   $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
-
+$sql_sex=sql_sex('edarah_sex');
 $Date1_Rs1 = 'and FinalExamDate>=' . str_replace('/','',$_SESSION ['default_start_date']);
 if (isset($_POST['Date1'])) {
   if ($_POST['Date1']!=null) {$Date1_Rs1 = 'and FinalExamDate>=' . str_replace('/','',$_POST['Date1']);}
@@ -23,14 +23,16 @@ mysqli_select_db($localhost,$database_localhost);
 $query_RsTPoints = sprintf("SELECT
 							 O_TeacherName
 							,O_Edarah
-							,SUM(ExamPoints) as sumP
-							,count(ExamPoints) as countp
+							,teacher_hide
+							,SUM(ExamPoints) AS sumP
+							,count(ExamPoints) AS countp
 							  FROM view_er_ertiqaexams
-							  where teacher_hide=0 and FinalExamStatus=2 %s %s 
-							  group by TeacherID 
-							  order by O_Edarah,sum(ExamPoints) desc",
+							  WHERE FinalExamStatus=2 %s %s %s
+							  GROUP BY TeacherID
+							  ORDER BY O_Edarah,sum(ExamPoints) DESC",
 							  $Date1_Rs1,
-							  $Date2_Rs1);
+							  $Date2_Rs1,
+							  $sql_sex);
 
 $RsTPoints = mysqli_query($localhost,$query_RsTPoints)or die('RsTPoints 1 : '.mysqli_error($localhost));
 $row_RsTPoints = mysqli_fetch_assoc($RsTPoints);
@@ -95,11 +97,13 @@ $totalRows_RsTPoints = mysqli_num_rows($RsTPoints);
 					<td>اجمالي النقاط</td>
 					<td>عدد الطلاب المجتازين</td>
 				</tr>
-				<?php do { ?>
+				<?php do {
+				$hidden_string= $row_RsTPoints['teacher_hide']>0 ? ' <span style="color: #ff3835">(مطوي قيده)</span>' : '';
+				?>
 				
 				
 					<tr>
-						<td><?php echo $row_RsTPoints['O_TeacherName']; ?></td>
+						<td><?php echo $row_RsTPoints['O_TeacherName'].$hidden_string; ?></td>
 						<td><?php echo str_replace("مجمع ","",$row_RsTPoints['O_Edarah']); ?></td>
 						<td><?php echo $row_RsTPoints['sumP']; ?></td>
 						<td><?php echo $row_RsTPoints['countp']; ?></td>

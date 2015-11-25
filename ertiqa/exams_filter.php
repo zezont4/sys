@@ -116,7 +116,7 @@ $totalRows_ReExams = mysqli_num_rows($all_ReExams);
 			</div>
 			<div class="four columns">
 				<div class="LabelContainer">
-					<label for="Date2">نتيجة الاختبار</label>
+					<label for="Date2">المجمع/الدار</label>
 				</div>
 				<?php
 				if($_SESSION['user_group']=='edarh'){
