@@ -1,9 +1,6 @@
-<?php require_once('../Connections/localhost.php'); ?>
 <?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
 <?php $PageTitle = 'الطلاب المسجلون في مسابقة أمير الرياض'; ?>
-<?php if (login_check('admin,ms,edarh') == true) { ?>
+<?php if (login_check('admin,ms,edarh,alaqat') == true) { ?>
     <?php
     $editFormAction = $_SERVER['PHP_SELF'];
     if (isset($_SERVER['QUERY_STRING'])) {
@@ -12,18 +9,17 @@
 
     $Date1_Rs1 = 'and RDate>=' . $_SESSION ['default_start_date'];
     if (isset($_POST['Date1'])) {
-        if ($_POST['Date1'] != null) {
-            $Date1_Rs1 = 'and RDate>=' . str_replace('/', '', $_POST['Date1']);
+        if (Input::get('Date1') != null) {
+            $Date1_Rs1 = 'and RDate>=' . str_replace('/', '', Input::get('Date1'));
         }
     }
     $Date2_Rs1 = $Date2_Rs1 = 'and RDate<=' . $_SESSION ['default_end_date'];
     if (isset($_POST['Date2'])) {
-        if ($_POST['Date2'] != null) {
-            $Date2_Rs1 = 'and RDate<=' . str_replace('/', '', $_POST['Date2']);
+        if (Input::get('Date2') != null) {
+            $Date2_Rs1 = 'and RDate<=' . str_replace('/', '', Input::get('Date2'));
         }
     }
 
-    mysqli_select_db($localhost, $database_localhost);
     $sql_sex = sql_sex('u.sex');
     if ($_SESSION['user_group'] != 'edarh') {
         $query_ReRegistered = sprintf("SELECT *
@@ -97,10 +93,10 @@ ORDER BY EdarahID,MsbkhID,HalakahID",
     <div class="content CSSTableGenerator">
         <?php if (isset($Date1_Rs1)) { ?>
             <div class="FieldsTitle">المسجلون في مسابقة أمير
-                الرياض <?php echo(($_POST['Date1'] == '' && $_POST['Date2'] == '') ? ' ( ' . $_SESSION ['default_year_name'] . ' ) ' : ''); ?>
+                الرياض <?php echo((Input::get('Date1') == '' && Input::get('Date2') == '') ? ' ( ' . $_SESSION ['default_year_name'] . ' ) ' : ''); ?>
                 خلال الفترة
-                من <?php echo(($_POST['Date1'] != '') ? $_POST['Date1'] : StringToDate($_SESSION ['default_start_date']) . ' هـ '); ?>
-                إلى <?php echo(($_POST['Date2'] != '') ? $_POST['Date2'] : StringToDate($_SESSION ['default_end_date']) . ' هـ '); ?> </div>
+                من <?php echo((Input::get('Date1') != '') ? Input::get('Date1') : StringToDate($_SESSION ['default_start_date']) . ' هـ '); ?>
+                إلى <?php echo((Input::get('Date2') != '') ? Input::get('Date2') : StringToDate($_SESSION ['default_end_date']) . ' هـ '); ?> </div>
         <?php } ?>
         <table>
             <tr>

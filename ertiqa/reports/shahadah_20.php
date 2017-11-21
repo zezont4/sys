@@ -1,18 +1,16 @@
 <?php
-require_once('../../Connections/localhost.php');
-//require_once('../../settings.php');
-//sec_session_start();
+require("../../functions.php");
 $exam_no = "-1";
 if (isset($_GET['ExamNo'])) {
     $exam_no = $_GET['ExamNo'];
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_R = sprintf("SELECT * FROM view_er_ertiqaexams WHERE AutoNo = %s", GetSQLValueString($exam_no, "int"));
 $R = mysqli_query($localhost, $query_R) or die(mysqli_error($localhost));
 $row_R = mysqli_fetch_assoc($R);
 $totalRows_R = mysqli_num_rows($R);
+$sex = isset($_SESSION['sex']) ? $_SESSION['sex'] : 1;
 
-require("../../functions.php"); ?>
+?>
 <!doctype html>
 <html>
 <head>
@@ -28,7 +26,7 @@ require("../../functions.php"); ?>
 </div>
 <?php
 $female = '';
-if ($_SESSION['sex'] == 0) {
+if ($sex == 0) {
     $female = 'ا';
 }
 
@@ -67,7 +65,7 @@ if ($row_R['ErtiqaID'] == 9) {
 		</span>
                     بتقدير (
                     <span class="p2">
-			<?php echo  get_array_1($MarkName_Long, $row_R['MarkName_Short']); ?>
+			<?php echo get_array_1($MarkName_Long, $row_R['MarkName_Short']); ?>
 		</span>
                     ) وبنسبة
                     <span class="p2">

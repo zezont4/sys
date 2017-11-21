@@ -7,7 +7,7 @@
  * @version      0.2ab
  *
  */
-require("Log.php");
+//require("Log.php");
 
 class DB
 {
@@ -38,6 +38,8 @@ class DB
      */
     public function __construct()
     {
+
+//        die('sdf');
         $this->log = new Log();
         $this->Connect();
         $this->parameters = array();
@@ -76,7 +78,7 @@ class DB
             $this->bConnected = true;
         } catch (PDOException $e) {
             # Write into log
-            echo $this->ExceptionLog($e->getMessage());
+            echo $this->ExceptionLog('PDO Connect function : '.$e->getMessage());
             die();
         }
     }
@@ -129,7 +131,7 @@ class DB
             $this->succes = $this->sQuery->execute();
         } catch (PDOException $e) {
             # Write into log and display Exception
-            echo $this->ExceptionLog($e->getMessage(), $query);
+            echo $this->ExceptionLog('PDO Init function : '.$e->getMessage(), $query);
             die();
         }
 
@@ -170,10 +172,10 @@ class DB
     /**
      * If the SQL query  contains a SELECT or SHOW statement it returns an array containing all of the result set row
      * If the SQL statement is a DELETE, INSERT, or UPDATE statement it returns the number of affected rows
-     * @param   String $query [[Description]]
-     * @param   Array [$params    = null]                [[Description]]
-     * @param   Number [$fetchmode = PDO::FETCH_OBJ] [[Description]]
-     * @returns Mix    [[Description]]
+     * @param   String $query
+     * @param   Array [$params    = null]
+     * @param   Number [$fetchmode = PDO::FETCH_OBJ]
+     * @returns Array | Integer
      */
     public function query($query, $params = null, $fetchmode = PDO::FETCH_OBJ)
     {
@@ -288,7 +290,11 @@ class DB
     public function row($query, $params = null, $fetchmode = PDO::FETCH_OBJ)
     {
         $this->Init($query, $params);
-        return $this->sQuery->fetch($fetchmode);
+        try {
+            return $this->sQuery->fetch($fetchmode);
+        } catch (PDOException $e) {
+            $this->log->write('PDO->row function : '.$e->getMessage(),'error');
+        }
     }
 
     /**
@@ -332,14 +338,13 @@ class DB
             $message .= "\r\nRaw SQL : " . $sql;
         }
         # Write into log
-        $this->log->write($message);
+        $this->log->write('#PDO# : '.$message,'error');
 
         return $exception;
     }
 
-    public function SqlString(){
+    public function SqlString()
+    {
         return $this->sQuery->queryString;
     }
 }
-
-

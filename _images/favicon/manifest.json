@@ -1,0 +1,19 @@
+{
+    "name": "\u0627\u0644\u0646\u0638\u0627\u0645 \u0627\u0644\u0625\u0644\u0643\u062a\u0648\u0631\u0646\u064a",
+    "icons": [
+        {
+            "src": "/_images/favicon/android-chrome-192x192.png?v=m2lxymqBbO",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "/_images/favicon/android-chrome-256x256.png?v=m2lxymqBbO",
+            "sizes": "256x256",
+            "type": "image/png"
+        }
+    ],
+    "theme_color": "#0f6c58",
+    "background_color": "#0f6c58",
+    "start_url": "http://quranzulfi.com/sys/",
+    "display": "standalone"
+}

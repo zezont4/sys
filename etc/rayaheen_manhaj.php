@@ -1,5 +1,4 @@
 <?php
-require_once('../Connections/localhost.php');
 require_once('../functions.php');
 $day_names = [
     0 => 'الأحد',
@@ -20,14 +19,11 @@ $day_names = [
     6 => 'سبت',
 ];
 $PageTitle = 'جدول المتابعة';
-mysqli_select_db($localhost, $database_localhost);
 
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
-
-//if ((isset($_POST["submit_form_1"])) && ($_POST["submit_form_1"] == "form1")) {
 
 $first_day = "-1";
 if (isset($_GET['first_day'])) {

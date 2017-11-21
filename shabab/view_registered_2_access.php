@@ -1,28 +1,28 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
 <?php
+require_once('../functions.php');
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
+$default_start_date = isset($_SESSION['default_start_date']) ? $_SESSION['default_start_date'] : '';
+$default_end_date = isset($_SESSION['default_end_date']) ? $_SESSION['default_end_date'] : '';
 
-$Date1_Rs1 = 'and RDate>=' . $_SESSION ['default_start_date'];
-if (isset($_POST['Date1'])) {
-    if ($_POST['Date1'] != null) {
-        $Date1_Rs1 = 'and RDate>=' . str_replace('/', '', $_POST['Date1']);
-    }
-}
-$Date2_Rs1 = $Date2_Rs1 = 'and RDate<=' . $_SESSION ['default_end_date'];
-if (isset($_POST['Date2'])) {
-    if ($_POST['Date2'] != null) {
-        $Date2_Rs1 = 'and RDate<=' . str_replace('/', '', $_POST['Date2']);
-    }
-}
+$Date1_Rs1 = Input::get('Date1')
+    ? 'and RDate>=' . str_replace('/', '', Input::get('Date1'))
+    : 'and RDate>=' . $default_start_date;
 
-mysqli_select_db($localhost, $database_localhost);
-$query_ReRegistered = "SELECT f.`ErtiqaID`,f.`MsbkhID`,f.`SchoolLevelID`,f.HalakahID,s.StBurthDate,concat_ws(' ',t.TName1,t.TName2,t.TName3,t.TName4) as t_name,s.StName1,s.StName2,s.StName3,s.StName4,e.arabic_name,h.HName FROM `ms_shabab_rgstr` f left join 0_students s on f.`StID` = s.`StID` left join 0_users e on f.`EdarahID` = e.`id` left join 0_halakat h on f.`HalakahID` = h.`AutoNo` left join 0_teachers t on f.`TeacherID` = t.`TID` where f.AutoNo>0  $Date1_Rs1  $Date2_Rs1 ORDER BY f.MsbkhID,f.EdarahID,f.HalakahID";
+$Date2_Rs1 = Input::get('Date2')
+    ? 'and RDate<=' . str_replace('/', '', Input::get('Date2'))
+    : 'and RDate<=' . $default_end_date;
+
+$query_ReRegistered = "SELECT f.`ErtiqaID`,f.`MsbkhID`,f.`SchoolLevelID`,f.HalakahID,s.StBurthDate,
+                    concat_ws(' ',t.TName1,t.TName2,t.TName3,t.TName4) as t_name,s.StName1,s.StName2,s.StName3,s.StName4,e.arabic_name,h.HName 
+                    FROM `ms_shabab_rgstr` f left join 0_students s on f.`StID` = s.`StID` 
+                    left join 0_users e on f.`EdarahID` = e.`id` 
+                    left join 0_halakat h on f.`HalakahID` = h.`AutoNo` 
+                    left join 0_teachers t on f.`TeacherID` = t.`TID` 
+                    where f.AutoNo>0  $Date1_Rs1  $Date2_Rs1 
+                    ORDER BY f.MsbkhID,f.EdarahID,f.HalakahID";
 $ReRegistered = mysqli_query($localhost, $query_ReRegistered) or die(mysqli_error($localhost));
 $row_ReRegistered = mysqli_fetch_assoc($ReRegistered);
 $totalRows_ReRegistered = mysqli_num_rows($ReRegistered);
@@ -78,10 +78,10 @@ $totalRows_ReRegistered = mysqli_num_rows($ReRegistered);
     <div class="content CSSTableGenerator">
         <?php if (isset($Date1_Rs1)) { ?>
             <div class="FieldsTitle">المسجلون في مسابقة الهيئة العامة للرياضة
-                <?php echo(($_POST['Date1'] == '' && $_POST['Date2'] == '') ? ' ( ' . $_SESSION ['default_year_name'] . ' ) ' : ''); ?>
+                <?php echo((Input::get('Date1') == '' && Input::get('Date2') == '') ? ' ( ' . $_SESSION ['default_year_name'] . ' ) ' : ''); ?>
                 خلال الفترة
-                من <?php echo(($_POST['Date1'] != '') ? $_POST['Date1'] : StringToDate($_SESSION ['default_start_date']) . ' هـ '); ?>
-                إلى <?php echo(($_POST['Date2'] != '') ? $_POST['Date2'] : '(تاريخ اليوم)'); ?> </div>
+                من <?php echo((Input::get('Date1') != '') ? Input::get('Date1') : StringToDate($_SESSION ['default_start_date']) . ' هـ '); ?>
+                إلى <?php echo((Input::get('Date2') != '') ? Input::get('Date2') : '(تاريخ اليوم)'); ?> </div>
         <?php } ?>
         <table>
             <tr>

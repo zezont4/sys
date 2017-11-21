@@ -1,4 +1,4 @@
-<?php require_once('../Connections/localhost.php');
+<?php
 require_once('../functions.php');
 require_once('fahd_functions.php');
 
@@ -11,38 +11,32 @@ $userType = 'xx';
 if (isset($_SESSION['user_group'])) {
     $userType = $_SESSION['user_group'];
 }
+$pdo = new DB();
 
-$user_id = null;
-if (isset($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
-}
-//$userType = 'edarh';
+$user_id = $pdo->row('select edarah_id from ms_fahd_featured_edarah where id=:id', [':id' => Input::get('id')])->edarah_id;
 
 if (isset($_POST['MM_insert'])) {
-    $pdo = new DB();
     $sqlValues = [
-        'edarah_id' => Input::get('edarah_id'),
-        'f_e_date'  => str_replace("/", "", Input::get('f_e_date')),
-        'e1'        => Input::get('e1'),
-        'e2'        => Input::get('e2'),
-        'e3'        => Input::get('e3'),
-        'e4'        => Input::get('e4'),
-        'e5'        => Input::get('e5'),
-        'e6'        => Input::get('e6'),
-        'e7'        => Input::get('e7'),
-        'e8'        => Input::get('e8'),
-        'e9'        => Input::get('e9'),
-        'e10'       => Input::get('e10'),
-        'e11'       => Input::get('e11'),
-        'e12'       => Input::get('e12'),
-        'e13'       => Input::get('e13'),
-        'e14'       => Input::get('e14'),
-        'e15'       => Input::get('e15'),
-        'e16'       => Input::get('e16'),
-        'e17'       => Input::get('e17'),
-        'e18'       => Input::get('e18'),
-        'e19'       => Input::get('e19'),
-        'total_e'   => Input::get('total_e'),
+        'e1'      => Input::get('e1'),
+        'e2'      => Input::get('e2'),
+        'e3'      => Input::get('e3'),
+        'e4'      => Input::get('e4'),
+        'e5'      => Input::get('e5'),
+        'e6'      => Input::get('e6'),
+        'e7'      => Input::get('e7'),
+        'e8'      => Input::get('e8'),
+        'e9'      => Input::get('e9'),
+        'e10'     => Input::get('e10'),
+        'e11'     => Input::get('e11'),
+        'e12'     => Input::get('e12'),
+        'e13'     => Input::get('e13'),
+        'e14'     => Input::get('e14'),
+        'e15'     => Input::get('e15'),
+        'e16'     => Input::get('e16'),
+        'e17'     => Input::get('e17'),
+        'e18'     => Input::get('e18'),
+        'e19'     => Input::get('e19'),
+        'total_e' => Input::get('total_e'),
     ];
 
     $dbResult = $pdo->zUpdate('ms_fahd_featured_edarah', $sqlValues, 'id=:id', array(':id' => Input::get('id')));
@@ -53,9 +47,108 @@ if (isset($_POST['MM_insert'])) {
 }
 
 $pdo = new DB();
-$whereSQL = "where id=:id";
-$parameters = [':id' => Input::get('id')];
-$current_musabka_data = $pdo->row("select * from ms_fahd_featured_edarah {$whereSQL}", $parameters);
+$current_musabka_data = $pdo->row("select * from ms_fahd_featured_edarah where id=:id", [':id' => Input::get('id')]);
+
+//$f_e_date = Input::get('f_e_date') ? Input::get('f_e_date') : getHijriDate()->date;
+$f_e_date = $pdo->row('select f_e_date from ms_fahd_featured_edarah where id=:id', [':id' => Input::get('id')])->f_e_date;
+
+$fahd_year_start = get_fahd_year_start($f_e_date);
+$fahd_year_end = get_fahd_year_end($f_e_date);
+$fahd_year_name = get_fahd_year_name($f_e_date);
+
+//عدد الذين اجتازوا اختبار المرتقيات
+$query_success_count = sprintf("select count(e.AutoNo) as count_st 
+from er_ertiqaexams e,er_shahadah sh 
+where e.AutoNo=sh.ExamNo and e.EdarahID=%s and e.FinalExamDate between %s and %s",
+    $user_id,
+    $fahd_year_start,
+    $fahd_year_end);
+
+$success_count = mysqli_query($localhost, $query_success_count) or die("feature_edarah_add.php 1: " . mysqli_error($localhost));
+$row_success_count = mysqli_fetch_assoc($success_count);
+$totalRows_success_count = mysqli_num_rows($success_count);
+$count_ertiqa = 0;
+if ($totalRows_success_count > 0) {
+    $count_ertiqa = $row_success_count["count_st"];
+}
+
+//عدد الذين استلموا مكافأة البراعم
+$query_bra3m = sprintf("select count(AutoNo) as count_st from er_bra3m  where EdarahID=%s and DDate between %s and %s",
+    $user_id,
+    $fahd_year_start,
+    $fahd_year_end);
+
+$bra3m = mysqli_query($localhost, $query_bra3m) or die("feature_edarah_add.php 2: " . mysqli_error($localhost));
+$row_bra3m = mysqli_fetch_assoc($bra3m);
+$totalRows_bra3m = mysqli_num_rows($bra3m);
+
+$count_bra3m = 0;
+if ($totalRows_bra3m > 0) {
+    $count_bra3m = $row_bra3m["count_st"];
+}
+
+//عدد طلاب الصف الرابع فما فوق للمرتقيات
+$query_children = sprintf("SELECT count(st_no) AS count_st FROM  0_students WHERE school_level IN (14,0,1,2,13) AND StEdarah=%s AND hide=0",
+    $user_id,
+    $fahd_year_start,
+    $fahd_year_end);
+$children = mysqli_query($localhost, $query_children) or die("feature_edarah_add.php 3: " . mysqli_error($localhost));
+$row_children = mysqli_fetch_assoc($children);
+$totalRows_children = mysqli_num_rows($children);
+$count_children = 0;
+$bra3m_percentage = 0;
+$full_degree_bra3m = 0;
+$bra3m_degree = 0;
+if ($totalRows_children > 0) {
+    $count_children = $row_children["count_st"];
+
+    //نسبة نجاح البراعم
+    $bra3m_percentage = round($count_bra3m / $count_children * 100, 1);
+//للحصول على الدرجة الكاملة للبراعم
+    $full_degree_bra3m = round($count_children * 0.80, 0);
+//الدرجة التي حصل عليها في البراعم حسب الاجتياز والنسبة
+    $bra3m_degree = round((5 / 80) * $bra3m_percentage, 1);
+    $bra3m_degree = $bra3m_degree > 5 ? 5 : $bra3m_degree;
+    $bra3m_degree = $bra3m_degree < 0 ? 0 : $bra3m_degree;
+}
+
+//عدد طلاب الصف الثالث فما دون للبراعم
+$query_young = sprintf("SELECT count(st_no) AS count_st FROM  0_students WHERE school_level BETWEEN 3 AND 15 AND StEdarah=%s AND hide=0",
+    $user_id,
+    $fahd_year_start,
+    $fahd_year_end);
+$young = mysqli_query($localhost, $query_young) or die("feature_edarah_add.php 4: " . mysqli_error($localhost));
+$row_young = mysqli_fetch_assoc($young);
+$totalRows_young = mysqli_num_rows($young);
+$count_young = 0;
+$ertiqa_percentage = 0;
+$full_degree_ertiqa = 0;
+$ertiqa_degree = 0;
+if ($totalRows_young > 0) {
+    $count_young = $row_young["count_st"];
+    //نسبة نجاح المرتقيات
+    $ertiqa_percentage = round($count_ertiqa / $count_young * 100, 1);
+//للحصول على الدرجة الكاملة للمرتقيات
+    $full_degree_ertiqa = round($count_young * 0.75, 0);
+//الدرجة التي حصل عليها في المرتقيات حسب الاجتياز والنسبة
+    $ertiqa_degree = round(0.5 * ($ertiqa_percentage - 35), 1);
+    $ertiqa_degree = $ertiqa_degree > 20 ? 20 : $ertiqa_degree;
+    $ertiqa_degree = $ertiqa_degree < 0 ? 0 : $ertiqa_degree;
+}
+
+//عدد الطلاب الذين لم يسجل لهم مرحلة دراسية
+$query_no_school_level = sprintf("SELECT count(st_no) AS count_st FROM  0_students WHERE (school_level IS NULL OR school_level ='' and school_level <> '0') AND StEdarah=%s AND hide=0",
+    $user_id,
+    $fahd_year_start,
+    $fahd_year_end);
+$no_school_level = mysqli_query($localhost, $query_no_school_level) or die("feature_edarah_add.php 5: " . mysqli_error($localhost));
+$row_no_school_level = mysqli_fetch_assoc($no_school_level);
+$totalRows_no_school_level = mysqli_num_rows($no_school_level);
+$count_no_school_level = 0;
+if ($totalRows_no_school_level > 0) {
+    $count_no_school_level = $row_no_school_level["count_st"];
+}
+
 
 $open_g = true;//السماح للتسجيل للبنات
 $open_b = true;//السماح للتسجيل للبنين
@@ -139,15 +232,33 @@ $PageTitle = 'بيانات التسجيل في مسابقة الإدارة ال�
     <link rel="stylesheet" type="text/css" href="fahd_style.css">
 
     </head>
-
-<?php include('../templates/header2.php'); ?>
-<?php include('../templates/nav_menu.php'); ?>
+<?php
+if (login_check('admin,ms,edarh') == true) {
+    include('../templates/header2.php');
+    include('../templates/nav_menu.php'); ?>
     <div id="PageTitle"><?php echo $PageTitle; ?></div>
     <!--PageTitle-->
 
+    <?php if ($count_no_school_level){ ?>
+        <br>
+        <h2 style="color: red;text-align: center;padding: 10px 5px;font-size: 16px">تنبيه : يوجد عدد (
+            <?php echo $count_no_school_level; ?>
+            )
+            <?php echo get_gender_label('st', ''); ?>
+            بدون مرحلة دراسية
+            يرجى مراجعة بيانات <?php echo get_gender_label('sts', 'ال'); ?>
+            وإكمال بياناتهم حتى لا تتأثر نقاط <?php echo get_gender_label('e', 'ال'); ?>
+            <br>
+            <br>
+            <br>
+            <a href="/sys/basic/kashf/kashf_form.php">اضغط هنا لاستعراض بيانات
+                <?php echo get_gender_label('sts', 'ال'); ?></a>
+        </h2>
+    <?php } ?>
+
     <form action="" method="post" name="form1" id="form1" data-validate="parsley">
-        <input name="edarah_id" type="hidden" value="22">
-        <input name="f_e_date" type="hidden" value="14381122">
+        <!--        <input name="edarah_id" type="hidden" value="22">-->
+        <!--        <input name="f_e_date" type="hidden" value="14381122">-->
         <!--بيانات الإدارة-->
         <div class="content">
             <div class="FieldsTitle">بيانات <?php echo get_gender_label('e', 'ال'); ?> الأساسية</div>
@@ -159,7 +270,7 @@ $PageTitle = 'بيانات التسجيل في مسابقة الإدارة ال�
                                               data-required="true"/>
             </div>
             <div
-                class="three columns top_padding"><?php echo get_gender_label('e') . ' ' . $_SESSION['arabic_name']; ?>  </div>
+                    class="three columns top_padding"><?php echo get_gender_label('e') . ' ' . get_edarah_name($user_id); ?>  </div>
         </div>
 
         <div class="content CSSTableGenerator">
@@ -221,7 +332,31 @@ $PageTitle = 'بيانات التسجيل في مسابقة الإدارة ال�
                     <td> التدريب</td>
                 </tr>
                 <tr>
+                    <td colspan="7" style="padding: 10px 2px;text-align: center">
+                        <?php echo implode(' ', [
+                            'المرتقيات : اجمالي عدد ',
+                            get_gender_label('sts'),
+                            ' الصف الرابع ابتدائي فما فوق:',
+                            $count_young,
+                            '. ',
+                            'عدد من اجتاز مرتقى خلال هذا العام :',
+                            $count_ertiqa,
+                            '. ',
+                            ' نسبة الاجتياز :',
+                            $ertiqa_percentage,
+                            '%',
+                            '<br>',
+                            ' للحصول على الدرجة الكاملة، يجب أن يكون اجمالي الناجحون في المرتقيات :',
+                            $full_degree_ertiqa,
+                            'ناجحا فأكثر بنسبة 75% فأكثر',
+                        ]);
+                        ?>
+                    </td>
+                </tr>
+                <tr>
                     <td> 4</td>
+
+
                     <td> الناجحون في برنامج الارتقاء</td>
                     <td><input max="20" name="e4" type="number" step="any"
                                value="<?php echo $current_musabka_data->e4; ?>"></td>
@@ -234,6 +369,28 @@ $PageTitle = 'بيانات التسجيل في مسابقة الإدارة ال�
                     "); ?></td>
                     <td> تقرير من قسم الارتقاء</td>
                     <td> الارتقاء</td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="padding: 10px 2px;text-align: center">
+                        <?php echo implode(' ', [
+                            'البراعم : اجمالي عدد ',
+                            get_gender_label('sts'),
+                            ' الصف الثالث ابتدائي فما دون:',
+                            $count_children,
+                            '. ',
+                            'عدد من اجتاز درجات سلم البراعم خلال هذا العام :',
+                            $count_bra3m,
+                            '. ',
+                            ' نسبة الاجتياز :',
+                            $bra3m_percentage,
+                            '%',
+                            '<br>',
+                            ' للحصول على الدرجة الكاملة، يجب أن يكون اجمالي الحاصلين على جوائز البراعم :',
+                            $full_degree_bra3m,
+                            ' فأكثر بنسبة 80% فأكثر',
+                        ]);
+                        ?>
+                    </td>
                 </tr>
                 <tr>
                     <td> 5</td>
@@ -505,11 +662,14 @@ $PageTitle = 'بيانات التسجيل في مسابقة الإدارة ال�
         }
     </script>
 
-<?php include('../templates/footer.php'); ?>
-<?php
-if (isset($_SESSION['u1'])) {
-    echo '<script>$(document).ready(function() {alertify.success("تم تحديث البيانات بنجاح");});</script>';
-    $_SESSION['u1'] = null;
-    unset($_SESSION['u1']);
+    <?php include('../templates/footer.php'); ?>
+    <?php
+    if (isset($_SESSION['u1'])) {
+        echo '<script>$(document).ready(function() {alertify.success("تم تحديث البيانات بنجاح");});</script>';
+        $_SESSION['u1'] = null;
+        unset($_SESSION['u1']);
+    }
+
+} else {
+    include('../templates/restrict_msg.php');
 }
-?>

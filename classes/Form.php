@@ -306,4 +306,3 @@ class Form {
         echo '</div>';
     }
 }
-?>

@@ -1,26 +1,12 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php
+<?php require_once('../functions.php');
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
 
-$Date1_Rs1 = "";
-if (isset($_POST['Date1'])) {
-    if ($_POST['Date1'] != null) {
-        $Date1_Rs1 = 'and f.RDate>=' . str_replace('/', '', $_POST['Date1']);
-    }
-}
-$Date2_Rs1 = "";
-if (isset($_POST['Date2'])) {
-    if ($_POST['Date2'] != null) {
-        $Date2_Rs1 = 'and f.RDate<=' . str_replace('/', '', $_POST['Date2']);
-    }
-}
-mysqli_select_db($localhost, $database_localhost);
+$Date1_Rs1 = Input::get('Date1') ? 'and f.RDate>=' . str_replace('/', '', Input::get('Date1')) : '';
+$Date2_Rs1 = Input::get('Date2') ? 'and f.RDate<=' . str_replace('/', '', Input::get('Date2')) : '';
+
 $sql_sex = sql_sex('e.sex');
 $query_ReRegistered = "SELECT f.ErtiqaID,f.MsbkhID,f.SchoolLevelID,f.HalakahID,s.StBurthDate,concat_ws(' ',t.TName1,t.TName2,t.TName3,t.TName4) as t_name,s.StName1,s.StName2,s.StName3,s.StName4,e.arabic_name,h.HName
 FROM ms_etqan_rgstr f
@@ -85,8 +71,8 @@ $totalRows_ReRegistered = mysqli_num_rows($ReRegistered);
     <div class="content CSSTableGenerator">
         <?php if (isset($Date1_Rs1)) { ?>
             <div class="FieldsTitle">المسجلون في مسابقة الفهد خلال الفترة
-                من <?php echo(($_POST['Date1'] != '') ? $_POST['Date1'] : '(بداية النظام الإلكتروني في 1434/08/29 هـ)'); ?>
-                إلى <?php echo(($_POST['Date2'] != '') ? $_POST['Date2'] : '(تاريخ اليوم)'); ?> </div>
+                من <?php echo((Input::get('Date1') != '') ? Input::get('Date1') : '(بداية النظام الإلكتروني في 1434/08/29 هـ)'); ?>
+                إلى <?php echo((Input::get('Date2') != '') ? Input::get('Date2') : '(تاريخ اليوم)'); ?> </div>
         <?php } ?>
         <table>
             <tr>
@@ -128,6 +114,3 @@ $totalRows_ReRegistered = mysqli_num_rows($ReRegistered);
     </div>
 
 <?php include('../templates/footer.php'); ?>
-<?php
-mysqli_free_result($ReRegistered);
-?>

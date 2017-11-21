@@ -23,7 +23,8 @@ $f_14a = array(
     array("0", "لايوجد مشاركات"),
     array("1", "مشاركة واحدة", "مشاركتين"),
     array("2", "ثلاث مشاركات"),
-    array("3", "فائز بالمرحلة النهائية"));
+    array("3", "فائز بالمرحلة النهائية")
+);
 
 //مسابقة المعلم المتميز
 //العنوان
@@ -122,7 +123,6 @@ function get_fahd_year_id($h_date)
     $totalRows_fahd_year = mysqli_num_rows($fahd_year);
     if ($totalRows_fahd_year > 0) {
         return $row_fahd_year["y_id"];
-        mysqli_free_result($fahd_year);
     }
 }
 
@@ -142,7 +142,6 @@ function get_fahd_year_start($h_date)
     $totalRows_fahd_year = mysqli_num_rows($fahd_year);
     if ($totalRows_fahd_year > 0) {
         return $row_fahd_year["y_start_date"];
-        mysqli_free_result($fahd_year);
     }
 }
 
@@ -162,7 +161,6 @@ function get_fahd_year_end($h_date)
     $totalRows_fahd_year = mysqli_num_rows($fahd_year);
     if ($totalRows_fahd_year > 0) {
         return $row_fahd_year["y_end_date"];
-        mysqli_free_result($fahd_year);
     }
 }
 
@@ -182,7 +180,6 @@ function get_fahd_year_name($h_date)
     $totalRows_fahd_year = mysqli_num_rows($fahd_year);
     if ($totalRows_fahd_year > 0) {
         return $row_fahd_year["year_name"];
-        mysqli_free_result($fahd_year);
     }
 }
 

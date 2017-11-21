@@ -1,9 +1,6 @@
 <?php
-require_once('../Connections/localhost.php');
 require_once('../functions.php');
-require_once '../secure/functions.php';
 require_once('fahd_functions.php');
-sec_session_start();
 
 $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في مسابقة الفهد'; ?>
 <?php if (login_check('admin,ms') == true) { ?>
@@ -19,13 +16,11 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
         $auto_no = $_GET['auto_no'];
     }
 
-    //$editFormAction ="register_edit.php?AutoNo=".$auto_no;
     $editFormAction = $_SERVER['PHP_SELF'];
     if (isset($_SERVER['QUERY_STRING'])) {
         $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
     }
 
-    mysqli_select_db($localhost, $database_localhost);
     $query_RSFahdExam = sprintf("SELECT * FROM ms_fahd_rgstr WHERE AutoNo=%s", GetSQLValueString($auto_no, "int"));
     $RSFahdExam = mysqli_query($localhost, $query_RSFahdExam) or die(mysqli_error($localhost));
     $row_RSFahdExam = mysqli_fetch_assoc($RSFahdExam);
@@ -43,7 +38,6 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
 
     if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         // search for dublicate musabakah ##############
-        mysqli_select_db($localhost, $database_localhost);
         $study_fahd_start = get_fahd_year_start($RDate);
         $study_fahd_end = get_fahd_year_end($RDate);
         $study_fahd_name = get_fahd_year_name($RDate);
@@ -82,7 +76,6 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
         );
 
 
-        mysqli_select_db($localhost, $database_localhost);
         $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error($localhost));
         if ($Result1) {
             $_SESSION['u1'] = "u1";
@@ -91,7 +84,6 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
         }
 
     }
-    mysqli_select_db($localhost, $database_localhost);
     $query_RsHalakat = sprintf("SELECT AutoNo,HName FROM `0_halakat` WHERE `hide`=0 AND EdarahID = %s", GetSQLValueString($EdarahID, "int"));
     $RsHalakat = mysqli_query($localhost, $query_RsHalakat) or die(mysqli_error($localhost));
     $row_RsHalakat = mysqli_fetch_assoc($RsHalakat);
@@ -106,7 +98,7 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
 
     <title><?php echo $PageTitle; ?></title>
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/cupertino/jquery-ui.css"/>
-<!--    <link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>-->
+    <!--    <link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>-->
     <style type="text/css">
         .FieldsButton .note {
             color: #4FA64B;
@@ -167,7 +159,7 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
                 </div>
                 <div class="four columns">
                     <div class="LabelContainer">آخر مرتقى اجتازه</div>
-                    <?php echo create_combo("ErtiqaID", $murtaqaName, 0, $ErtiqaID, 'class="full-width" data-required="true"'); ?>
+                    <?php echo create_combo("ErtiqaID", $murtaqaName, 1, $ErtiqaID, 'class="full-width" data-required="true"'); ?>
                 </div>
 
                 <?php
@@ -176,7 +168,7 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
 
                 $MsbkhType = [
                     ["", "حدد نوع المسابقة..."],
-                    [7, "حلقات"],
+//                    [7, "حلقات"],
                     [0, "جزأين (دنيا)"],
                     [1, "جزأين (عليا)"],
                     [2, "خمس أجزاء"],
@@ -184,7 +176,7 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
                     [4, "عشرون جزءاَ"],
                     [5, "القرآن كاملا"],
                     [6, "مزامير آل داود"],
-                    [8, "أصغر حافظ"]
+//                    [8, "أصغر حافظ"]
                 ];
                 ?>
                 <div class="four columns omega">
@@ -196,7 +188,7 @@ $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في م
 
                 <div class="six columns alpha">
                     <div class="LabelContainer">تاريخ الختمة بالحلقة <span
-                            style="color: red">( خاص بأصغر حافظ وحافظة )</span></div>
+                                style="color: red">( خاص بأصغر حافظ وحافظة )</span></div>
                     <input name="date_of_memorize" type="text" value="<?php echo StringToDate($date_of_memorize); ?>"
                            id="date_of_memorize" zezo_date="true"/>
                 </div>

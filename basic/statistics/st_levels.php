@@ -1,8 +1,6 @@
-<?php require_once('../../Connections/localhost.php');
-require_once("../../functions.php");
+<?php require_once("../../functions.php");
 $EdarahID = isset($_GET['EdarahID']) ? $_GET['EdarahID'] : null;
 $EdarahIDSql = $EdarahID != null ? "and u.id = {$_GET['EdarahID']}" : '';
-mysqli_select_db($localhost, $database_localhost);
 
 $pageTitle = "احصائية بالمراحل الدراسية للطلاب ";
 require_once("../../templates/report_header1.php"); ?>

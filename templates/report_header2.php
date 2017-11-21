@@ -1,6 +1,6 @@
 <div class="reportWrapper">
 	  <div class="reportHeader">
-		  <img class="jam3iahLogo" src="/sys/_images/Logo.png" width="150">
+		  <img class="jam3iahLogo" src="<?php echo ROOT;?>/_images/Logo.png" width="150">
 		  <p>
 		  بسم الله الرحمن الرحيم<br>
 			  المملكة العربية السعودية

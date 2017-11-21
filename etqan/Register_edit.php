@@ -1,26 +1,18 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php
+<?php require_once('../functions.php');
 $userType = 0;
 if (isset($_SESSION['user_group'])) {
     $userType = $_SESSION['user_group'];
 }
-?>
-<?php
 $auto_no = "-1";
 if (isset($_GET['auto_no'])) {
     $auto_no = $_GET['auto_no'];
 }
 
-//$editFormAction ="register_edit.php?AutoNo=".$auto_no;
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
 
-mysqli_select_db($localhost, $database_localhost);
 $query_RSetqanExam = sprintf("SELECT * FROM ms_etqan_rgstr WHERE AutoNo=%s", GetSQLValueString($auto_no, "int"));
 $RSetqanExam = mysqli_query($localhost, $query_RSetqanExam) or die(mysqli_error($localhost));
 $row_RSetqanExam = mysqli_fetch_assoc($RSetqanExam);
@@ -34,7 +26,6 @@ $EdarahID = $row_RSetqanExam['EdarahID'];
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 // search for dublicate musabakah ##############
-    mysqli_select_db($localhost, $database_localhost);
     $query_Rsdublicate = sprintf("SELECT AutoNo FROM ms_etqan_rgstr WHERE StID=%s AND MsbkhID=%s AND AutoNo<>%s",
         GetSQLValueString($StID, "double"),
         GetSQLValueString($_POST['MsbkhID'], "int"),
@@ -56,24 +47,21 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         GetSQLValueString($_POST['ErtiqaID'], "int"),
         GetSQLValueString($auto_no, "int")
     );
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $insertSQL) or die('$insertSQL ' . mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
         header("Location: " . $editFormAction);
     }
 }
-?>
-<?php
 if (isset($_SESSION['user_id'])) {
     $colname_RSEdarat = $_SESSION['user_id'];
 }
-?>
-<?php include('../templates/header1.php'); ?>
-<?php $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في مسابقة الإتقان'; ?>
+
+include('../templates/header1.php');
+$PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في مسابقة الإتقان'; ?>
 <title><?php echo $PageTitle; ?></title>
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/cupertino/jquery-ui.css"/>
-<link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>
+<!--<link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>-->
 <style type="text/css">
     .FieldsButton .note {
         color: #4FA64B;
@@ -138,9 +126,8 @@ if ($closed == 'no') { ?>
     <!-- closed -->
 <?php } else {
     echo '<p class="WrapperMSG" >' . 'عفوا .. انتهت فترة التسجيل في مسابقة الفهد (حلقات)' . '</p>';
-} ?>
+}
 
-<?php
 if (isset($_SESSION['u1'])) {
     ?>
     <script>
@@ -153,9 +140,8 @@ if (isset($_SESSION['u1'])) {
     $_SESSION['u1'] = NULL;
     unset($_SESSION['u1']);
 }
-?>
 
-<?php include('../templates/footer.php'); ?>
+include('../templates/footer.php'); ?>
 
 <script type="text/javascript">
     showError();

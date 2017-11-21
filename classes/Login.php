@@ -137,5 +137,3 @@ class Login
         return $this->_isLoggedIn;
     }
 }
-
-?>

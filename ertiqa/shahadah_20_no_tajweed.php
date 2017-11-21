@@ -1,13 +1,15 @@
-<?php require_once('../Connections/localhost.php');
+<?php
 require_once('../functions.php');
-require_once '../secure/functions.php';
-sec_session_start();
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset ($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
+$Result1 = null;
+$Result2 = null;
+$Result3 = null;
+$Result4 = null;
 if ((isset ($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
-    mysqli_select_db($localhost, $database_localhost);
+
     if ($_POST['RadioStatus'] == 2) {
         $updateSQL = sprintf("REPLACE INTO er_shahadah (
   Sora1Name, Sora1Discount, Sora2Name, Sora2Discount, Sora3Name, Sora3Discount, Sora4Name, Sora4Discount, Sora5Name, Sora5Discount,
@@ -17,36 +19,36 @@ if ((isset ($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
 	, Degree, `Money`, teacher_money, edarah_money, examPoints, MarkName_Short, MarkName_Long, ExamNo, MukhtaberTeacher, MukhtaberTeacher2)
 VALUES
   (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
-            GetSQLValueString($_POST['Sora1Name'], "int"), GetSQLValueString(abs($_POST['Sora1Discount']), "double"),
-            GetSQLValueString($_POST['Sora2Name'], "int"), GetSQLValueString(abs($_POST['Sora2Discount']), "double"),
-            GetSQLValueString($_POST['Sora3Name'], "int"), GetSQLValueString(abs($_POST['Sora3Discount']), "double"),
-            GetSQLValueString($_POST['Sora4Name'], "int"), GetSQLValueString(abs($_POST['Sora4Discount']), "double"),
-            GetSQLValueString($_POST['Sora5Name'], "int"), GetSQLValueString(abs($_POST['Sora5Discount']), "double"),
-            GetSQLValueString($_POST['Sora6Name'], "int"), GetSQLValueString(abs($_POST['Sora6Discount']), "double"),
-            GetSQLValueString($_POST['Sora7Name'], "int"), GetSQLValueString(abs($_POST['Sora7Discount']), "double"),
-            GetSQLValueString($_POST['Sora8Name'], "int"), GetSQLValueString(abs($_POST['Sora8Discount']), "double"),
-            GetSQLValueString($_POST['Sora9Name'], "int"), GetSQLValueString(abs($_POST['Sora9Discount']), "double"),
-            GetSQLValueString($_POST['Sora10Name'], 'int'), GetSQLValueString(abs($_POST['Sora10Discount']), 'double'),
-            GetSQLValueString($_POST['Sora11Name'], 'int'), GetSQLValueString(abs($_POST['Sora11Discount']), 'double'),
-            GetSQLValueString($_POST['Sora12Name'], 'int'), GetSQLValueString(abs($_POST['Sora12Discount']), 'double'),
-            GetSQLValueString($_POST['Sora13Name'], 'int'), GetSQLValueString(abs($_POST['Sora13Discount']), 'double'),
-            GetSQLValueString($_POST['Sora14Name'], 'int'), GetSQLValueString(abs($_POST['Sora14Discount']), 'double'),
-            GetSQLValueString($_POST['Sora15Name'], 'int'), GetSQLValueString(abs($_POST['Sora15Discount']), 'double'),
-            GetSQLValueString($_POST['Sora16Name'], 'int'), GetSQLValueString(abs($_POST['Sora16Discount']), 'double'),
-            GetSQLValueString($_POST['Sora17Name'], 'int'), GetSQLValueString(abs($_POST['Sora17Discount']), 'double'),
-            GetSQLValueString($_POST['Sora18Name'], 'int'), GetSQLValueString(abs($_POST['Sora18Discount']), 'double'),
-            GetSQLValueString($_POST['Sora19Name'], 'int'), GetSQLValueString(abs($_POST['Sora19Discount']), 'double'),
-            GetSQLValueString($_POST['Sora20Name'], 'int'), GetSQLValueString(abs($_POST['Sora20Discount']), 'double'),
-            GetSQLValueString($_POST['Degree_percentage'], "double"),
-            GetSQLValueString($_POST['Money'], "int"),
-            GetSQLValueString($_POST['TeacherMoney'], "int"),
-            GetSQLValueString($_POST['EdarahMoney'], "int"),
-            GetSQLValueString($_POST['examPoints'], "double"),
-            GetSQLValueString($_POST['MarkName_Short'], "text"),
-            GetSQLValueString($_POST['MarkName_Long'], "text"),
-            GetSQLValueString($_POST['ExamNo'], "int"),
-            GetSQLValueString($_POST['MukhtaberTeacher'], "int"),
-            GetSQLValueString($_POST['MukhtaberTeacher2'], "int"));
+            GetSQLValueString(Input::get('Sora1Name'), "int"), GetSQLValueString(abs(Input::get('Sora1Discount')), "double"),
+            GetSQLValueString(Input::get('Sora2Name'), "int"), GetSQLValueString(abs(Input::get('Sora2Discount')), "double"),
+            GetSQLValueString(Input::get('Sora3Name'), "int"), GetSQLValueString(abs(Input::get('Sora3Discount')), "double"),
+            GetSQLValueString(Input::get('Sora4Name'), "int"), GetSQLValueString(abs(Input::get('Sora4Discount')), "double"),
+            GetSQLValueString(Input::get('Sora5Name'), "int"), GetSQLValueString(abs(Input::get('Sora5Discount')), "double"),
+            GetSQLValueString(Input::get('Sora6Name'), "int"), GetSQLValueString(abs(Input::get('Sora6Discount')), "double"),
+            GetSQLValueString(Input::get('Sora7Name'), "int"), GetSQLValueString(abs(Input::get('Sora7Discount')), "double"),
+            GetSQLValueString(Input::get('Sora8Name'), "int"), GetSQLValueString(abs(Input::get('Sora8Discount')), "double"),
+            GetSQLValueString(Input::get('Sora9Name'), "int"), GetSQLValueString(abs(Input::get('Sora9Discount')), "double"),
+            GetSQLValueString(Input::get('Sora10Name'), 'int'), GetSQLValueString(abs(Input::get('Sora10Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora11Name'), 'int'), GetSQLValueString(abs(Input::get('Sora11Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora12Name'), 'int'), GetSQLValueString(abs(Input::get('Sora12Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora13Name'), 'int'), GetSQLValueString(abs(Input::get('Sora13Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora14Name'), 'int'), GetSQLValueString(abs(Input::get('Sora14Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora15Name'), 'int'), GetSQLValueString(abs(Input::get('Sora15Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora16Name'), 'int'), GetSQLValueString(abs(Input::get('Sora16Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora17Name'), 'int'), GetSQLValueString(abs(Input::get('Sora17Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora18Name'), 'int'), GetSQLValueString(abs(Input::get('Sora18Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora19Name'), 'int'), GetSQLValueString(abs(Input::get('Sora19Discount')), 'double'),
+            GetSQLValueString(Input::get('Sora20Name'), 'int'), GetSQLValueString(abs(Input::get('Sora20Discount')), 'double'),
+            GetSQLValueString(Input::get('Degree_percentage'), "double"),
+            GetSQLValueString(Input::get('Money'), "int"),
+            GetSQLValueString(Input::get('TeacherMoney'), "int"),
+            GetSQLValueString(Input::get('EdarahMoney'), "int"),
+            GetSQLValueString(Input::get('examPoints'), "double"),
+            GetSQLValueString(Input::get('MarkName_Short'), "text"),
+            GetSQLValueString(Input::get('MarkName_Long'), "text"),
+            GetSQLValueString(Input::get('ExamNo'), "int"),
+            GetSQLValueString(Input::get('MukhtaberTeacher'), "int"),
+            GetSQLValueString(Input::get('MukhtaberTeacher2'), "int"));
 //	exit('sdf');
 //	exit($updateSQL);
 
@@ -62,12 +64,17 @@ VALUES
 SET FinalExamStatus = %s WHERE AutoNo = %s", GetSQLValueString($_POST['RadioStatus'], "int"), GetSQLValueString($_POST['ExamNo'], "int"));
         $Result3 = mysqli_query($localhost, $updateSQL3) or die(mysqli_error($localhost));
     }
+    updateMurajaahStatus($_POST['ExamNo'], $_POST['RadioStatus']);
     if ($Result1 && $Result2) {
+        $st_msg_2 = null;
+        $st_msg_3 = null;
+        $father_msg_2 = null;
+        $father_msg_3 = null;
         $colname_RsMobile = "-1";
         if (isset ($_GET['ExamNo'])) {
             $colname_RsMobile = $_GET['ExamNo'];
         }
-        $query_RsMobile = sprintf("SELECT FatherMobileNo,StMobileNo, edarah_sex, StName1, MarkName_Long, O_MurtaqaName
+        $query_RsMobile = sprintf("SELECT FatherMobileNo,StMobileNo,StID,EdarahID, edarah_sex, StName1, MarkName_Long, O_MurtaqaName
 FROM view_er_ertiqaexams
 WHERE AutoNo = %s", GetSQLValueString($colname_RsMobile, "int"));
         $RsMobile = mysqli_query($localhost, $query_RsMobile) or die(mysqli_error($localhost));
@@ -82,34 +89,61 @@ WHERE AutoNo = %s", GetSQLValueString($colname_RsMobile, "int"));
         $MarkName_Long = $row_RsMobile['MarkName_Long'];
         $murtaqa_name = $row_RsMobile['O_MurtaqaName'];
 
-        $msg = "نهنئكم باجتيازكم الاختبار النهائي في حفظ القرآن الكريم. وفقكم والله ونفع بكم.";
+        if ($sex == 1) {
+            $st_msg_2 = "نهنئك باجتيازك الاختبار النهائي في حفظ القرآن الكريم. وفقك والله ونفع بك.";
+            $st_msg_3 = "لم توفق في اجتياز الاختبار النهائي في حفظ القرآن الكريم، ونسأل الله لك التوفيق في الاختبار القادم.";
 
-        if ($msg != '') {
+            $father_msg_2 = sprintf("نبارك لنا ولكم اجتياز الابن (%s) الاختبار النهائي في حفظ القرآن الكريم بتقدير (%s), جعله الله قرة عين لكم.", $StName1, $MarkName_Long);
+            $father_msg_3 = sprintf("الابن (%s) لم يوفق في اجتيازالاختبار النهائي في حفظ القرآن الكريم,نسأل الله له التوفيق في الاختبار القادم.", $StName1);
 
-            $SendingAnswerForStudent = sendSMS($student_mobile_number, $msg);
+        } elseif ($sex == 0) {
+            $st_msg_2 = "نهنئكِ باجتيازكِ الاختبار النهائي في حفظ القرآن الكريم. وفقكِ والله ونفع بكِ.";
+            $st_msg_3 = "لم توفقِ في اجتياز الاختبار النهائي في حفظ القرآن الكريم، ونسأل الله لكِ التوفيق في الاختبار القادم.";
+
+            $father_msg_2 = sprintf("نبارك لنا ولكم اجتياز الابنة (%s) الاختبار النهائي في حفظ القرآن الكريم بتقدير (%s), جعلها الله قرة عين لكم.", $StName1, $MarkName_Long);
+            $father_msg_3 = sprintf("الابنة (%s) لم توفق في اجتيازالاختبار النهائي في حفظ القرآن الكريم,نسأل الله لها التوفيق في الاختبار القادم.", $StName1);
+        }
+        $student_msg = '';
+        $father_msg = '';
+        if ($_POST['RadioStatus'] == 2) {
+            $student_msg = $st_msg_2;
+            $father_msg = $father_msg_2;
+        } else if ($_POST['RadioStatus'] == 3) {
+            $student_msg = $st_msg_3;
+            $father_msg = $father_msg_3;
+        }
+
+//        $msg = "نهنئكم باجتيازكم الاختبار النهائي في حفظ القرآن الكريم. وفقكم والله ونفع بكم.";
+
+        if ($student_msg != '') {
+            $SendingAnswerForStudent = sendSMS($student_mobile_number, $student_msg);
             if ($SendingAnswerForStudent == 1) {
                 $_SESSION['msgStudentSent'] = '';
             } else {
                 $_SESSION['msgStudentNotSent'] = $SendingAnswerForStudent;
             }
+        }
 
-            $SendingAnswerForFather = sendSMS($father_mobile_number, $msg);
+        if ($father_msg != '') {
+            $SendingAnswerForFather = sendSMS($father_mobile_number, $father_msg);
             if ($SendingAnswerForFather == 1) {
                 $_SESSION['msgFatherSent'] = '';
             } else {
                 $_SESSION['msgFatherNotSent'] = $SendingAnswerForFather;
             }
-
-
         }
+
+        //إرسال رسال لمدير المجمع والدار
+        sendMsgToModerator($row_RsMobile['StID'], $row_RsMobile['EdarahID'], $_POST['RadioStatus']);
         $_SESSION['u1'] = "";
     }
+
+
 }
 $colname_RsErExams = "-1";
 if (isset ($_GET['ExamNo'])) {
     $colname_RsErExams = $_GET['ExamNo'];
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_RsErExams = sprintf("SELECT * FROM view_er_ertiqaexams
 WHERE AutoNo = %s", GetSQLValueString($colname_RsErExams, "int"));
 $RsErExams = mysqli_query($localhost, $query_RsErExams) or die(mysqli_error($localhost));
@@ -117,13 +151,11 @@ $row_RsErExams = mysqli_fetch_assoc($RsErExams);
 $totalRows_RsErExams = mysqli_num_rows($RsErExams);
 
 $sql_sex = sql_sex('sex');
-mysqli_select_db($localhost, $database_localhost);
 $query_RsMukhtaber = "SELECT id,arabic_name FROM 0_users WHERE hidden = 0 {$sql_sex} and user_group='mktbr' ORDER BY arabic_name ASC";
 $RsMukhtaber = mysqli_query($localhost, $query_RsMukhtaber) or die(mysqli_error($localhost));
 $row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber);
 $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
 
-mysqli_select_db($localhost, $database_localhost);
 $query_RsQuran = "SELECT * FROM `0_quran` ORDER BY `number` DESC";
 $RsQuran = mysqli_query($localhost, $query_RsQuran) or die(mysqli_error($localhost));
 $row_RsQuran = mysqli_fetch_assoc($RsQuran);
@@ -239,8 +271,8 @@ include('../templates/nav_menu.php'); ?>
                 <input <?php if ($row_RsErExams['FinalExamStatus'] == $statusName[$i][0]) {
                     echo "checked='checked'";
                 } ?>
-                    type="radio" data-required="true" name="RadioStatus" value="<?php echo $statusName[$i][0]; ?>"
-                    id="RadioStatus_<?php echo $statusName[$i][0]; ?>">
+                        type="radio" data-required="true" name="RadioStatus" value="<?php echo $statusName[$i][0]; ?>"
+                        id="RadioStatus_<?php echo $statusName[$i][0]; ?>">
                 <?php echo $statusName[$i][1]; ?> </label>
             <?php echo '</div>'; ?>
         <?php }
@@ -253,8 +285,8 @@ include('../templates/nav_menu.php'); ?>
     ?>
     <input type="hidden" name="MM_update" value="form1">
     <input
-        type="hidden" name="ExamNo"
-        value="<?php echo $row_RsErExams['AutoNo']; ?>">
+            type="hidden" name="ExamNo"
+            value="<?php echo $row_RsErExams['AutoNo']; ?>">
 
     <?php
     function sora_and_discount($no)
@@ -291,7 +323,7 @@ include('../templates/nav_menu.php'); ?>
                         class="FullWidthCombo Enbl_Dsbl" data-required="true" autofocus
                         autocorrect="off" tabindex="<?php echo ($no * 2) - 1; ?>">
                     <option value>حدد السورة</option>
-                    <?php $ii = 116;
+                    <?php $ii = 114;
                     do { ?>
                         <option value="<?php echo $ii; ?>"
                             <?php if (!(strcmp($row_RsErExams["Sora{$no}Name"], $ii))) {
@@ -378,7 +410,7 @@ include('../templates/nav_menu.php'); ?>
                             <?php
                             do { ?>
                                 <option
-                                    value="<?php echo $row_RsMukhtaber['id'] ?>" <?php if ($row_RsMukhtaber['id'] == $row_RsErExams['MukhtaberTeacher2']) {
+                                        value="<?php echo $row_RsMukhtaber['id'] ?>" <?php if ($row_RsMukhtaber['id'] == $row_RsErExams['MukhtaberTeacher2']) {
                                     echo 'selected="selected"';
                                 } ?>><?php echo $row_RsMukhtaber['arabic_name'] ?></option>
                                 <?php

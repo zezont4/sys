@@ -1,10 +1,7 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php //include('../mobily_ws/includeSettings.php'); ?>
-<?php $PageTitle = 'تحديد موعد الاختبار'; ?>
-<?php if (login_check("admin,er,mktbr") == true) {
+<?php
+require_once('../functions.php');
+$PageTitle = 'تحديد موعد الاختبار';
+if (login_check("admin,er,mktbr") == true) {
     $EdarahIDS = $_SESSION['user_id'];
     $statusName_sql = filter_array($statusName, 'جميع حالات الاختبار', 0, 'FinalExamStatus');
     $murtaqaName_sql = filter_array($murtaqaName, 'جميع المرتقيات', 0, 'ErtiqaID');
@@ -14,8 +11,8 @@
     $statusName_post = isset($_GET['statusName']) ? $_GET['statusName'] : '';
     $murtaqa_name_post = isset($_GET['murtaqaName']) ? $_GET['murtaqaName'] : '';
     $degreeName = isset($_GET['degreeName']) ? $_GET['degreeName'] : '';
-    $Date1 = isset($_GET['Date1']) ? $_GET['Date1'] : '';
-    $Date2 = isset($_GET['Date2']) ? $_GET['Date2'] : '';
+    $Date1 = isset($_GET['Date1']) ? str_replace('/', '', $_GET['Date1']) : '';
+    $Date2 = isset($_GET['Date2']) ? str_replace('/', '', $_GET['Date2']) : '';
     $editFormAction = $_SERVER['PHP_SELF'];
     $Date1_Rs1 = '';
     $Date2_Rs1 = '';
@@ -44,10 +41,9 @@
                 $updateSQL = sprintf("UPDATE er_ertiqaexams SET FinalExamDate=NULL,FinalExamStatus=0 WHERE AutoNo=%s",
                     GetSQLValueString($AutoNo, "int"));
             }
-            mysqli_select_db($localhost, $database_localhost);
             $Result1 = mysqli_query($localhost, $updateSQL) or die(mysqli_error($localhost));
 
-            if ($_POST["sms$i"] == 1) {
+            if (Input::get("sms$i") == 1) {
                 $selected_exam_ids[] = $AutoNo;
             }
 
@@ -61,7 +57,8 @@
         /*الرسائل النصية */
         foreach ($selected_exam_ids as $exam_id) {
 //		if ($msg != '') {
-            $query_RsMobile = sprintf("SELECT FatherMobileNo,edarah_sex,StName1,MarkName_Long,O_MurtaqaName,O_FinalExamDate,FinalExamDate  FROM view_er_ertiqaexams WHERE AutoNo = %s",
+            $query_RsMobile = sprintf("SELECT FatherMobileNo,edarah_sex,StName1,StName2,StName4,MarkName_Long,O_MurtaqaName,O_FinalExamDate,FinalExamDate,EdarahID  
+            FROM view_er_ertiqaexams WHERE AutoNo = %s",
                 GetSQLValueString($exam_id, "int"));
 
             $RsMobile = mysqli_query($localhost, $query_RsMobile) or die(mysqli_error($localhost));
@@ -69,11 +66,26 @@
             $totalRows_RsMobile = mysqli_num_rows($RsMobile);
 
             $sex = $row_RsMobile['edarah_sex'];
+            $edarah_id = $row_RsMobile['EdarahID'];
             $StName1 = $row_RsMobile['StName1'];
+            $StName2 = $row_RsMobile['StName2'];
+            $StName4 = $row_RsMobile['StName4'];
             $MarkName_Long = $row_RsMobile['MarkName_Long'];
             $murtaqa_name = $row_RsMobile['O_MurtaqaName'];
             $final_exam_date = $row_RsMobile['O_FinalExamDate'];
             $msg_2 = '';
+            $mudeer_message = implode(' ', [
+                'تم حجز موعد الإختبار النهائي لـ:',
+                $StName1,
+                $StName2,
+                $StName4,
+                'لمرتقى',
+                $murtaqa_name,
+                'وذلك يوم',
+                getHijriDayName(str_ireplace('/', '', $final_exam_date)),
+                'الموافق',
+                str_ireplace('/', '-', $final_exam_date) . 'هـ',
+            ]);
             if ($sex == 1) {
                 $msg_2 = implode(' ', [
                     'تم حجز موعد الإختبار النهائي لابنكم',
@@ -102,6 +114,22 @@
 
             $numbers = '966' . substr($row_RsMobile['FatherMobileNo'], 1, 9);
             $SendingAnswer[$exam_id] = sendSMS($numbers, $msg);
+
+            //رسالة للمدير بموعد الاختبار
+            $mudeer_sql = sprintf("SELECT e.id,e.mobile_no,u.sex FROM 0_employees e 
+                    LEFT JOIN 0_users u on e.edarah_id = u.id
+                    WHERE e.is_hidden=0 and e.edarah_id=%s and e.job_title=10",
+                GetSQLValueString($edarah_id, "int")
+            );
+            $mudeer_query = mysqli_query($localhost, $mudeer_sql) or die('sendMsgToModerator1 : ' . mysqli_error($localhost));
+            $mudeer_result = mysqli_fetch_assoc($mudeer_query);
+            $mudeer_rows_count = mysqli_num_rows($mudeer_query);
+            if ($mudeer_rows_count) {
+                $mudeer_number = '966' . substr($mudeer_result['mobile_no'], 1, 9);
+                sendSMS($mudeer_number, $mudeer_message);
+            }
+
+
             if ($SendingAnswer[$exam_id] == 1) {
                 $_SESSION['msgFatherSent'] = '';
             } else {
@@ -144,21 +172,17 @@
     $Date2_Rs1 = '';
     $edarah_id = '';
     if (isset($_GET['statusName'])) {
-        if ($_GET['statusName'] == ' and FinalExamStatus =0 ' || $_GET['statusName'] == null) {
+        if ($_GET['statusName'] === 0) {
             $Date1_Rs1 = '';
             $Date2_Rs1 = '';
         } else {
             $Date1_Rs1 = 'and FinalExamDate>=' . str_replace('/', '', $_SESSION ['default_start_date']);
-            if (isset($_GET['Date1'])) {
-                if ($_GET['Date1'] != null) {
-                    $Date1_Rs1 = 'and FinalExamDate>=' . str_replace('/', '', $_GET['Date1']);
-                }
+            if ($Date1) {
+                $Date1_Rs1 = 'and FinalExamDate>=' . $Date1;
             }
             $Date2_Rs1 = 'and FinalExamDate<=' . str_replace('/', '', $_SESSION ['default_end_date']);
-            if (isset($_GET['Date2'])) {
-                if ($_GET['Date2'] != null) {
-                    $Date2_Rs1 = 'and FinalExamDate<=' . str_replace('/', '', $_GET['Date2']);
-                }
+            if ($Date2) {
+                $Date2_Rs1 = 'and FinalExamDate<=' . $Date2;
             }
         }
     }
@@ -167,8 +191,6 @@
             $edarah_id = 'and EdarahID=' . str_replace('/', '', $_GET['EdarahID']);
         }
     }
-    mysqli_select_db($localhost, $database_localhost);
-
 
     $query_ReExams = sprintf("SELECT RegesterTime,StID,StName1,StName2,StName3,StName4,O_StudentName3,O_TeacherName3,O_FinalExamDate,
 O_Edarah,O_HName,O_MurtaqaName,ErtiqaID,AutoNo,FinalExamStatus
@@ -329,7 +351,7 @@ ORDER BY AutoNo DESC",
 
                     <td class="NoMobile"><?php echo str_replace("مجمع ", "", $row_ReExams['O_Edarah']); ?></td>
 
-                    <td><?php echo get_array_1($murtaqaName, $row_ReExams['ErtiqaID']) ; ?>
+                    <td><?php echo get_array_1($murtaqaName, $row_ReExams['ErtiqaID']); ?>
                         <input name="FinalExamStatus<?php echo $array1; ?>" type="hidden"
                                id="FinalExamStatus<?php echo $array1; ?>"
                                value="<?php echo $row_ReExams['FinalExamStatus']; ?>" size="3"></td>

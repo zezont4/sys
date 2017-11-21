@@ -994,5 +994,3 @@ class Zebra_Pagination
     }
 
 }
-
-?>

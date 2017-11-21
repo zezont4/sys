@@ -1,8 +1,4 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php
+<?php require_once('../functions.php');
 
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
@@ -29,16 +25,14 @@ StEdarah,transfer_from,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHa
         GetSQLValueString($_POST['school_level'], "int"),
         GetSQLValueString($_POST['nationality'], "int")
     );
-//    echo $insertSQL;
-//    exit;
-    mysqli_select_db($localhost, $database_localhost);
-    $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error('$Result1 : ' . $localhost));
+//    global $localhost;
+    $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
         send_mail('zezont@gmail.com',
-            'نقل طالب',
-            '<div style="direction: rtl;font-size: 18px">'.
-            'نرجوا نقل الطالب : ' . $_POST['StName1'] . ' ' . $_POST['StName2'] . ' ' . $_POST['StName3'] . ' ' . $_POST['StName4'] . '<br>' .
+            'نقل طالب / طالبة',
+            '<div style="direction: rtl;font-size: 18px">' .
+            'نرجوا نقل الطالب / الطالبة : ' . $_POST['StName1'] . ' ' . $_POST['StName2'] . ' ' . $_POST['StName3'] . ' ' . $_POST['StName4'] . '<br>' .
             '<a href="http://quranzulfi.com/sys/basic/transfer_st_approve.php?_token=STW6gPk8QrrZdF1gW2tO">فتح صفحة الاعتماد</a>' .
             '</div>'
         );
@@ -46,12 +40,6 @@ StEdarah,transfer_from,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHa
         exit;
     }
 
-    //$updateGoTo = "search_st_resault.php";
-    //if (isset($_SERVER['QUERY_STRING'])) {
-    //  $updateGoTo .= (strpos($updateGoTo,'?')) ? "&" : "?";
-    //  $updateGoTo .= $_SERVER['QUERY_STRING'];
-    //}
-    //header(sprintf("Location: %s",$updateGoTo));
 }
 
 
@@ -59,17 +47,13 @@ $colname_RsStudent = "-1";
 if (isset($_GET['StID'])) {
     $colname_RsStudent = $_GET['StID'];
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_RsStudent = sprintf("SELECT * FROM 0_students WHERE StID = %s", GetSQLValueString($colname_RsStudent, "double"));
 $RsStudent = mysqli_query($localhost, $query_RsStudent) or die('$RsStudent ' . mysqli_error($localhost));
 $row_RsStudent = mysqli_fetch_assoc($RsStudent);
 $totalRows_RsStudent = mysqli_num_rows($RsStudent);
 
 $EdarahNo_RsHalakat = "-1";
-//if (isset($_GET['EdarahNo'])) {
-//    $EdarahNo_RsHalakat = $_GET['EdarahNo'];
-//}
-mysqli_select_db($localhost, $database_localhost);
+
 $query_RsHalakat = sprintf("SELECT AutoNo,HName FROM `0_halakat` WHERE `hide`=0 AND EdarahID = %s", GetSQLValueString($edarah_id, "int"));
 $RsHalakat = mysqli_query($localhost, $query_RsHalakat) or die('$RsHalakat ' . mysqli_error($localhost));
 $row_RsHalakat = mysqli_fetch_assoc($RsHalakat);
@@ -101,7 +85,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         <label for="StName1">الاسم</label>
                     </div>
                     <input type="text" name="StName1"
-                           value="<?php echo htmlentities($row_RsStudent['StName1'], ENT_COMPAT, 'UTF-8'); ?>"
+                           value="<?php echo escape($row_RsStudent['StName1']); ?>"
                            data-required="true">
                 </div>
                 <div class="four columns">
@@ -109,7 +93,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         <label for="StName2">الأب</label>
                     </div>
                     <input type="text" name="StName2"
-                           value="<?php echo htmlentities($row_RsStudent['StName2'], ENT_COMPAT, 'UTF-8'); ?>"
+                           value="<?php echo escape($row_RsStudent['StName2']); ?>"
                            data-required="true">
                 </div>
                 <div class="four columns">
@@ -117,7 +101,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         <label for="StName3">الجد</label>
                     </div>
                     <input type="text" name="StName3"
-                           value="<?php echo htmlentities($row_RsStudent['StName3'], ENT_COMPAT, 'UTF-8'); ?>"
+                           value="<?php echo escape($row_RsStudent['StName3']); ?>"
                            data-required="true">
                 </div>
                 <div class="four columns omega">
@@ -125,14 +109,14 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         <label for="StName4">العائلة</label>
                     </div>
                     <input type="text" name="StName4"
-                           value="<?php echo htmlentities($row_RsStudent['StName4'], ENT_COMPAT, 'UTF-8'); ?>"
+                           value="<?php echo escape($row_RsStudent['StName4']); ?>"
                            data-required="true">
                 </div>
 
                 <br class="clear"/>
 
                 <input name="StID" type="hidden" id="StID"
-                       value="<?php echo htmlentities($row_RsStudent['StID'], ENT_COMPAT, 'UTF-8'); ?>">
+                       value="<?php echo escape($row_RsStudent['StID']); ?>">
 
 
                 <div class="four columns alpha">
@@ -160,7 +144,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         <label for="StName1">رقم جوال <?php echo get_gender_label('st', 'ال'); ?></label>
                     </div>
                     <input name="StMobileNo" type="tel" id="StMobileNo"
-                           value="<?php echo htmlentities($row_RsStudent['StMobileNo'], ENT_COMPAT, 'UTF-8'); ?>"
+                           value="<?php echo escape($row_RsStudent['StMobileNo']); ?>"
                            data-type="digits" data-maxlength="10" data-minlength="10">
                 </div>
                 <div class="four columns">
@@ -168,7 +152,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         <label for="FatherMobileNo">جوال ولي الأمر</label>
                     </div>
                     <input name="FatherMobileNo" type="tel" id="FatherMobileNo"
-                           value="<?php echo htmlentities($row_RsStudent['FatherMobileNo'], ENT_COMPAT, 'UTF-8'); ?>"
+                           value="<?php echo escape($row_RsStudent['FatherMobileNo']); ?>"
                            data-type="digits" data-maxlength="10" data-minlength="10" data-required="true">
                 </div>
                 <div class="six columns omega">
@@ -198,7 +182,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                         do {
                             ?>
                             <option
-                                value="<?php echo $row_RsHalakat['AutoNo'] ?>"><?php echo $row_RsHalakat['HName'] ?></option>
+                                    value="<?php echo $row_RsHalakat['AutoNo'] ?>"><?php echo $row_RsHalakat['HName'] ?></option>
                             <?php
                         } while ($row_RsHalakat = mysqli_fetch_assoc($RsHalakat));
                         $rows = mysqli_num_rows($RsHalakat);
@@ -218,15 +202,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                 <input type="hidden" name="StID" value="<?php echo $row_RsStudent['StID']; ?>">
             </form>
         </center>
-        <script>
-            $(document).ready(function () {
-                $('#EdarahID').change(function () {
-                    ClearList('HalaqatID');
-                    FillList(this.value, 'HalaqatID', 'AutoNo', 'HName', 'SELECT * FROM 0_halakat WHERE `hide`=0 and EdarahID = %s ORDER BY HName', 'لا يوجد حلقات', 'اختر الحلقة');
-                });
-                //$('#EdarahID').trigger("change");
-            });
-        </script>
+
     <?php } else {
         echo 'عفوا... لاتملك صلاحيات للدخول لهذه الصفحة.';
     } ?>
@@ -253,6 +229,13 @@ if (isset($_SESSION['u1'])) {
 ?>
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#EdarahID').change(function () {
+            ClearList('HalaqatID');
+            FillList(this.value, 'HalaqatID', 'AutoNo', 'HName', 'SELECT * FROM 0_halakat WHERE `hide`=0 and EdarahID = $ ORDER BY HName', 'لا يوجد حلقات', 'اختر الحلقة');
+        });
+    });
+    $('#EdarahID').trigger('change');
     showError();
 </script>
 <script>

@@ -9,6 +9,6 @@ if (isset($_POST['absent'])) { ?>
         }
         ?>
     </form>
-    <script language="JavaScript">
+    <script language="JavaScript" async>
         document.frm.submit();
     </script>

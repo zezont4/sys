@@ -1,14 +1,8 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php
+<?php require_once('../functions.php');
 $userType = 0;
 if (isset($_SESSION['user_group'])) {
     $userType = $_SESSION['user_group'];
 }
-?>
-<?php
 $usergroup = "-1";
 if (isset($_SESSION['user_group'])) {
     $usergroup = $_SESSION['user_group'];
@@ -25,7 +19,7 @@ if (isset($_SESSION['user_group'])) {
 <!--PageTitle-->
 
 <div class="content">
-    <?php if (login_check("admin,edarh,er,t3lem") == true) { ?>
+    <?php if (login_check("admin,edarh,er,t3lem,alaqat") == true) { ?>
     <P> * للاستعلام عن جميع الطلاب في سلم البراعم، اترك التواريخ فارغة <br>
         * يمكنك الاستعلام بالتاريخ الأول فقط أو الثاني فقط أو بالجميع </P>
 </div>

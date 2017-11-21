@@ -1,10 +1,9 @@
-<?php require_once('../Connections/localhost.php'); ?>
 <?php require_once('../functions.php'); ?>
 <?php require_once('fahd_functions.php'); ?>
 <?php
 
-$open_g = true;//السماح للتسجيل للبنات
-$open_b = true;//السماح للتسجيل للبنين
+$open_g = false;//السماح للتسجيل للبنات
+$open_b = false;//السماح للتسجيل للبنين
 //متغير يحفظ نتيجة السماح بالتسجيل بحث يفحص جنس المستخدم الحالي مع المتغيرات في الأعلى
 $open = false;
 
@@ -36,7 +35,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     //echo $study_year_id.' - '.$study_year_start.' - '.$study_year_end;
     //exit;
     // search for dublicate musabakah ##############
-    mysqli_select_db($localhost, $database_localhost);
     $query_Rsdublicate = sprintf("SELECT auto_no,teacher_id,f_t_date FROM ms_fahd_featured_teacher WHERE teacher_id=%s and f_t_date>=%s and f_t_date<=%s", GetSQLValueString($TID, "int"), GetSQLValueString($study_fahd_start, "int"), GetSQLValueString($study_fahd_end, "int"));
     $Rsdublicate = mysqli_query($localhost, $query_Rsdublicate) or die('Rsdublicate ' . mysqli_error($localhost));
     $row_Rsdublicate = mysqli_fetch_assoc($Rsdublicate);
@@ -93,7 +91,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     $result_increment = mysqli_query($localhost, "SHOW TABLE STATUS WHERE `Name` = 'ms_fahd_featured_teacher'");
     $data = mysqli_fetch_assoc($result_increment);
     $next_increment = $data['Auto_increment'];
-    mysqli_select_db($localhost, $database_localhost);
     $insertSQL = sprintf("insert into ms_fahd_featured_teacher
  (auto_no,teacher_id,f_t_date,teacher_type,t_edarah,full_degree,max_degree %s)
 values
@@ -116,7 +113,6 @@ values
     }
 }
 
-mysqli_select_db($localhost, $database_localhost);
 $query_Rs_T = sprintf("SELECT TID,Tfullname,arabic_name,HName,TEdarah FROM view_0_teachers WHERE TID = %s", $TID);
 $Rs_T = mysqli_query($localhost, $query_Rs_T) or die('query_Rs_T ' . mysqli_error($localhost));
 $row_Rs_T = mysqli_fetch_assoc($Rs_T);
@@ -243,12 +239,12 @@ $degree_title = "الـــــــــدرجـــــــــــة"; ?>
 <!--PageTitle-->
 
 <?php
-
-if ($_SESSION['sex'] == 1 && $open_b == true) {
+$sex = isset($_SESSION['sex']) ? $_SESSION['sex'] : 1;
+if ($sex == 1 && $open_b == true) {
     $open = true;
-} elseif ($_SESSION['sex'] == 0 && $open_g == true) {
+} elseif ($sex == 0 && $open_g == true) {
     $open = true;
-} elseif ($_SESSION['sex'] == 2) {
+} elseif ($sex == 2) {
     $open = true;
 }
 
@@ -293,7 +289,7 @@ if ($open === true) { ?>
 
             <div class="three columns alpha top_padding">تصنيف المعلم</div>
             <div
-                class="four columns"><?php echo create_combo('teacher_type', $teacher_types, 1, 0, 'class="full-width"') ?></div>
+                    class="four columns"><?php echo create_combo('teacher_type', $teacher_types, 1, 0, 'class="full-width" data-required="true"') ?></div>
         </div>
         <?php
 

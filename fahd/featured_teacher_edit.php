@@ -1,4 +1,3 @@
-<?php require_once('../Connections/localhost.php'); ?>
 <?php require_once('../functions.php'); ?>
 <?php require_once('fahd_functions.php'); ?>
 <?php
@@ -19,6 +18,7 @@ if (isset($_GET['auto_no'])) {
 }
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
+    $chk_sql = '';
     $f_t_chkbx_array = ['3a', '3b', '4b', '5a', '5b', '5c', '7a', '9a', '15a', '15b', '12a', '13a'];
     $length = count($f_t_chkbx_array);
     for ($i = 0; $i < $length; $i++) {
@@ -35,6 +35,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         $f_t_txt2bx_array = ['4a', '8a', '10a', '11a'];
     }
     $length = count($f_t_txt2bx_array);
+    $txt2_sql = '';
     for ($i = 0; $i < $length; $i++) {
         $f_0_1 = ($_POST['f_' . $f_t_txt2bx_array[$i] . '_n'] > 0) ? $_POST['f_' . $f_t_txt2bx_array[$i] . '_n'] : '0';
         $txt2_sql = $txt2_sql . ',f_' . $f_t_txt2bx_array[$i] . '_n = ' . $f_0_1;
@@ -49,6 +50,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         $f_t_txt3bx_array = ['2a', '2b'];
     }
     $length = count($f_t_txt3bx_array);
+    $txt3_sql = '';
     for ($i = 0; $i < $length; $i++) {
         $f_0_1 = ($_POST['f_' . $f_t_txt3bx_array[$i] . '_n'] > 0) ? $_POST['f_' . $f_t_txt3bx_array[$i] . '_n'] : '0';
         $txt3_sql = $txt3_sql . ',f_' . $f_t_txt3bx_array[$i] . '_n = ' . $f_0_1;
@@ -63,14 +65,12 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     $updateSQL = "UPDATE ms_fahd_featured_teacher SET
 	f_t_date='" . str_replace("/", "", $_POST['f_t_date']) . "',teacher_type=" . $_POST['teacher_type'] . ",full_degree=" . $_POST['full_degree'] . ",approved=" . $approved . $chk_sql . $txt2_sql . $txt3_sql . ' WHERE auto_no=' . $auto_no;
     //    exit($updateSQL);
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $updateSQL) or die(' update 1 : ' . mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
     }
 
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_rs_f_teacher = sprintf("SELECT * FROM ms_fahd_featured_teacher WHERE auto_no=%s", GetSQLValueString($auto_no, "int"));
 $rs_f_teacher = mysqli_query($localhost, $query_rs_f_teacher) or die(mysqli_error($localhost));
 $row_rs_f_teacher = mysqli_fetch_assoc($rs_f_teacher);
@@ -78,18 +78,15 @@ $totalRows_rs_f_teacher = mysqli_num_rows($rs_f_teacher);
 
 $colname_Rs_T = $row_rs_f_teacher['teacher_id'];
 
-mysqli_select_db($localhost, $database_localhost);
 $query_Rs_T = sprintf("SELECT TID,Tfullname,arabic_name,HName,TEdarah FROM view_0_teachers WHERE TID = %s", $colname_Rs_T);
 $Rs_T = mysqli_query($localhost, $query_Rs_T) or die(mysqli_error($localhost));
 $row_Rs_T = mysqli_fetch_assoc($Rs_T);
 $totalRows_Rs_T = mysqli_num_rows($Rs_T);
-?>
-<?php
+
 if (isset($_SESSION['user_id'])) {
     $colname_RSEdarat = $_SESSION['user_id'];
 }
-?>
-<?php
+
 //انشاء عنوان القسم
 function create_f_t_block_head($array_index)
 {
@@ -154,6 +151,7 @@ function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $la
 function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0)
 {
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
+    $checked = '';
     if ($row_rs_f_teacher["f_" . $db_feild_name . "_n"] == 1) {
         $checked = ' checked="checked" ';
     }
@@ -256,7 +254,7 @@ if ($closed == 'no') { ?>
 
             <div class="three columns alpha top_padding">تصنيف المعلم</div>
             <div
-                class="four columns"><?php echo create_combo('teacher_type', $teacher_types, 1, $row_rs_f_teacher["teacher_type"], 'class="full-width"') ?></div>
+                    class="four columns"><?php echo create_combo('teacher_type', $teacher_types, 1, $row_rs_f_teacher["teacher_type"], 'class="full-width"') ?></div>
 
         </div>
         <?php

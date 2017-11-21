@@ -1,10 +1,6 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php $PageTitle = 'إضافة ' . ' ' . get_gender_label('st'); ?>
-<?php if (login_check("admin,edarh,t3lem") == true) { ?>
-<?php
+<?php require_once('../functions.php');
+$PageTitle = 'إضافة ' . ' ' . get_gender_label('st');
+if (login_check("admin,edarh,t3lem") == true) {
 
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
@@ -17,7 +13,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     if (isset($_POST['StID'])) {
         $colname_RsIfExistSt = $_POST['StID'];
     }
-    mysqli_select_db($localhost, $database_localhost);
     $query_RsIfExistSt = sprintf("SELECT StID,StEdarah FROM 0_students WHERE StID = %s", GetSQLValueString($colname_RsIfExistSt, "double"));
     $RsIfExistSt = mysqli_query($localhost, $query_RsIfExistSt) or die(mysqli_error($localhost));
     $row_RsIfExistSt = mysqli_fetch_assoc($RsIfExistSt);
@@ -46,8 +41,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 
 
     $insertSQL = sprintf("INSERT INTO 0_students (StID,StName1,StName2,StName3,StName4,
-StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah,school_level,nationality)
-  						 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StStartDate,StHalaqah,school_level,nationality)
+  						 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
         GetSQLValueString($_POST['StID'], "double"),
         GetSQLValueString($_POST['StName1'], "text"),
         GetSQLValueString($_POST['StName2'], "text"),
@@ -58,21 +53,17 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah,school_l
         GetSQLValueString($_POST['FatherMNo'], "text"),
         GetSQLValueString($_POST['guardian_name'], "text"),
         GetSQLValueString(str_replace('/', '', $_POST['StBurthDate']), "int"),
+        GetSQLValueString(str_replace('/', '', $_POST['StStartDate']), "int"),
         GetSQLValueString($_POST['HalaqatID'], "int"),
         GetSQLValueString($_POST['school_level'], "int"),
         GetSQLValueString($_POST['nationality'], "int")
     );
-//    echo $insertSQL;
-//    exit;
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
         header("Location: " . $_SERVER['PHP_SELF']);
         exit;
     }
-    //mysqli_free_result($RSMaxID2);
-
 }
 ?>
 <?php include('../templates/header1.php'); ?>
@@ -116,7 +107,7 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah,school_l
 
         <div class="four columns alpha">
             <div class="LabelContainer">
-                <label for="StID">السجل المدني</label>
+                <label for="StID">السجل المدني/الجواز</label>
             </div>
             <input name="StID" type="tel" id="StID" data-required="true" data-type="digits" data-maxlength="10"
                    data-minlength="10">
@@ -175,10 +166,18 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah,school_l
 
         <br class="clear"/>
 
+        <div class="eight columns alpha">
+            <div class="LabelContainer">
+                <label for="StStartDate">تاريخ بداية دراسة <?php echo get_gender_label('st', 'ال'); ?>بحلقات الزلفي (المباشرة)</label>
+            </div>
+            <input name="StStartDate" type="text" id="StStartDate" zezo_date="true">
+        </div>
+
+        <br class="clear"/>
 
         <div class="four columns alpha">
             <div class="LabelContainer">
-                <label for="EdaratID"><?php echo get_gender_label('e', 'ال'); ?></label>
+                <label for="EdarahID"><?php echo get_gender_label('e', 'ال'); ?></label>
             </div>
             <?php create_edarah_combo(); ?>
         </div>
@@ -200,21 +199,14 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah,school_l
         </div>
         <input type="hidden" name="MM_insert" value="form1">
     </form>
-    <script type="text/javascript">
-        $(document).ready(function () {
-            $('#EdarahID').change(function () {
-                ClearList('HalaqatID');
-                FillList(this.value, 'HalaqatID', 'AutoNo', 'HName', 'SELECT * FROM 0_halakat WHERE `hide`=0 and EdarahID = %s ORDER BY HName', 'لا يوجد حلقات', 'اختر الحلقة');
-            });
-            $('#EdarahID').trigger("change");
-        });
-    </script>
+
 </div>
 <!--content-->
 <?php include('../templates/footer.php'); ?>
 <?php
 if (isset($_SESSION['u1'])) {
     ?>
+
     <script>
         $(document).ready(function () {
             alertify.success("تمت الإضافة بنجاح");
@@ -226,6 +218,13 @@ if (isset($_SESSION['u1'])) {
 }
 ?>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#EdarahID').change(function () {
+            ClearList('HalaqatID');
+            FillList(this.value, 'HalaqatID', 'AutoNo', 'HName', 'SELECT * FROM 0_halakat WHERE `hide`=0 and `EdarahID`=$ ORDER BY HName', 'لا يوجد حلقات', 'اختر الحلقة');
+        });
+        $('#EdarahID').trigger('change');
+    });
     showError();
 </script>
 
@@ -252,7 +251,7 @@ if (isset($_SESSION['u1'])) {
                             data.StName4,
                             ') , ',
                             'لتقديم طلب نقل اضغط',
-                            "<a style='display: inline;' href='/sys/basic/transfer_st_add.php?StID=" + data.StID +" '>هنا</a>"
+                            "<a style='display: inline;' href='/sys/basic/transfer_st_add.php?StID=" + data.StID + " '>هنا</a>"
                         ].join(' ');
                         console.log(data.StID);
                         $('#msg').html(msg);

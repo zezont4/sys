@@ -4,8 +4,8 @@
  	$secondLogo=true;
 	$secondLogoURL='<img id="ertiqafLogo" src="/sys/_images/ertiqa_160.png" width="140">';
 ?>
-<?php include("../functions.php"); ?>
-<?php include("report_header1.php"); ?>
+<?php include(__DIR__."/../functions.php"); ?>
+<?php include(__DIR__."/report_header1.php"); ?>
 
 				  <div id="reportContent">
 					<p id="reportTitle">

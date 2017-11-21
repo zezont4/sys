@@ -1,55 +1,55 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php';?>
-<?php sec_session_start();  ?>
-<?php
-$userType=0;
-if (isset($_SESSION['user_group'])){
-    $userType=$_SESSION['user_group'];
-}
-?>
-<?php
-$usergroup = "-1";
-if (isset($_SESSION['user_group'])) {
-    $usergroup = $_SESSION['user_group'];
-}
-?>
-<?php include('../templates/header1.php'); ?>
-<?php $PageTitle = 'تقارير الإرتقاء'; ?>
+<?php require_once('../functions.php');
+
+$usergroup = isset($_SESSION['user_group']) ? $_SESSION['user_group'] : 0;
+
+include('../templates/header1.php');
+$PageTitle = 'تقارير الإرتقاء'; ?>
 <title><?php echo $PageTitle; ?></title>
+<style>
+    .top_padding {
+        padding-top: 13px;
+    }
+</style>
 </head>
 <body>
 <?php include('../templates/header2.php'); ?>
-<?php include ('../templates/nav_menu.php'); ?>
+<?php include('../templates/nav_menu.php'); ?>
 <div id="PageTitle"> <?php echo $PageTitle; ?> </div>
 <!--PageTitle-->
 
 <div class="content">
-    <?php if(login_check("admin,edarh,er,t3lem") == true) { ?>
-    <P> * للاستعلام عن  جميع الطلاب في سلم البراعم، اترك التواريخ فارغة <br>
+    <?php if (login_check("admin,edarh,er,t3lem,alaqat") == true) { ?>
+    <P> * للاستعلام عن جميع الطلاب في سلم البراعم، اترك التواريخ فارغة <br>
         * يمكنك الاستعلام بالتاريخ الأول فقط أو الثاني فقط أو بالجميع </P>
 </div>
     <div class="content">
-        <div class="four columns alpha">
+        <div class="three columns alpha">
             <div class="LabelContainer">
                 <label for="Date1">التاريخ الأول</label>
             </div>
             <input type="text" name="Date1" id="Date1" zezo_date="true">
         </div>
-        <div class="four columns omega">
+        <div class="three columns">
             <div class="LabelContainer">
                 <label for="Date2">التاريخ الثاني</label>
             </div>
             <input type="text" name="Date2" id="Date2" zezo_date="true">
         </div>
-        <br class="clear">
-        <div class="three columns alpha">
-            <a id="link1" class="button-primary full-width" target="new" href="/sys/ertiqa/reports/no_ertiqa.php" tabindex="-1">بيان بمن لم يختبر</a>
+        <!--        <div class="clearfix"></div>-->
+        <div class="four columns top_padding">
+            <a id="link1" class="button-primary full-width" target="new" href="/sys/ertiqa/reports/no_ertiqa.php" tabindex="-1">بيان بمن لم يختبر من الطلاب</a>
+        </div>
+
+        <div class="four columns omega top_padding">
+            <a id="link2" class="button-primary  full-width" target="new" href="/sys/ertiqa/reports/no_ertiqa_teacher.php" tabindex="-1">بيان بمن لم يختبر لديه
+                طلاب</a>
         </div>
 
     </div>
-<?php }else{echo 'عفوا... لاتملك صلاحيات للدخول لهذه الصفحة.';}?>
-</div>
+
+<?php } else {
+    echo 'عفوا... لاتملك صلاحيات للدخول لهذه الصفحة.';
+} ?>
 <!--content-->
 <script>
     $(function () {
@@ -59,7 +59,8 @@ if (isset($_SESSION['user_group'])) {
             var date2 = $('#Date2').val();
             var parameters = '?Date1=' + date1 + '&Date2=' + date2;
 
-            $('#link1').attr('href',base + 'no_ertiqa.php' + parameters);
+            $('#link1').attr('href', base + 'no_ertiqa.php' + parameters);
+            $('#link2').attr('href', base + 'no_ertiqa_teacher.php' + parameters);
 
         });
     });

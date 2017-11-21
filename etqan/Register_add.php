@@ -1,13 +1,9 @@
 <?php
-require_once('../Connections/localhost.php');
 require_once('../functions.php');
-require_once('../secure/functions.php');
 require_once('../fahd/fahd_functions.php');
 
-sec_session_start();
-
 /*متغير يحفظ نتيجة السماح بالتسجيل بحث يفحص جنس المستخدم الحالي مع المتغيرات في الأعلى*/
-$allowRegister = false;
+$allowRegister = true;
 $etqan_open_g = true;
 $etqan_open_b = true;
 if (login_check('admin,ms') == true) {
@@ -19,20 +15,10 @@ $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
+$userType = isset($_SESSION['user_group']) ? $_SESSION['user_group'] : 0;
+$EdarahIDS = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
-$userType = 0;
-if (isset($_SESSION['user_group'])) {
-    $userType = $_SESSION['user_group'];
-}
-
-$EdarahIDS = $_SESSION['user_id'];
-
-$dublicate_RsSTID = "-1";
-if (isset($_GET['StID'])) {
-    $dublicate_RsSTID = $_GET['StID'];
-}
-
-mysqli_select_db($localhost, $database_localhost);
+$dublicate_RsSTID = Input::get('StID') ? Input::get('StID') : -1;
 
 $query_student_data = sprintf("SELECT * FROM `0_students` WHERE `StID`=%s",
     GetSQLValueString($dublicate_RsSTID, "int")
@@ -93,25 +79,19 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         GetSQLValueString($_POST['ErtiqaID'], "int"),
         GetSQLValueString(str_replace('/', '', $_POST['RDate']), "int")
     );
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $insertSQL) or die(' $insertSQL ' . mysqli_error($localhost));
-
 
     if ($Result1) {
         $msg = "etqan";
         header("Location: ../ertiqa/statistics/studentexams.php?msg=" . $msg . "&StudentID=" . $_POST['StID']);
-        //exit;
     }
 }
 
-?>
-<?php
 if (isset($_SESSION['user_id'])) {
     $colname_RSEdarat = $_SESSION['user_id'];
 }
-?>
-<?php include('../templates/header1.php'); ?>
-<?php $PageTitle = 'التسجيل في مسابقة أمير الرياض'; ?>
+include('../templates/header1.php');
+$PageTitle = 'التسجيل في مسابقة أمير الرياض'; ?>
 <title><?php echo $PageTitle; ?></title>
 <style type="text/css">
     .FieldsButton .note {
@@ -132,12 +112,13 @@ $StID_RsHalakat = "-1";
 if (isset($_GET['StID'])) {
     $StID_RsHalakat = $_GET['StID'];
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_RSbirthDate = sprintf("SELECT * FROM `0_students` where StID=%s", $StID_RsHalakat);
 $RSbirthDate = mysqli_query($localhost, $query_RSbirthDate) or die(mysqli_error($localhost));
 $row_RSbirthDate = mysqli_fetch_assoc($RSbirthDate);
 $birthDate = $row_RSbirthDate["StBurthDate"];
 $guardian_name = $row_RSbirthDate["guardian_name"];
+$sex = isset($_SESSION['sex']) ? $_SESSION['sex'] : 1;
+
 //$noRegisterMSG = 'عفوا ... انتهت فترة التسجيل';
 if ($birthDate == null) {
     $allowRegister = false;
@@ -145,30 +126,28 @@ if ($birthDate == null) {
     $noRegisterMSG = "لايمكن قبول " . get_gender_label('st', 'ال') . " للسبب التالي:" . "<br><br>" . "يجب تسجيل تاريخ الميلاد في بيانات " . get_gender_label('st', 'ال') . " الأساسية.";
 } else {
     //echo $birthDate;
-
-    if ($_SESSION['sex'] == 1) {
+    $b_date = null;
+    if ($sex == 1) {
         $b_date = $etqan_birth_date_b;
-    } elseif ($_SESSION['sex'] == 0) {
+    } elseif ($sex == 0) {
         $b_date = $etqan_birth_date_g;
     }
     if (intval($birthDate) > intval($b_date)) {
         $allowRegister = true;
         $noRegisterMSG = "";
     } else {
-        //echo "<style>.LabelAndFieldContainer{display:none;}</style";
         $allowRegister = false;
         $noRegisterMSG = "لايمكن قبول " . get_gender_label('st', 'ال') . " للسبب التالي:" . "<br><br>" . "عدم استيفاء شرط العمر.";
     }
 
-    if ($_SESSION['sex'] === 2) {
+    if ($sex === 2) {
         $allowRegister = false;
         $noRegisterMSG = "عفوا.. يرجى تسجيل الخروج ثم تسجيل الدخول بمستخدم خاص بالبنين أو البنات فقط";
     }
 
     /*        اسم ولي الأمر للبنات*/
-    if ($_SESSION['sex'] == 0) {
+    if ($sex == 0) {
         if ($guardian_name == null) {
-//echo $etqan_birth_date_b;
             $allowRegister = false;
             $noRegisterMSG = "لايمكن قبول " .
                 get_gender_label('st', 'ال')
@@ -184,11 +163,11 @@ if ($birthDate == null) {
 }
 
 $open = false;
-if ($_SESSION['sex'] == 1 && $etqan_open_b == true) {
+if ($sex == 1 && $etqan_open_b == true) {
     $open = true;
-} elseif ($_SESSION['sex'] == 0 && $etqan_open_g == true) {
+} elseif ($sex == 0 && $etqan_open_g == true) {
     $open = true;
-} elseif ($_SESSION['sex'] == 2) {
+} elseif ($sex == 2) {
     $open = true;
 }
 

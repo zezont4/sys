@@ -20,7 +20,6 @@ if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
 
-mysqli_select_db($localhost, $database_localhost);
 $query_RSshababExam = sprintf("SELECT * FROM ms_shabab_rgstr WHERE AutoNo=%s", GetSQLValueString($auto_no, "int"));
 $RSshababExam = mysqli_query($localhost, $query_RSshababExam) or die(mysqli_error($localhost));
 $row_RSshababExam = mysqli_fetch_assoc($RSshababExam);
@@ -36,7 +35,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     // search for dublicate musabakah ##############
     //if ($OldMsbkhID!=$dublicate_RsMsbkhID){
     //zlog("dublicate found");
-    mysqli_select_db($localhost, $database_localhost);
     $query_Rsdublicate = sprintf("SELECT AutoNo FROM ms_shabab_rgstr WHERE StID=%s and MsbkhID=%s and AutoNo<>%s",
         GetSQLValueString($StID, "double"),
         GetSQLValueString($_POST['MsbkhID'], "int"),
@@ -60,7 +58,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         GetSQLValueString($_POST['ErtiqaID'], "int"),
         GetSQLValueString($auto_no, "int")
     );
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $insertSQL) or die('$insertSQL ' . mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
@@ -82,7 +79,7 @@ if (isset($_SESSION['user_id'])) {
 <?php $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في مسابقة الهيئة العامة للرياضة'; ?>
 <title><?php echo $PageTitle; ?></title>
 <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/cupertino/jquery-ui.css"/>
-<link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>
+<!--<link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>-->
 <style type="text/css">
     .FieldsButton .note {
         color: #4FA64B;
@@ -124,7 +121,7 @@ if ($closed == 'no') { ?>
             </div>
             <div class="four columns">
                 <div class="LabelContainer">آخر مرتقى اجتازه</div>
-                <?php echo create_combo("ErtiqaID", $murtaqaName, 0, $row_RSshababExam['ErtiqaID'], 'data-required="true"'); ?>
+                <?php echo create_combo("ErtiqaID", $murtaqaName, 1, $row_RSshababExam['ErtiqaID'], 'data-required="true"'); ?>
             </div>
 
             <div class="four columns">

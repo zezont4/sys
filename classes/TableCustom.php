@@ -63,4 +63,3 @@ $ok_report=($dbResultx->ok_report==0) ? ' glyphicon glyphicon-time ' : ' glyphic
 		//        echo $this->class2;
 	}
 }
-?>

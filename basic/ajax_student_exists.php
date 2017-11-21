@@ -5,6 +5,7 @@ if (isset($_GET['StID'])) {
     $StID = $_GET['StID'];
 }
 require('../Connections/localhost.php');
+global $database_localhost;
 mysqli_select_db($localhost, $database_localhost);
 $sql = sprintf("SELECT * FROM 0_students where StID=%s", $StID);
 $query = mysqli_query($localhost, $sql) or die("ajax_student_exists.php 1: " . mysqli_error($localhost));

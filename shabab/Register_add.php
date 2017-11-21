@@ -19,7 +19,6 @@ $StID = "-1";
 if (isset($_GET['StID'])) {
     $StID = $_GET['StID'];
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_RSbirthDate = sprintf("SELECT StBurthDate FROM `0_students` where StID=%s", $StID);
 $RSbirthDate = mysqli_query($localhost, $query_RSbirthDate) or die(mysqli_error($localhost));
 $row_RSbirthDate = mysqli_fetch_assoc($RSbirthDate);
@@ -61,7 +60,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     if (isset($_POST['MsbkhID'])) {
         $MsbkhID = $_POST['MsbkhID'];
     }
-    mysqli_select_db($localhost, $database_localhost);
     $query_Rsdublicate = sprintf('SELECT StID,MsbkhID FROM `ms_shabab_rgstr` WHERE `StID`=%s and MsbkhID = %s', GetSQLValueString($dublicate_RsSTID, "int"), GetSQLValueString($MsbkhID, "int"));
     $Rsdublicate = mysqli_query($localhost, $query_Rsdublicate) or die(mysqli_error($localhost));
     $row_Rsdublicate = mysqli_fetch_assoc($Rsdublicate);
@@ -101,7 +99,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
             GetSQLValueString($_POST['ErtiqaID'], "int"),
             GetSQLValueString(str_replace('/', '', $_POST['RDate']), "int")
         );
-        mysqli_select_db($localhost, $database_localhost);
         $Result1 = mysqli_query($localhost, $insertSQL) or die(' $insertSQL ' . mysqli_error($localhost));
 
 
@@ -154,7 +151,7 @@ if ($closed == 'no') { ?>
             </div>
             <div class="four columns">
                 <div class="LabelContainer">آخر مرتقى اجتازه</div>
-                <?php echo create_combo("ErtiqaID", $murtaqaName, 0, '', 'class="full-width" data-required="true"'); ?>
+                <?php echo create_combo("ErtiqaID", $murtaqaName, 1, '', 'class="full-width" data-required="true"'); ?>
             </div>
 
             <div class="four columns">

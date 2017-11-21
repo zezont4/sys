@@ -1,8 +1,4 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php
+<?php require_once('../functions.php');
 
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
@@ -30,37 +26,24 @@ WHERE TID=%s",
         GetSQLValueString($_POST['has_ejazah_in_shatibiah'], "int"),
         GetSQLValueString($_POST['TID'], "double"));
 
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $updateSQL) or die(mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
         header("Location: " . $editFormAction);
         exit;
     }
-    /*  $updateGoTo = "teacher_add.php";
-      if (isset($_SERVER['QUERY_STRING'])) {
-        $updateGoTo .= (strpos($updateGoTo,'?')) ? "&" : "?";
-        $updateGoTo .= $_SERVER['QUERY_STRING'];
-      }
-      header(sprintf("Location: %s",$updateGoTo));*/
 }
-
-mysqli_select_db($localhost, $database_localhost);
 
 $colname_RsTeachers = "-1";
 if (isset($_GET['TID'])) {
     $colname_RsTeachers = $_GET['TID'];
 }
-mysqli_select_db($localhost, $database_localhost);
 $query_RsTeachers = sprintf("SELECT * FROM 0_teachers WHERE TID = %s", GetSQLValueString($colname_RsTeachers, "double"));
 $RsTeachers = mysqli_query($localhost, $query_RsTeachers) or die(mysqli_error($localhost));
 $row_RsTeachers = mysqli_fetch_assoc($RsTeachers);
 $totalRows_RsTeachers = mysqli_num_rows($RsTeachers);
 $EdarahNo_RsHalakat = $row_RsTeachers['TEdarah'];
-//if (isset($_GET['EdarahNo'])) {
-//	$EdarahNo_RsHalakat = $_GET['EdarahNo'];
-//}
-mysqli_select_db($localhost, $database_localhost);
+
 $query_RsHalakat = sprintf("SELECT AutoNo,HName FROM `0_halakat` WHERE `hide`=0 and EdarahID = %s", GetSQLValueString($EdarahNo_RsHalakat, "int"));
 $RsHalakat = mysqli_query($localhost, $query_RsHalakat) or die(mysqli_error($localhost));
 $row_RsHalakat = mysqli_fetch_assoc($RsHalakat);
@@ -272,7 +255,7 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
                     do {
                         ?>
                         <option
-                            value="<?php echo $row_RsHalakat['AutoNo'] ?>" <?php echo $row_RsHalakat['AutoNo'] == $row_RsTeachers['THalaqah'] ? "SELECTED" : ''; ?>>
+                                value="<?php echo $row_RsHalakat['AutoNo'] ?>" <?php echo $row_RsHalakat['AutoNo'] == $row_RsTeachers['THalaqah'] ? "SELECTED" : ''; ?>>
                             <?php echo $row_RsHalakat['HName'] ?></option>
                         <?php
                     } while ($row_RsHalakat = mysqli_fetch_assoc($RsHalakat));
@@ -289,6 +272,10 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
 
             <input type="hidden" name="MM_update" value="form1">
             <input type="hidden" name="TID" value="<?php echo $row_RsTeachers['TID']; ?>">
+            <br class="clear"/>
+            <div class="four columns left">
+                <a href="update_teacher_id.php?old_teacher_id=<?php echo $row_RsTeachers['TID']; ?>">تعديل السجل المدني</a>
+            </div>
         </form>
     <?php } else {
         echo 'عفوا... لاتملك صلاحيات للدخول لهذه الصفحة.';
@@ -297,15 +284,6 @@ $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
 </div>
 <!--content-->
 <?php include('../templates/footer.php'); ?>
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#EdarahID').change(function () {
-            ClearList('THalaqah');
-            FillList(this.value, 'THalaqah', 'AutoNo', 'HName', 'SELECT * FROM 0_halakat WHERE `hide`=0 and EdarahID = %s ORDER BY HName', 'لا يوجد حلقات', 'اختر الحلقة');
-        });
-        //$('#EdarahID').trigger("change");
-    });
-</script>
 <?php
 if (isset($_SESSION['u1'])) {
     ?>
@@ -320,9 +298,12 @@ if (isset($_SESSION['u1'])) {
 }
 ?>
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#EdarahID').change(function () {
+            ClearList('THalaqah');
+            FillList(this.value, 'THalaqah', 'AutoNo', 'HName', 'SELECT * FROM 0_halakat WHERE `hide`=0 and EdarahID = $ ORDER BY HName', 'لا يوجد حلقات', 'اختر الحلقة');
+        });
+        $('#EdarahID').trigger('change');
+    });
     showError();
 </script>
-<?php
-mysqli_free_result($RsTeachers);
-mysqli_free_result($RsHalakat);
-?>

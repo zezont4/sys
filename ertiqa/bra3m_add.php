@@ -1,29 +1,24 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php
-$userType = 0;
-if (isset($_SESSION['user_group'])) {
-    $userType = $_SESSION['user_group'];
-}
-$EdarahIDS = $_SESSION['user_id'];
-?>
-<?php
+<?php require_once('../functions.php');
+
+$userType = isset($_SESSION['user_group']) ? $_SESSION['user_group'] : 0;
 
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
-
+$st_id = isset($_GET['StID']) ? $_GET['StID'] : null;
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 
+    if (!isset($_POST['StID'])) {
+        exit('<h1 style="text-align:center;font-size:20px;color:red;">' .
+            'لا يوجد ' . get_gender_label('st') . ' بهذا السجل المدني : ' . $st_id .
+            '</h1>');
+    }
+
     // search for dublicate musabakah ##############
-    mysqli_select_db($localhost, $database_localhost);
     $query_Rsdublicate = sprintf("SELECT AutoNo FROM er_bra3m WHERE StID=%s and DarajahID>=%s",
         GetSQLValueString($_POST['StID'], "double"),
         GetSQLValueString($_POST['DarajahID'], "int"));
-    //zlog($query_Rsdublicate);
     $Rsdublicate = mysqli_query($localhost, $query_Rsdublicate) or die(mysqli_error($localhost));
     $row_Rsdublicate = mysqli_fetch_assoc($Rsdublicate);
     $totalRows_Rsdublicate = mysqli_num_rows($Rsdublicate);
@@ -37,7 +32,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         </div>
         <?php exit;
     }
-
     $insertSQL = sprintf("INSERT INTO er_bra3m (EdarahID,HalakahID,TeacherID,StID,DarajahID,SchoolLevelID,Money,DDate) VALUES ( %s,%s,%s,%s,%s,%s,%s,%s)",
         GetSQLValueString($_POST['EdarahID'], "int"),
         GetSQLValueString($_POST['HalakahID'], "int"),
@@ -46,12 +40,10 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         GetSQLValueString($_POST['DarajahID'], "int"),
         GetSQLValueString($_POST['SchoolLevelID'], "int"),
         GetSQLValueString($_POST['Money'], "int"),
-        GetSQLValueString(str_replace('/', '', $_POST['DDate']), "int")
+        GetSQLValueString(getHijriDate()->date, "int")
     );
     //echo $insertSQL; exit;
-    mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error($localhost));
-
 
     if ($Result1) {
         $msg = "bra3m";
@@ -116,7 +108,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 
         <div class="four columns">
             <div class="LabelContainer">تاريخ الدرجة</div>
-            <input name="DDate" type="text" id="DDate" value="" data-required="true" zezo_date="true">
+            <input name="DDate" type="text" id="DDate" data-required="true" disabled>
         </div>
 
         <div class="four columns omega">
@@ -137,9 +129,10 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     </div>
 
 </form>
-
-<script type="text/javascript">
-    //FillList(<?php //echo $EdarahIDS; ?>,'HalakahID','AutoNo','HName','SELECT * FROM 0_halakat WHERE EdarahID = %s ORDER BY HName','لا يوجد حلقات','اختر الحلقة');
+<script>
+    $(document).ready(function () {
+        $('#DDate').val(get_formated_hijri_date(zezo_get_hijri_date('now')));
+    });
 </script>
 
 <?php include('../templates/footer.php'); ?>
@@ -149,6 +142,7 @@ if (isset($_SESSION['u1'])) {
     ?>
     <script>
         $(document).ready(function () {
+            $('#DDate').val(get_formated_hijri_date(zezo_get_hijri_date('now')));
             alertify.success("تم تسجيل الدرجة بنجاح");
         });
     </script>
@@ -160,5 +154,3 @@ if (isset($_SESSION['u1'])) {
 <script type="text/javascript">
     showError();
 </script>
-<?php
-?>

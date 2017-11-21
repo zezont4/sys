@@ -50,7 +50,8 @@ function txt_change(txt_id, bnd_val, calc_type, max_val) {
 
             } else if (calc_type == 3) {
                 d_resault = roundMe(txt_val * 5 / parseInt($('#f_' + txt_id + "_t").val(), 10), 2);
-
+            } else if (calc_type == 4) {
+                d_resault = roundMe((txt_val * 20 / parseInt($('#f_' + txt_id + "_t").val(), 10))/2, 3);
             }
             if (d_resault > max_val) {
                 $('#f_' + txt_id + "_d").val(max_val);
@@ -81,8 +82,8 @@ function cmbo_change(cmbo_id, cmbo_values) {
 
 function get_teachers_st_count(teacher_no) {
     $.get("/sys/basic/ajax_students_count.php", {
-            TID: teacher_no
-        })
+        TID: teacher_no
+    })
         .done(function (data) {
             $('#f_2a_t,#f_2b_t').val(data);
             $('#f_2a_t,#f_2b_t').trigger('keyup');
@@ -91,9 +92,9 @@ function get_teachers_st_count(teacher_no) {
 
 function get_ertiqa_st_count(teacher_no, f_t_date1) {
     $.get("/sys/ertiqa/ajax_success_count.php", {
-            TID: teacher_no,
-            f_t_date: f_t_date1
-        })
+        TID: teacher_no,
+        f_t_date: f_t_date1
+    })
         .done(function (data) {
             $('#f_2a_n').val(data);
             $('#f_2a_n').trigger('keyup');
@@ -102,9 +103,9 @@ function get_ertiqa_st_count(teacher_no, f_t_date1) {
 
 function get_bra3m_st_count(teacher_no, f_t_date1) {
     $.get("/sys/ertiqa/ajax_bra3m_count.php", {
-            TID: teacher_no,
-            f_t_date: f_t_date1
-        })
+        TID: teacher_no,
+        f_t_date: f_t_date1
+    })
         .done(function (data) {
             $('#f_2b_n').val(data);
             $('#f_2b_n').trigger('keyup');
@@ -120,7 +121,7 @@ $(document).ready(function () {
     txt_change("1a", 0, 1, 20);
 
     txt_change("2a", 0, 2, 20);
-    txt_change("2b", 0, 2, 20);
+    txt_change("2b", 0, 4, 20);
 
     chk_change("3a", 2);
     chk_change("3b", 4);

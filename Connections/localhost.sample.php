@@ -79,5 +79,4 @@ function env($env_label)
 
 	return $env[$env_label];
 }
-
-?>
+mysqli_select_db($localhost, $database_localhost);

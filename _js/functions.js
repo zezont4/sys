@@ -204,6 +204,9 @@ function GetMarkMony20(MarkShortName) {
 //خاص بمرتقى الفاتحة
 //مكافأة المعلم
 function GetMarkMonyForTeacher20(MarkShortName) {
+    // تلغى مكافأة المعلم من الإحصاءات لأنها تصرف من جائزة الحلافي في الحفل
+     return 0;
+     
     var money = 0;
     if (MarkShortName == "أ") {
         money = 1000;

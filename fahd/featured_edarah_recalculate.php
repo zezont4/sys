@@ -1,15 +1,12 @@
-<?php require_once('../Connections/localhost.php'); ?>
 <?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
 <?php require_once('fahd_functions.php'); ?>
-<?php $PageTitle = 'إعادة احتساب درجات مسابقة المعلم المتميز' ?>
+<?php $PageTitle = 'إعادة احتساب درجات مسابقة الإدارة المتميزة' ?>
 <?php if (login_check('admin,ms,t3lem') == true) { ?>
     <?php
     $editFormAction = $_SERVER['PHP_SELF'];
     if (isset($_SERVER['QUERY_STRING'])) {
         $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
     }
-    mysqli_select_db($localhost, $database_localhost);
 
     $query_fahd_year = "SELECT *
 					FROM ms_fahd_years ORDER BY y_start_date DESC ";
@@ -28,178 +25,146 @@
         $fahd_year_start = $row_fahd_year1['y_start_date'];
         $fahd_year_end = $row_fahd_year1['y_end_date'];
 
-        $query_all_f_teachers = sprintf("SELECT *
-									FROM ms_fahd_featured_teacher 
-									WHERE f_t_date BETWEEN %s AND %s", $fahd_year_start, $fahd_year_end);
-        $all_f_teachers = mysqli_query($localhost, $query_all_f_teachers) or die('get fahd years 2 ' . mysqli_error($localhost));
-        $row_all_f_teachers = mysqli_fetch_assoc($all_f_teachers);
-        $totalRows_all_f_teachers = mysqli_num_rows($all_f_teachers);
-        ?>
-        <!--<div class="CSSTableGenerator">
-        <table>
-            <tr>
-                <td>TID</td>
+        $query_all_f_edarah = sprintf("SELECT *
+									FROM ms_fahd_featured_edarah 
+									WHERE f_e_date BETWEEN %s AND %s", $fahd_year_start, $fahd_year_end);
+        $all_f_edarah = mysqli_query($localhost, $query_all_f_edarah) or die('get fahd years 2 ' . mysqli_error($localhost));
+        $row_all_f_edarah = mysqli_fetch_assoc($all_f_edarah);
+        $totalRows_all_f_edarah = mysqli_num_rows($all_f_edarah);
 
-                <td>old st count</td>
-                <td>new st count</td>
 
-                <td>old ertiqa count</td>
-                <td>new ertiqa count</td>
-
-                <td>old ertiqa_degree</td>
-                <td>new ertiqa_degree</td>
-
-                <td>old_bra3m_count</td>
-                <td>new_bra3m_count</td>
-
-                <td>old_bra3m_degree</td>
-                <td>new_bra3m_degree</td>
-
-                <td>old_full_degree</td>
-                <td>new_full_degree</td>
-            </tr>
-        -->
-        <?php
-        if ($totalRows_all_f_teachers > 0) {
+        if ($totalRows_all_f_edarah > 0) {
             do {
-                $TID = $row_all_f_teachers['teacher_id'];
+                $edarah_id = $row_all_f_edarah['edarah_id'];
 
-                $count_meetings = $_POST['f6'];
-                //d_resault = roundMe(txt_val * 5 / parseInt($('#f_' + txt_id + "_t").val(), 10), 2);
-                //عدد الطلاب
-                $query_st_count = sprintf("SELECT count(s.StID) AS st_count
-									FROM `0_teachers` t,`0_students` s 
-									WHERE t.THalaqah = s.StHalaqah AND t.hide=0 AND s.hide=0 AND t.TID=%s", $TID);
-
-                $st_count = mysqli_query($localhost, $query_st_count) or die("get students count: " . mysqli_error($localhost));
-                $row_st_count = mysqli_fetch_assoc($st_count);
-                $totalRows_st_count = mysqli_num_rows($st_count);
-                $st_count = 0;
-                if ($totalRows_st_count > 0) {
-                    $st_count = $row_st_count["st_count"];
+//عدد الذين اجتازوا اختبار المرتقيات
+                $query_success_count = sprintf("select count(e.AutoNo) as count_st 
+from er_ertiqaexams e,er_shahadah sh 
+where e.AutoNo=sh.ExamNo and  e.EdarahID=%s and e.FinalExamDate between %s and %s",
+                    $edarah_id,
+                    $fahd_year_start,
+                    $fahd_year_end);
+//echo $query_success_count;
+                $success_count = mysqli_query($localhost, $query_success_count) or die("feature_edarah_add.php 1: " . mysqli_error($localhost));
+                $row_success_count = mysqli_fetch_assoc($success_count);
+                $totalRows_success_count = mysqli_num_rows($success_count);
+                $count_ertiqa = 0;
+                if ($totalRows_success_count > 0) {
+                    $count_ertiqa = $row_success_count["count_st"];
                 }
 
-                //المرتقيات
-                $query_rs_ertica_count = sprintf("SELECT count(e.AutoNo) AS count_st
-										FROM er_ertiqaexams e,er_shahadah sh
-										WHERE e.AutoNo=sh.ExamNo AND e.TeacherID=%s AND e.FinalExamDate BETWEEN %s AND %s", $TID, $fahd_year_start, $fahd_year_end);
-
-                //echo $query_rs_ertica_count;
-                $rs_ertica_count = mysqli_query($localhost, $query_rs_ertica_count) or die("get ertiqa count 1: " . mysqli_error($localhost));
-                $row_rs_ertica_count = mysqli_fetch_assoc($rs_ertica_count);
-                $totalRows_rs_ertica_count = mysqli_num_rows($rs_ertica_count);
-                $ertiqa_count = 0;
-                if ($totalRows_rs_ertica_count > 0) {
-                    $ertiqa_count = $row_rs_ertica_count["count_st"];
+//عدد الذين استلموا مكافأة البراعم
+                $query_bra3m = sprintf("select count(AutoNo) as count_st from er_bra3m  where EdarahID=%s and DDate between %s and %s",
+                    $edarah_id,
+                    $fahd_year_start,
+                    $fahd_year_end);
+                $bra3m = mysqli_query($localhost, $query_bra3m) or die("feature_edarah_add.php 2: " . mysqli_error($localhost));
+                $row_bra3m = mysqli_fetch_assoc($bra3m);
+                $totalRows_bra3m = mysqli_num_rows($bra3m);
+                $count_bra3m = 0;
+                if ($totalRows_bra3m > 0) {
+                    $count_bra3m = $row_bra3m["count_st"];
                 }
 
-                //البراعم
-                $query_rs_bra3m_count = sprintf("SELECT count(AutoNo) AS count_st
-										FROM er_bra3m
-										WHERE TeacherID=%s AND DDate BETWEEN %s AND %s", $TID, $fahd_year_start, $fahd_year_end);
-                //echo $query_rs_bra3m_count;
-                $rs_bra3m_count = mysqli_query($localhost, $query_rs_bra3m_count) or die("get bra3m count 1: " . mysqli_error($localhost));
-                $row_rs_bra3m_count = mysqli_fetch_assoc($rs_bra3m_count);
-                $totalRows_rs_bra3m_count = mysqli_num_rows($rs_bra3m_count);
-                $new_bra3m_count = 0;
-                if ($totalRows_rs_bra3m_count > 0) {
-                    $new_bra3m_count = $row_rs_bra3m_count["count_st"];
+//عدد طلاب الصف الثالث فما فوق للمرتقيات
+                $query_children = sprintf("SELECT count(st_no) AS count_st FROM  0_students WHERE school_level IN (14,0,1,2,13) AND StEdarah=%s AND hide=0",
+                    $edarah_id,
+                    $fahd_year_start,
+                    $fahd_year_end);
+                $children = mysqli_query($localhost, $query_children) or die("feature_edarah_add.php 3: " . mysqli_error($localhost));
+                $row_children = mysqli_fetch_assoc($children);
+                $totalRows_children = mysqli_num_rows($children);
+                $count_children = 0;
+                $bra3m_percentage = 0;
+                $full_degree_bra3m = 0;
+                $bra3m_degree = 0;
+                if ($totalRows_children > 0) {
+                    $count_children = $row_children["count_st"];
+
+                    //نسبة نجاح البراعم
+                    $bra3m_percentage = round($count_bra3m / $count_children * 100, 1);
+//للحصول على الدرجة الكاملة للبراعم
+                    $full_degree_bra3m = round($count_children * 0.80, 0);
+//الدرجة التي حصل عليها في البراعم حسب الاجتياز والنسبة
+                    $bra3m_degree = round((20 / 80) * $bra3m_percentage, 1);
+                    $bra3m_degree = $bra3m_degree > 5 ? 5 : $bra3m_degree;
                 }
-                if ($st_count > 0) {
-                    $new_ertiqa_degree = round($ertiqa_count * 20 / $st_count, 2);
-                    $new_bra3m_degree = round(($new_bra3m_count * 20 / $st_count)/2, 2);
-                } else {
-                    $new_ertiqa_degree = 0;
-                    $new_bra3m_degree = 0;
+
+//عدد طلاب الصف الثاني فما دون للبراعم
+                $query_young = sprintf("SELECT count(st_no) AS count_st FROM  0_students WHERE school_level BETWEEN 3 AND 15 AND StEdarah=%s AND hide=0",
+                    $edarah_id,
+                    $fahd_year_start,
+                    $fahd_year_end);
+                $young = mysqli_query($localhost, $query_young) or die("feature_edarah_add.php 4: " . mysqli_error($localhost));
+                $row_young = mysqli_fetch_assoc($young);
+                $totalRows_young = mysqli_num_rows($young);
+                $count_young = 0;
+                $ertiqa_percentage = 0;
+                $full_degree_ertiqa = 0;
+                $ertiqa_degree = 0;
+                if ($totalRows_young > 0) {
+                    $count_young = $row_young["count_st"];
+                    //نسبة نجاح المرتقيات
+                    $ertiqa_percentage = round($count_ertiqa / $count_young * 100, 1);
+//للحصول على الدرجة الكاملة للمرتقيات
+                    $full_degree_ertiqa = round($count_young * 0.75, 0);
+//الدرجة التي حصل عليها في المرتقيات حسب الاجتياز والنسبة
+                    $ertiqa_degree = round((20 / 75) * $ertiqa_percentage, 1);
+                    $ertiqa_degree = $ertiqa_degree > 20 ? 20 : $ertiqa_degree;
                 }
-                if ($new_ertiqa_degree > 20) {
-                    $new_ertiqa_degree = 20;
-                };
-                //echo 'now ertiqa degree : ',$new_ertiqa_degree,'<br>';
 
-                if ($new_bra3m_degree > 20) {
-                    $new_bra3m_degree = 20;
-                };
-                //echo 'now bra3m degree : ',$new_bra3m_degree,'<hr>';
 
-                $new_full_degree = $row_all_f_teachers['full_degree'] - ($row_all_f_teachers['f_2a_d'] + $row_all_f_teachers['f_2b_d']) + ($new_ertiqa_degree + $new_bra3m_degree);
-                ?>
-                <!--<tr>
-		<td><?php //echo $TID ;?></td>
 
-		<td><?php //echo $row_all_f_teachers['f_2a_t'] ;?></td>
-		<td><?php //echo $st_count ;?></td>
-		
-		<td><?php //echo $row_all_f_teachers['f_2a_n'] ;?></td>
-		<td><?php //echo $ertiqa_count ;?></td>
-		
-		<td><?php //echo $row_all_f_teachers['f_2a_d'] ;?></td>
-		<td><?php //echo $new_ertiqa_degree ;?></td>
+                $new_full_degree = $row_all_f_edarah['total_e'] - ($row_all_f_edarah['e4'] + $row_all_f_edarah['e5']) + ($ertiqa_degree + $bra3m_degree);
 
-		<td><?php //echo $row_all_f_teachers['f_2b_n'] ;?></td>
-		<td><?php //echo $new_bra3m_count ;?></td>
-		
-		<td><?php //echo $row_all_f_teachers['f_2b_d'] ;?></td>
-		<td><?php //echo $new_bra3m_degree ;?></td>
-
-		<td><?php //echo $row_all_f_teachers['full_degree'] ;?></td>
-		<td><?php //echo $new_full_degree ;?></td>
-	</tr>-->
-                <?php
-                $updateSQL = sprintf("UPDATE ms_fahd_featured_teacher SET f_2a_t=%s,f_2a_n=%s,f_2a_d=%s,f_2b_n=%s,f_2b_d=%s,full_degree=%s WHERE auto_no=%s", $st_count, $ertiqa_count, $new_ertiqa_degree, $new_bra3m_count, $new_bra3m_degree, $new_full_degree, $row_all_f_teachers['auto_no']);
+                $updateSQL = sprintf("UPDATE ms_fahd_featured_edarah SET e4=%s,e5=%s,total_e=%s WHERE id=%s", $ertiqa_degree, $bra3m_degree, $new_full_degree, $edarah_id);
                 //echo $updateSQL.'<br>';
-                mysqli_select_db($localhost, $database_localhost);
                 $Result1 = mysqli_query($localhost, $updateSQL) or die(' update 1 : ' . mysqli_error($localhost) . '<br>' . $updateSQL);
                 if ($Result1) {
                     $_SESSION['u1'] = "u1";
                 }
-            } while ($row_all_f_teachers = mysqli_fetch_assoc($all_f_teachers));
+            } while ($row_all_f_edarah = mysqli_fetch_assoc($all_f_edarah));
         } else {
-            echo '<br><br><br><br><h1><center><strong>'. 'تأكد من العام الدراسي'.'</strong></center></h1><br><br>';
+            echo '<br><br><br><br><h1><center><strong>' . 'تأكد من العام الدراسي' . '</strong></center></h1><br><br>';
         }
         ?>
-        <!--</table>
-        </div>-->
-    <?php
+
+        <?php
     }
     ?>
     <?php include('../templates/header1.php'); ?>
-<title><?php echo $PageTitle; ?></title>
-</head>
-<body>
-<?php include('../templates/header2.php'); ?>
+    <title><?php echo $PageTitle; ?></title>
+    </head>
+    <body>
+    <?php include('../templates/header2.php'); ?>
     <?php include('../templates/nav_menu.php'); ?>
-		<div id="PageTitle"> <?php echo $PageTitle; ?> </div>
-		<!--PageTitle-->
-		
-		<div class="content">
-			<form action="<?php echo $editFormAction; ?>" method="post" name="form1" data-validate="parsley">
-				<input type="hidden" name="f_form1" value="form1">
-				<div class="five columns alpha">
-					<div class="LabelContainer">
-						<label for="fahd_year">العام الدراسي</label>
-					</div>
-					<select name="fahd_year" class="full-width" data-required="true">
-						<option VALUE>حدد العام الدراسي للمسابقة</option>
-						<?php do { ?>
-        <option
-            value="<?php echo $row_fahd_year['y_id']; ?>"><?php echo $row_fahd_year['year_name'], ' ( ', StringToDate($row_fahd_year['y_start_date']), ' - ', StringToDate($row_fahd_year['y_end_date']), ' )'; ?></option>
-    <?php } while ($row_fahd_year = mysqli_fetch_assoc($fahd_year)); ?>
-					</select>
-				</div>
-				<div class="four columns">
-				<div class="LabelContainer">
-                <label for="TeacherID">اجمالي عدد الاجتماعات</label>
+    <div id="PageTitle"> <?php echo $PageTitle; ?> </div>
+    <!--PageTitle-->
+
+    <div class="content">
+        <form action="<?php echo $editFormAction; ?>" method="post" name="form1" data-validate="parsley">
+            <input type="hidden" name="f_form1" value="form1">
+            <div class="five columns alpha">
+                <div class="LabelContainer">
+                    <label for="fahd_year">العام الدراسي</label>
                 </div>
-					<input name="f6" type="text" class="full-width"  data-required="true"/>
-				</div>
-				<div class="four columns">
-					<input name="submit" type="submit" class="full-width button-primary" id="submit" value="اعادة احتساب المرتقيات والبراعم"/>
-				</div>
-			</form>
-</div>
-		<!--content-->
-<?php include('../templates/footer.php'); ?>
+                <select name="fahd_year" class="full-width" data-required="true">
+                    <option VALUE>حدد العام الدراسي للمسابقة</option>
+                    <?php do { ?>
+                        <option
+                                value="<?php echo $row_fahd_year['y_id']; ?>"><?php echo $row_fahd_year['year_name'], ' ( ', StringToDate($row_fahd_year['y_start_date']), ' - ', StringToDate($row_fahd_year['y_end_date']), ' )'; ?></option>
+                    <?php } while ($row_fahd_year = mysqli_fetch_assoc($fahd_year)); ?>
+                </select>
+            </div>
+
+            <div class="four columns">
+                <input name="submit" type="submit" class="full-width button-primary" id="submit"
+                       value="اعادة احتساب المرتقيات والبراعم"/>
+            </div>
+        </form>
+    </div>
+    <!--content-->
+    <?php include('../templates/footer.php'); ?>
     <?php if (isset($_SESSION['u1'])) { ?>
         <script>
             $(document).ready(function () {
@@ -212,9 +177,9 @@
     }
     ?>
 
-<script type="text/javascript">
-	showError();
-</script>	    
+    <script type="text/javascript">
+        showError();
+    </script>
 <?php } else {
     include('../templates/restrict_msg.php');
 } ?>

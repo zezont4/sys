@@ -1,9 +1,5 @@
-<!--<div id="footer">للملاحظات والمشاكل التقنية  ( 0559955114 - قسم الحاسب والتقنية ). وللاستفسارات العامة ( 064222837 ) تحويلة ( 107 أو 138 - قسم الإرتقاء ).
-</div>--><!--footer-->
 </div><!--container-->
 </div><!--page-->
-<?php //include_once("analyticstracking.php") ?>
-<!--<script src="/sys/_js/jquery-ui-1.9.2.custom.min.js"></script>-->
 
 <script>
     $(document).ready(function () {
@@ -26,6 +22,7 @@
     }
 
     <?php
+    $allowdgroupes='';
     if (isset($_SESSION['user_group'])){
         $allowdgroupes=$_SESSION['user_group'];
     }

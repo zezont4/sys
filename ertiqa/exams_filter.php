@@ -1,10 +1,8 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php $PageTitle = 'تقرير مخصص لطلاب المرتقيات'; ?>
-<?php if (login_check("admin,er") == true) { ?>
-    <?php
+<?php
+require_once('../functions.php');
+$PageTitle = 'تقرير مخصص لطلاب المرتقيات';
+if (login_check("admin,er,alaqat") == true) {
+
     $EdarahIDS = $_SESSION['user_id'];
 
     $Date1 = isset($_GET['Date1']) ? $_GET['Date1'] : '';
@@ -19,9 +17,8 @@
         $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
     }
 
-
     $statusName_sql = filter_array($statusName, 'جميع حالات الاختبار', 0, 'FinalExamStatus');
-    $murtaqaName_sql = filter_array($murtaqaName, 'جميع المرتقيات', 1, 'ErtiqaID');
+    $murtaqaName_sql = filter_array($murtaqaName, 'جميع المرتقيات', 0, 'ErtiqaID');
     $MarkName_Long_sql = filter_array($MarkName_Long, 'جميع التقديرات', 0, 'MarkName_Short');
     $totalRows_ReExams = 0;
     if (isset($_GET['MM_show'])) {
@@ -51,11 +48,10 @@
         }
 
 
-        mysqli_select_db($localhost, $database_localhost);
         $sql_sex = sql_sex('edarah_sex');
         if ($_SESSION['user_group'] != 'edarh') {
-            $query_ReExams = sprintf("SELECT O_StudentName,Money,O_TeacherName3,O_FinalExamDate,FinalExamDate,
-	FinalExamDegree,O_Edarah,EdarahID,O_HName,O_MurtaqaName,AutoNo,FinalExamStatus,MarkName_Short 
+            $query_ReExams = sprintf("SELECT O_StudentName,Money,O_TeacherName,O_FinalExamDate,FinalExamDate,
+	FinalExamDegree,O_Edarah,EdarahID,O_HName,O_MurtaqaName,AutoNo,FinalExamStatus,MarkName_Short,StMobileNo,nationality,StMobileNo
 	FROM view_er_ertiqaexams 
 	WHERE EdarahID>0 %s %s %s %s %s %s %s ORDER BY AutoNo DESC",
                 $sql_sex,
@@ -67,8 +63,8 @@
                 $edarah_id
             );
         } else {
-            $query_ReExams = sprintf("SELECT O_StudentName,Money,O_TeacherName3,O_FinalExamDate,FinalExamDate,
-	FinalExamDegree,O_Edarah,EdarahID,O_HName,O_MurtaqaName,AutoNo,FinalExamStatus,MarkName_Short
+            $query_ReExams = sprintf("SELECT O_StudentName,Money,O_TeacherName,O_FinalExamDate,FinalExamDate,
+	FinalExamDegree,O_Edarah,EdarahID,O_HName,O_MurtaqaName,AutoNo,FinalExamStatus,MarkName_Short,StMobileNo,nationality,StMobileNo
 	 FROM view_er_ertiqaexams 
 	 WHERE EdarahID = %s %s %s %s %s %s %s ORDER BY AutoNo DESC",
                 GetSQLValueString($_SESSION['user_id'], "int"),
@@ -162,46 +158,52 @@
                 إلى <?php echo(($Date2 != '') ? $Date2 : StringToDate($_SESSION ['default_end_date']) . ' هـ '); ?> </p></div>
     <?php } ?>
     <?php if ($totalRows_ReExams > 0) { // Show if recordset not empty ?>
-</div>
+        </div>
 
-    <div class="content CSSTableGenerator">
-        <table class="table" id="table_data">
-            <caption>مواعيد ونتائج الطلاب في اختبارات المرتقيات</caption>
-            <tr>
-                <td>م</td>
-                <td>اسم <?php echo get_gender_label('st', 'ال'); ?></td>
-                <td class="NoMobile">المجمع</td>
-                <td>الحلقة</td>
-                <td>المرتقى</td>
-                <td>التاريخ</td>
-                <td>الحالة</td>
-                <td>الدرجة</td>
-                <td>التقدير</td>
-                <td>المكافأة</td>
-            </tr>
-            <?php
-            $ii = 0;
-            do { ?>
-                <tr class="Status_<?php echo $row_ReExams['FinalExamStatus']; ?>">
-                    <td><?php echo $ii + 1; ?></td>
-                    <td><?php echo $row_ReExams['O_StudentName']; ?></td>
-                    <td class="NoMobile"><?php echo str_replace("مجمع ", "", $row_ReExams['O_Edarah']); ?></td>
-                    <td><?php echo $row_ReExams['O_HName']; ?></td>
-                    <td><?php echo $row_ReExams['O_MurtaqaName']; ?></td>
-                    <td><?php echo $row_ReExams['O_FinalExamDate']; ?></td>
-                    <td><?php echo get_array_1($statusName, $row_ReExams['FinalExamStatus']); ?></a></td>
-                    <td><?php echo $row_ReExams['FinalExamDegree']; ?></td>
-                    <td><?php echo $row_ReExams['MarkName_Short']; ?></td>
-                    <td><?php echo $row_ReExams['Money']; ?></td>
+        <div class="content CSSTableGenerator">
+            <table class="table" id="table_data">
+                <caption>مواعيد ونتائج الطلاب في اختبارات المرتقيات</caption>
+                <tr>
+                    <td>م</td>
+                    <td>اسم <?php echo get_gender_label('st', 'ال'); ?></td>
+                    <td class="NoMobile">الجنسية</td>
+                    <td class="NoMobile">المجمع</td>
+                    <td class="NoMobile">الحلقة</td>
+                    <td>المعلم</td>
+                    <td>المرتقى</td>
+                    <td>التاريخ</td>
+                    <td>الحالة</td>
+                    <td>الدرجة</td>
+                    <td>التقدير</td>
+                    <td class="NoMobile">المكافأة</td>
+                    <td class="NoMobile">الجوال</td>
                 </tr>
                 <?php
-                $ii++;
-            } while ($row_ReExams = mysqli_fetch_assoc($ReExams)); ?>
-        </table>
-        <div id="lastDataTable"></div>
-    </div><!--content-->
-<?php } ?>
-    <?php include('../templates/footer.php'); ?>
-<?php } else {
+                $ii = 0;
+                do { ?>
+                    <tr class="Status_<?php echo $row_ReExams['FinalExamStatus']; ?>">
+                        <td><?php echo $ii + 1; ?></td>
+                        <td><?php echo $row_ReExams['O_StudentName']; ?></td>
+                        <td class="NoMobile"><?php echo get_array_1($nationality, $row_ReExams['nationality']); ?></td>
+                        <td class="NoMobile"><?php echo str_replace("مجمع ", "", $row_ReExams['O_Edarah']); ?></td>
+                        <td class="NoMobile"><?php echo $row_ReExams['O_HName']; ?></td>
+                        <td><?php echo $row_ReExams['O_TeacherName']; ?></td>
+                        <td><?php echo $row_ReExams['O_MurtaqaName']; ?></td>
+                        <td><?php echo $row_ReExams['O_FinalExamDate']; ?></td>
+                        <td><?php echo get_array_1($statusName, $row_ReExams['FinalExamStatus']); ?></a></td>
+                        <td><?php echo $row_ReExams['FinalExamDegree']; ?></td>
+                        <td><?php echo $row_ReExams['MarkName_Short']; ?></td>
+                        <td class="NoMobile"><?php echo $row_ReExams['Money']; ?></td>
+                        <td class="NoMobile"><?php echo $row_ReExams['StMobileNo']; ?></td>
+                    </tr>
+                    <?php
+                    $ii++;
+                } while ($row_ReExams = mysqli_fetch_assoc($ReExams)); ?>
+            </table>
+            <div id="lastDataTable"></div>
+        </div><!--content-->
+    <?php }
+    include('../templates/footer.php');
+} else {
     include('../templates/restrict_msg.php');
-} ?>
+}

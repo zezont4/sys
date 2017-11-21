@@ -1,10 +1,6 @@
-<?php require_once('../../Connections/localhost.php'); ?>
-<?php require_once('../../functions.php'); ?>
-<?php require_once '../../secure/functions.php'; ?>
-<?php sec_session_start(); ?>
-<?php $PageTitle = '(الارتقاء) الغياب والجودة حسب ' . get_gender_label('e', 'ال'); ?>
-<?php if (login_check($all_groups) == true) { ?>
-    <?php
+<?php require_once('../../functions.php');
+$PageTitle = '(الارتقاء) الغياب والجودة حسب ' . get_gender_label('e', 'ال');
+if (login_check($all_groups) == true) {
     $editFormAction = $_SERVER['PHP_SELF'];
     if (isset($_SERVER['QUERY_STRING'])) {
         $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
@@ -14,14 +10,14 @@
     $Date1 = isset($_GET['Date1']) ? $_GET['Date1'] : null;
 
     if ($Date1 != null) {
-        $Date1_Rs1 = 'and FinalExamDate>=' . str_replace('/', '', $_GET['Date1']);
+        $Date1_Rs1 = 'and FinalExamDate>=' . str_replace('/', '', Input::get('Date1'));
     }
 
     $Date2_Rs1 = 'and FinalExamDate<=' . str_replace('/', '', $_SESSION ['default_end_date']);
     $Date2 = isset($_GET['Date2']) ? $_GET['Date2'] : null;
 
     if ($Date2 != null) {
-        $Date2_Rs1 = 'and FinalExamDate<=' . str_replace('/', '', $_GET['Date2']);
+        $Date2_Rs1 = 'and FinalExamDate<=' . str_replace('/', '', Input::get('Date2'));
     }
 
     $e_type = isset($_GET['e_type']) ? $_GET['e_type'] : null;
@@ -29,7 +25,6 @@
         $e_type = 'and e_type=' . $_GET['e_type'];
     }
 
-    mysqli_select_db($localhost, $database_localhost);
     $sql_sex = sql_sex('edarah_sex');
     $query_Rs1 = sprintf("SELECT
 					(count(AutoNo) - SUM(FinalExamStatus = 6)) as CountE
@@ -176,8 +171,7 @@
     <h1>لا توجد اختبارات حسب التاريخ المحدد</h1>
 <?php } ?>
 </div>
-    <?php include('../../templates/footer.php'); ?>
-    <?php mysqli_free_result($Rs1); ?>
-<?php } else {
+    <?php include('../../templates/footer.php');
+} else {
     include('../../templates/restrict_msg.php');
-} ?>
+}

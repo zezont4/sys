@@ -1,30 +1,20 @@
 <?php
-include 'Connections/localhost.php';
+include 'functions.php';
+if (isset($_COOKIE['rememberme'])) {
+    unset($_COOKIE['rememberme']);
+    setcookie('rememberme', '', time() - 3600, '/');
+}
+if (isset($_COOKIE['arabic_name'])) {
+    unset($_COOKIE['arabic_name']);
+    setcookie('arabic_name', '', time() - 3600, '/');
+}
 // Unset all session values
 $_SESSION = array();
-// get session parameters 
+// get session parameters
 $params = session_get_cookie_params();
 // Delete the actual cookie.
-setcookie(session_name(),'',time() - 42000,$params["path"],$params["domain"],$params["secure"],$params["httponly"]);
+setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
 // Destroy session
 session_destroy();
-header('Location: ./');
-//echo $RootPath;
-// *** Logout the current user.
-$logoutGoTo = "/sys/index.php";
-/*if (!isset($_SESSION)) {
-  session_start();
-}
-$_SESSION['username'] = NULL;
-$_SESSION['user_group'] = NULL;
-$_SESSION['arabic_name'] = NULL;
-
-
-unset($_SESSION['username']);
-unset($_SESSION['user_group']);
-unset($_SESSION['arabic_name']);
-*/
-if ($logoutGoTo != "") {header("Location: $logoutGoTo");
+header('Location: /sys/index.php');
 exit;
-}
-?>
