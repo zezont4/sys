@@ -19,9 +19,9 @@ if (isset($_GET['auto_no'])) {
 }
 
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
-    $f_t_chkbx_array = array('3a', '3b', '4b', '5a', '5b', '5c', '7a', '9a', '15a', '15b', '12a', '13a');
+    $f_t_chkbx_array = ['3a', '3b', '4b', '5a', '5b', '5c', '7a', '9a', '15a', '15b', '12a', '13a'];
     $length = count($f_t_chkbx_array);
-    for ($i = 0; $i < $length; $i ++) {
+    for ($i = 0; $i < $length; $i++) {
         $f_0_1 = ($_POST['f_' . $f_t_chkbx_array[$i] . '_n'] == 1) ? '1' : '0';
         $chk_sql = $chk_sql . ',f_' . $f_t_chkbx_array[$i] . '_n = ' . $f_0_1;
 
@@ -30,12 +30,12 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     }
 
     if ($userType != "xx") {
-        $f_t_txt2bx_array = array('1a', '4a', '8a', '10a', '11a', '14a');
+        $f_t_txt2bx_array = ['1a', '4a', '8a', '10a', '11a', '14a'];
     } else {
-        $f_t_txt2bx_array = array('4a', '8a', '10a', '11a');
+        $f_t_txt2bx_array = ['4a', '8a', '10a', '11a'];
     }
     $length = count($f_t_txt2bx_array);
-    for ($i = 0; $i < $length; $i ++) {
+    for ($i = 0; $i < $length; $i++) {
         $f_0_1 = ($_POST['f_' . $f_t_txt2bx_array[$i] . '_n'] > 0) ? $_POST['f_' . $f_t_txt2bx_array[$i] . '_n'] : '0';
         $txt2_sql = $txt2_sql . ',f_' . $f_t_txt2bx_array[$i] . '_n = ' . $f_0_1;
 
@@ -44,12 +44,12 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     }
 
     if ($userType != "xx") {
-        $f_t_txt3bx_array = array('2a', '2b', '6a');
+        $f_t_txt3bx_array = ['2a', '2b', '6a'];
     } else {
-        $f_t_txt3bx_array = array('2a', '2b');
+        $f_t_txt3bx_array = ['2a', '2b'];
     }
     $length = count($f_t_txt3bx_array);
-    for ($i = 0; $i < $length; $i ++) {
+    for ($i = 0; $i < $length; $i++) {
         $f_0_1 = ($_POST['f_' . $f_t_txt3bx_array[$i] . '_n'] > 0) ? $_POST['f_' . $f_t_txt3bx_array[$i] . '_n'] : '0';
         $txt3_sql = $txt3_sql . ',f_' . $f_t_txt3bx_array[$i] . '_n = ' . $f_0_1;
 
@@ -61,7 +61,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     }
     $approved = isset($_POST['approved']) ? 1 : 0;
     $updateSQL = "UPDATE ms_fahd_featured_teacher SET
-f_t_date='" . str_replace("/", "", $_POST['f_t_date']) . "',full_degree=" . $_POST['full_degree'] . ",approved=" . $approved . $chk_sql . $txt2_sql . $txt3_sql . ' WHERE auto_no=' . $auto_no;
+	f_t_date='" . str_replace("/", "", $_POST['f_t_date']) . "',teacher_type=" . $_POST['teacher_type'] . ",full_degree=" . $_POST['full_degree'] . ",approved=" . $approved . $chk_sql . $txt2_sql . $txt3_sql . ' WHERE auto_no=' . $auto_no;
     //    exit($updateSQL);
     mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $updateSQL) or die(' update 1 : ' . mysqli_error($localhost));
@@ -91,7 +91,8 @@ if (isset($_SESSION['user_id'])) {
 ?>
 <?php
 //انشاء عنوان القسم
-function create_f_t_block_head($array_index) {
+function create_f_t_block_head($array_index)
+{
     //require('fahd_functions.php');
     global $featured_teacher_dep, $featured_teacher_title, $userType;
     if ($userType != 'xx') {
@@ -108,7 +109,8 @@ function create_f_t_block_head($array_index) {
 }
 
 //انشاء بند نصي
-function create_f_t_block_bnd_txt($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '') {
+function create_f_t_block_bnd_txt($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '')
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 			<div class="six columns alpha omega top_padding">' . $bnd_title . '</div>
@@ -126,7 +128,8 @@ function create_f_t_block_bnd_txt($bnd_title, $db_feild_name, $last_bnd = true, 
 }
 
 //انشاء عدد (2) بند نصي
-function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '') {
+function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '')
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 				<div class="three columns alpha omega top_padding">' . $bnd_title1 . '</div>
@@ -148,7 +151,8 @@ function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $la
 }
 
 //انشاء بند مربع اختيار
-function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0) {
+function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0)
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     if ($row_rs_f_teacher["f_" . $db_feild_name . "_n"] == 1) {
         $checked = ' checked="checked" ';
@@ -169,7 +173,8 @@ function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, 
 }
 
 //انشاء بند نصي
-function create_f_t_block_bnd_cmbo($bnd_title, $db_feild_name, $vals, $last_bnd = true, $ex_index = 0, $readonly = '') {
+function create_f_t_block_bnd_cmbo($bnd_title, $db_feild_name, $vals, $last_bnd = true, $ex_index = 0, $readonly = '')
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 				<div class="six columns alpha omega top_padding">' . $bnd_title . '</div>';
@@ -241,9 +246,18 @@ if ($closed == 'no') { ?>
                 <div class="FieldsTitle">التاريخ</div>
             </div>
             <div class="three columns alpha top_padding">تاريخ تسجيل البيانات</div>
-            <div class="three columns"><input name="f_t_date" type="text" id="f_t_date"
-                                              value="<?php echo StringToDate($row_rs_f_teacher["f_t_date"]); ?>"
-                                              data-required="true" readonly/></div>
+            <div class="three columns">
+                <input name="f_t_date" type="text" id="f_t_date"
+                       value="<?php echo StringToDate($row_rs_f_teacher["f_t_date"]); ?>"
+                       data-required="true" readonly/>
+            </div>
+
+            <div class="two columns">&nbsp;</div>
+
+            <div class="three columns alpha top_padding">تصنيف المعلم</div>
+            <div
+                class="four columns"><?php echo create_combo('teacher_type', $teacher_types, 1, $row_rs_f_teacher["teacher_type"], 'class="full-width"') ?></div>
+
         </div>
         <?php
         //if is admin
@@ -348,7 +362,6 @@ if ($closed == 'no') { ?>
 <?php } else {
     echo '<p class="WrapperMSG" >' . 'عفوا .. انتهت فترة التسجيل في مسابقة المعلم المتميز' . '</p>';
 } ?>
-</div>
 <!--content-->
 <?php include('../templates/footer.php'); ?>
 <?php

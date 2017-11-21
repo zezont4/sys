@@ -65,7 +65,7 @@ CREATE TABLE `0_students` (
   `StEdarah` int(4) DEFAULT NULL COMMENT 'رقم الإدارة',
   `StHalaqah` int(4) DEFAULT NULL COMMENT 'رقم الحلقة',
   `home_study` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'منتسب',
-  `RegesterTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `RegisterTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `hide` tinyint(1) NOT NULL COMMENT 'مخفي=1',
   `guardian_name` varchar(50) DEFAULT '' COMMENT 'اسم ولي الأمر',
   PRIMARY KEY (`st_no`),
@@ -90,7 +90,7 @@ CREATE TABLE `0_teachers` (
   `THalaqah` int(4) DEFAULT NULL COMMENT 'رقم الحلقة',
   `TMobileNo` varchar(15) DEFAULT NULL COMMENT 'جوال المعلم',
   `hide` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'مخفي=1',
-  `RegesterTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'تاريخ التسجيل',
+  `RegisterTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'تاريخ التسجيل',
   PRIMARY KEY (`t_no`),
   UNIQUE KEY `TID` (`TID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -177,7 +177,7 @@ DROP TABLE IF EXISTS `er_ertiqaexams`;
 
 CREATE TABLE `er_ertiqaexams` (
   `AutoNo` int(11) NOT NULL AUTO_INCREMENT COMMENT 'تسلسل',
-  `RegesterTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'وقت الحجز',
+  `RegisterTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'وقت الحجز',
   `StID` bigint(10) NOT NULL COMMENT 'رقم الطالب',
   `TeacherID` bigint(10) NOT NULL COMMENT 'رقم المعلم',
   `EdarahID` int(4) NOT NULL COMMENT 'رقم الإدارة',
@@ -426,7 +426,7 @@ CREATE TABLE `ms_shabab_rgstr` (
   `AutoNo` int(11) NOT NULL AUTO_INCREMENT,
   `RDate` varchar(8) NOT NULL COMMENT 'تاريخ التسجيل',
   PRIMARY KEY (`AutoNo`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='المتقدمين لمسابقة رعاية الشباب';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='المتقدمين لمسابقة الهيئة العامة للرياضة';
 
 
 
@@ -593,7 +593,7 @@ CREATE TABLE `view_er_ertiqaexams` (
    `O_MurtaqaName` VARCHAR(20) NULL DEFAULT NULL,
    `StMobileNo` VARCHAR(15) NULL DEFAULT NULL,
    `FatherMobileNo` VARCHAR(15) NULL DEFAULT NULL,
-   `RegesterTime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
+   `RegisterTime` TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00',
    `ErtiqaID` TINYINT(2) NOT NULL,
    `HalakahID` INT(4) NOT NULL,
    `StID` BIGINT(10) NOT NULL,
@@ -863,7 +863,7 @@ AS SELECT
    `e`.`murtaqa_name` AS `O_MurtaqaName`,
    `st`.`StMobileNo` AS `StMobileNo`,
    `st`.`FatherMobileNo` AS `FatherMobileNo`,
-   `ex`.`RegesterTime` AS `RegesterTime`,
+   `ex`.`RegisterTime` AS `RegisterTime`,
    `ex`.`ErtiqaID` AS `ErtiqaID`,
    `ex`.`HalakahID` AS `HalakahID`,
    `ex`.`StID` AS `StID`,

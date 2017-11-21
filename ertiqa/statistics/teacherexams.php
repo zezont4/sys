@@ -6,7 +6,7 @@ if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
 }
 
-$maxRows_RSStudentExams = 20;
+$maxRows_RSStudentExams = 100;
 $pageNum_RSStudentExams = 0;
 if (isset($_GET['pageNum_RSStudentExams'])) {
     $pageNum_RSStudentExams = $_GET['pageNum_RSStudentExams'];

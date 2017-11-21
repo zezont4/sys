@@ -2,8 +2,9 @@
 </div>--><!--footer-->
 </div><!--container-->
 </div><!--page-->
-<?php include_once("analyticstracking.php") ?>
+<?php //include_once("analyticstracking.php") ?>
 <!--<script src="/sys/_js/jquery-ui-1.9.2.custom.min.js"></script>-->
+
 <script>
     $(document).ready(function () {
         $(document).tooltip({
@@ -13,6 +14,7 @@
         });
     });
 </script>
+
 <style>
     .mm-menu li.admin,
     .mm-menu li.edarh,

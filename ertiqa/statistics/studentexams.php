@@ -21,37 +21,44 @@ if (isset($_GET['StudentID'])) {
 }
 
 mysqli_select_db($localhost, $database_localhost);
-$query_RSStudentExams = sprintf("SELECT O_TeacherName,O_FinalExamDate,O_Edarah,O_HName,O_MurtaqaName,AutoNo,StID,FinalExamDegree,FinalExamDate,MarkName_Long,Money FROM view_er_ertiqaexams WHERE StID = %s", GetSQLValueString($student_id, "double"));
+$query_RSStudentExams = sprintf("SELECT O_TeacherName,O_FinalExamDate,O_Edarah,O_HName,ErtiqaID,AutoNo,StID,FinalExamDegree,FinalExamDate,MarkName_Long,Money 
+FROM view_er_ertiqaexams 
+WHERE StID = %s", GetSQLValueString($student_id, "double"));
 $RSStudentExams = mysqli_query($localhost, $query_RSStudentExams) or die('query_RSStudentExams : ' . mysqli_error($localhost));
 $row_RSStudentExams = mysqli_fetch_assoc($RSStudentExams);
 $totalRows_RSStudentExams = mysqli_num_rows($RSStudentExams);
 
-mysqli_select_db($localhost, $database_localhost);
+
 $query_RSStudentData = sprintf("SELECT Stfullname,O_BurthDate,arabic_name,HName,StMobileNo,StID FROM view_0_students WHERE StID = %s", GetSQLValueString($student_id, "double"));
 $RSStudentData = mysqli_query($localhost, $query_RSStudentData) or die(mysqli_error($localhost));
 $row_RSStudentData = mysqli_fetch_assoc($RSStudentData);
 $totalRows_RSStudentData = mysqli_num_rows($RSStudentData);
 
-mysqli_select_db($localhost, $database_localhost);
+
 $query_RSFahdExam = sprintf("SELECT * FROM ms_fahd_rgstr WHERE StID = %s", GetSQLValueString($student_id, "double"));
 $RSFahdExam = mysqli_query($localhost, $query_RSFahdExam) or die(mysqli_error($localhost));
 $row_RSFahdExam = mysqli_fetch_assoc($RSFahdExam);
 $totalRows_RSFahdExam = mysqli_num_rows($RSFahdExam);
 
-mysqli_select_db($localhost, $database_localhost);
+
+$query_rs_salman_exams = sprintf("SELECT * FROM ms_salman_rgstr WHERE StID = %s", GetSQLValueString($student_id, "double"));
+$rs_salman_exams = mysqli_query($localhost, $query_rs_salman_exams) or die(mysqli_error($localhost));
+$row_rs_salman_exams = mysqli_fetch_assoc($rs_salman_exams);
+$totalRows_rs_salman_exams = mysqli_num_rows($rs_salman_exams);
+
 $query_rs_etqan_exam = sprintf("SELECT * FROM ms_etqan_rgstr WHERE StID = %s", GetSQLValueString($student_id, "double"));
 $rs_etqan_exam = mysqli_query($localhost, $query_rs_etqan_exam) or die(mysqli_error($localhost));
 $row_rs_etqan_exam = mysqli_fetch_assoc($rs_etqan_exam);
 $totalRows_rs_etqan_exam = mysqli_num_rows($rs_etqan_exam);
 
-mysqli_select_db($localhost, $database_localhost);
+
 $query_rs_shabab_exam = sprintf("SELECT * FROM ms_shabab_rgstr WHERE StID = %s", GetSQLValueString($student_id, "double"));
 $rs_shabab_exam = mysqli_query($localhost, $query_rs_shabab_exam) or die(mysqli_error($localhost));
 $row_rs_shabab_exam = mysqli_fetch_assoc($rs_shabab_exam);
 $totalRows_rs_shabab_exam = mysqli_num_rows($rs_shabab_exam);
+//var_dump($row_rs_shabab_exam);
 
 
-mysqli_select_db($localhost, $database_localhost);
 $query_RsBra3m = sprintf("SELECT AutoNo,SchoolLevelID,DarajahID,Money,O_StFullName,O_TFullName,O_arabic_name,O_HName,O_DDate FROM view_er_bra3m WHERE StID = %s ORDER BY DDate ASC", GetSQLValueString($student_id, "double"));
 $RsBra3m = mysqli_query($localhost, $query_RsBra3m) or die(mysqli_error($localhost));
 $row_RsBra3m = mysqli_fetch_assoc($RsBra3m);
@@ -59,26 +66,27 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
 ?>
 <?php include('../../templates/header1.php'); ?>
 <?php $PageTitle = 'استعلام عن ' . get_gender_label('st', ''); ?>
-<title><?php echo $PageTitle; ?></title>
-</head>
-<body>
+    <title><?php echo $PageTitle; ?></title>
+    </head>
+    <body>
 <?php include('../../templates/header2.php'); ?>
 <?php include('../../templates/nav_menu.php'); ?>
-<div id="PageTitle"> <?php echo $PageTitle; ?> </div>
-<!--PageTitle-->
-<div class="content lp">
-    <form name="form1" id="form1" method="GET" action="<?php echo $editFormAction; ?>" data-validate="parsley">
-        <div class="four columns alpha">
-            <div class="LabelContainer">
-                <label for="StudentID">رقم السجل المدني <?php echo get_gender_label('st', 'لل'); ?></label>
+    <div id="PageTitle"> <?php echo $PageTitle; ?> </div>
+    <!--PageTitle-->
+    <div class="content lp">
+        <form name="form1" id="form1" method="GET" action="<?php echo $editFormAction; ?>" data-validate="parsley">
+            <div class="four columns alpha">
+                <div class="LabelContainer">
+                    <label for="StudentID">رقم السجل المدني <?php echo get_gender_label('st', 'لل'); ?></label>
+                </div>
+                <input name="StudentID" type="text" value="<?php echo $student_id; ?>" id="StudentID"
+                       data-required="true" data-type="digits" data-maxlength="10">
             </div>
-            <input name="StudentID" type="text" value="<?php echo $student_id; ?>" id="StudentID" data-required="true" data-type="digits" data-maxlength="10">
-        </div>
-        <div class="four columns">
-            <input type="submit" class="button-primary" id="submit" value="بحث"/>
-        </div>
-    </form>
-</div>
+            <div class="four columns">
+                <input type="submit" class="button-primary" id="submit" value="بحث"/>
+            </div>
+        </form>
+    </div>
 <?php if ($totalRows_RSStudentData > 0) { // Show if recordset not empty ?>
     <div class="content CSSTableGenerator">
         <?php echo get_st_info($_GET['StudentID']); ?>
@@ -97,11 +105,14 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                 <td class="NoMobile">المجمع</td>
                 <td>الحلقة</td>
                 <td class="NoMobile">المعلم</td>
+                <?php if ($logedInUser == true) { ?>
+                    <td class="NoMobile">تعديل</td>
+                <?php } ?>
             </tr>
             <?php if ($totalRows_RSStudentExams > 0) { // Show if recordset not empty ?>
                 <?php do { ?>
                     <tr>
-                        <td><?php echo $row_RSStudentExams['O_MurtaqaName']; ?></td>
+                        <td><?php echo get_array_1($murtaqaName, $row_RSStudentExams['ErtiqaID']); ?></td>
                         <td><?php echo $row_RSStudentExams['FinalExamDegree']; ?></td>
                         <td><?php echo $row_RSStudentExams['MarkName_Long']; ?></td>
                         <td><?php echo $row_RSStudentExams['Money']; ?></td>
@@ -109,6 +120,13 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                         <td class="NoMobile"><?php echo $row_RSStudentExams['O_Edarah']; ?></td>
                         <td><?php echo $row_RSStudentExams['O_HName']; ?></td>
                         <td class="NoMobile"><?php echo $row_RSStudentExams['O_TeacherName']; ?></td>
+                        <?php if ($logedInUser == true) { ?>
+                            <td class="NoMobile">
+                                <a title="تعديل الحجز"
+                                   href="../examfulldetail.php?AutoNo=<?php echo $row_RSStudentExams['AutoNo']; ?>"
+                                   tabindex="-1">تعديل</a>
+                            </td>
+                        <?php } ?>
                     </tr>
                 <?php } while ($row_RSStudentExams = mysqli_fetch_assoc($RSStudentExams)); ?>
             <?php } else { ?>
@@ -145,7 +163,8 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                         <?php if ($logedInUser == true) { ?>
                             <td class="NoMobile"><a
                                     href="../../ertiqa/bra3m_edit.php?AutoNo=<?php echo $row_RsBra3m['AutoNo']; ?>">تعديل</a>
-                            </td> <?php } ?>
+                            </td>
+                        <?php } ?>
                     </tr>
                 <?php } while ($row_RsBra3m = mysqli_fetch_assoc($RsBra3m)); ?>
             <?php } else { ?>
@@ -176,7 +195,7 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                     <?php $study_fahd_name = get_fahd_year_name($row_RSFahdExam['RDate']); ?>
                     <tr>
                         <td><?php echo $study_fahd_name; ?></td>
-                        <td><?php echo get_array_1($MsbkhType, $row_RSFahdExam['MsbkhID']); ?></td>
+                        <td><?php echo get_array_1($fahd_MsbkhType, $row_RSFahdExam['MsbkhID']); ?></td>
                         <td><?php echo StringToDate($row_RSFahdExam['RDate']); ?></td>
                         <td><?php echo get_array_1($murtaqaName, $row_RSFahdExam['ErtiqaID']); ?></td>
                         <td><?php echo get_array_1($SchoolLevelNameAll, $row_RSFahdExam['SchoolLevelID']); ?></td>
@@ -184,7 +203,7 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                         <td><?php echo get_halakah_name($row_RSFahdExam['HalakahID']); ?></td>
                         <td><?php echo get_teacher_name($row_RSFahdExam['TeacherID']); ?></td>
                         <?php if ($logedInUser == true) { ?>
-                            <td><a href="../../fahd/Register_edit.php?AutoNo=<?php echo $row_RSFahdExam['AutoNo']; ?>">تعديل</a>
+                            <td><a href="../../fahd/Register_edit.php?auto_no=<?php echo $row_RSFahdExam['AutoNo']; ?>">تعديل</a>
                             </td><?php } ?>
                     </tr>
                 <?php } while ($row_RSFahdExam = mysqli_fetch_assoc($RSFahdExam)); ?>
@@ -193,6 +212,49 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
             <?php } ?>
         </table>
     </div>
+
+    <div class="content CSSTableGenerator">
+        <table>
+            <caption>
+                <h1>مشاركات <?php echo get_gender_label('st', 'ال'); ?> في مسابقة الملك سلمان</h1>
+            </caption>
+            <tr>
+                <td>العام الدراسي</td>
+                <td>المسابقة</td>
+                <td>التاريخ</td>
+                <td>آخر مرتقى</td>
+                <td>السنة الدراسية</td>
+                <td>المجمع</td>
+                <td>الحلقة</td>
+                <td>المعلم</td>
+                <?php if ($logedInUser == true) { ?>
+                    <td>تعديل</td><?php } ?>
+            </tr>
+            <?php if ($totalRows_rs_salman_exams > 0) { ?>
+                <?php do { ?>
+                    <?php $study_fahd_name = get_fahd_year_name($row_rs_salman_exams['RDate']); ?>
+                    <tr>
+                        <td><?php echo $study_fahd_name; ?></td>
+                        <td><?php echo get_array_1($salman_msbkh_type, $row_rs_salman_exams['MsbkhID']); ?></td>
+                        <td><?php echo StringToDate($row_rs_salman_exams['RDate']); ?></td>
+                        <td><?php echo get_array_1($murtaqaName, $row_rs_salman_exams['ErtiqaID']); ?></td>
+                        <td><?php echo get_array_1($SchoolLevelNameAll, $row_rs_salman_exams['SchoolLevelID']); ?></td>
+                        <td><?php echo get_edarah_name($row_rs_salman_exams['EdarahID']); ?></td>
+                        <td><?php echo get_halakah_name($row_rs_salman_exams['HalakahID']); ?></td>
+                        <td><?php echo get_teacher_name($row_rs_salman_exams['TeacherID']); ?></td>
+                        <?php if ($logedInUser == true) { ?>
+                            <td><a
+                                href="../../salman/Register_edit.php?auto_no=<?php echo $row_rs_salman_exams['AutoNo']; ?>">تعديل</a>
+                            </td><?php } ?>
+                    </tr>
+                <?php } while ($row_rs_salman_exams = mysqli_fetch_assoc($rs_salman_exams)); ?>
+            <?php } else { ?>
+                <td colspan="9">لاتوجد مشاركات سابقة <?php echo get_gender_label('st', 'لل'); ?> في مسابقة الملك سلمان
+                </td>
+            <?php } ?>
+        </table>
+    </div>
+
     <div class="content CSSTableGenerator">
         <table>
             <caption>
@@ -224,12 +286,13 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                         <td><?php echo get_teacher_name($row_rs_etqan_exam['TeacherID']); ?></td>
                         <?php if ($logedInUser == true) { ?>
                             <td><a
-                                href="../../etqan/Register_edit.php?AutoNo=<?php echo $row_rs_etqan_exam['AutoNo']; ?>">تعديل</a>
+                                href="../../etqan/Register_edit.php?auto_no=<?php echo $row_rs_etqan_exam['AutoNo']; ?>">تعديل</a>
                             </td><?php } ?>
                     </tr>
                 <?php } while ($row_rs_etqan_exam = mysqli_fetch_assoc($rs_etqan_exam)); ?>
             <?php } else { ?>
-                <td colspan="9">لاتوجد مشاركات سابقة <?php echo get_gender_label('st', 'لل'); ?> في مسابقة الإتقان</td>
+                <td colspan="9">لاتوجد مشاركات سابقة <?php echo get_gender_label('st', 'لل'); ?> في مسابقة أمير الرياض
+                </td>
             <?php } ?>
         </table>
     </div>
@@ -237,7 +300,7 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
     <div class="content CSSTableGenerator">
         <table>
             <caption>
-                <h1>مشاركات <?php echo get_gender_label('st', 'ال'); ?> في مسابقة رعاية الشباب</h1>
+                <h1>مشاركات <?php echo get_gender_label('st', 'ال'); ?> في مسابقة الهيئة العامة للرياضة</h1>
             </caption>
             <tr>
                 <td>العام الدراسي</td>
@@ -249,11 +312,12 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                 <td>الحلقة</td>
                 <td>المعلم</td>
                 <?php if ($logedInUser == true) { ?>
-                    <td>تعديل</td><?php } ?>
+                    <td>تعديل</td>
+                <?php } ?>
             </tr>
             <?php if ($totalRows_rs_shabab_exam > 0) { ?>
                 <?php do { ?>
-                    <?php $study_fahd_name = get_fahd_year_name($row_RSFahdExam['RDate']); ?>
+                    <?php $study_fahd_name = get_fahd_year_name($row_rs_shabab_exam['RDate']); ?>
                     <tr>
                         <td><?php echo $study_fahd_name; ?></td>
                         <td><?php echo get_array_1($shabab_msbkh_type, $row_rs_shabab_exam['MsbkhID']); ?></td>
@@ -265,8 +329,9 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
                         <td><?php echo get_teacher_name($row_rs_shabab_exam['TeacherID']); ?></td>
                         <?php if ($logedInUser == true) { ?>
                             <td><a
-                                href="../../shabab/Register_edit.php?AutoNo=<?php echo $row_rs_shabab_exam['AutoNo']; ?>">تعديل</a>
-                            </td><?php } ?>
+                                    href="../../shabab/Register_edit.php?auto_no=<?php echo $row_rs_shabab_exam['AutoNo']; ?>">تعديل</a>
+                            </td>
+                        <?php } ?>
                     </tr>
                 <?php } while ($row_rs_shabab_exam = mysqli_fetch_assoc($rs_shabab_exam)); ?>
             <?php } else { ?>
@@ -285,31 +350,34 @@ $totalRows_RsBra3m = mysqli_num_rows($RsBra3m);
     <?php } ?>
 <?php } ?>
 
-<script>
-    $(document).ready(function () {
-        <?php if (isset($_GET['msg'])) {
-    if ($_GET['msg'] == 'shabab') {
-        ?>
-        alertify.success("تم التسجيل بمسابقة رعاية الشباب بنجاح");
-    <?php }
-    if ($_GET['msg'] == 'etqan') {
-        ?>
-        alertify.success("تم التسجيل بمسابقة الاتقان بنجاح");
-    <?php } ?>
-    <?php if ($_GET['msg'] == 'ertiqa') { ?>
-        alertify.success("تم حجز موعد بنجاح");
-    <?php } ?>
-    <?php if ($_GET['msg'] == 'fahd') { ?>
-        alertify.success("تم التسجيل بمسابقة الفهد بنجاح");
-    <?php } ?>
-    <?php if ($_GET['msg'] == 'bra3m') { ?>
-        alertify.success("تم التسجيل بالبراعم بنجاح");
-    <?php } ?>
-<?php } ?>
-    });
-</script>
-<script type="text/javascript">
-    showError();
-</script>
+    <script>
+        $(document).ready(function () {
+            <?php if (isset($_GET['msg'])) {
+            if ($_GET['msg'] == 'shabab') {
+            ?>
+            alertify.success("تم التسجيل بمسابقة الهيئة العامة للرياضة بنجاح");
+            <?php }
+            if ($_GET['msg'] == 'etqan') {
+            ?>
+            alertify.success("تم التسجيل بمسابقة أمير الرياض بنجاح");
+            <?php } ?>
+            <?php if ($_GET['msg'] == 'ertiqa') { ?>
+            alertify.success("تم حجز موعد بنجاح");
+            <?php } ?>
+            <?php if ($_GET['msg'] == 'fahd') { ?>
+            alertify.success("تم التسجيل بمسابقة الفهد بنجاح");
+            <?php } ?>
+            <?php if ($_GET['msg'] == 'salman') { ?>
+            alertify.success("تم التسجيل بمسابقة الملك سلمان بنجاح");
+            <?php } ?>
+            <?php if ($_GET['msg'] == 'bra3m') { ?>
+            alertify.success("تم التسجيل بالبراعم بنجاح");
+            <?php } ?>
+            <?php } ?>
+        });
+    </script>
+    <script type="text/javascript">
+        showError();
+    </script>
 
 <?php include('../../templates/footer.php');

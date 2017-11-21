@@ -1,4 +1,4 @@
-function GetMarkName(Degree,MarkType) {
+function GetMarkName(Degree, MarkType) {
     var degree = parseFloat(Degree);
     //alert(Degree+'  '+degree);
     var shortMark;
@@ -32,7 +32,7 @@ function GetMarkName(Degree,MarkType) {
     }
 }
 
-function GetMarkMony(MarkShortName,MurtaqaID) {
+function GetMarkMony(MarkShortName, MurtaqaID) {
     var degree = parseFloat(Degree);
     var murtaqaID = parseFloat(MurtaqaID);
     var m1 = 150,
@@ -76,7 +76,7 @@ function GetMarkMony(MarkShortName,MurtaqaID) {
     }
 }
 //مكافأة المعلم
-function GetMarkMonyForTeacher(MarkShortName,MurtaqaID) {
+function GetMarkMonyForTeacher(MarkShortName, MurtaqaID) {
     var degree = parseFloat(Degree);
     var murtaqaID = parseFloat(MurtaqaID);
     var m1 = 30,
@@ -88,7 +88,7 @@ function GetMarkMonyForTeacher(MarkShortName,MurtaqaID) {
         m7 = 110,
         m8 = 120;
     var MoneyAdd;
-    if (MarkShortName == "أ+" || MarkShortName =="أ") {
+    if (MarkShortName == "أ+" || MarkShortName == "أ") {
         MoneyAdd = 0;
     } else if (MarkShortName == "ب" || MarkShortName == "ب+") {
         MoneyAdd = -5;
@@ -119,7 +119,7 @@ function GetMarkMonyForTeacher(MarkShortName,MurtaqaID) {
 }
 
 //مكافأة المجمع
-function GetMarkMonyForEdarah(MarkShortName,MurtaqaID) {
+function GetMarkMonyForEdarah(MarkShortName, MurtaqaID) {
     var degree = parseFloat(Degree);
     var murtaqaID = parseFloat(MurtaqaID);
     var m1 = 15,
@@ -131,7 +131,7 @@ function GetMarkMonyForEdarah(MarkShortName,MurtaqaID) {
         m7 = 45,
         m8 = 50;
     var MoneyAdd;
-    if (MarkShortName == "أ+" || MarkShortName =="أ") {
+    if (MarkShortName == "أ+" || MarkShortName == "أ") {
         MoneyAdd = 0;
     } else if (MarkShortName == "ب" || MarkShortName == "ب+") {
         MoneyAdd = -5;
@@ -161,20 +161,76 @@ function GetMarkMonyForEdarah(MarkShortName,MurtaqaID) {
     }
 }
 
+
+//خاص بمرتقى الفاتحة
+function GetMarkName20(Degree, MarkType) {
+    var degree = parseFloat(Degree);
+    //alert(Degree+'  '+degree);
+    var shortMark;
+    var longMark;
+    if (degree >= 90 && degree <= 100) {
+        shortMark = "أ";
+        longMark = "ممتاز";
+    } else if (degree >= 80 && degree <= 89.99) {
+        shortMark = "ب";
+        longMark = "جيد جدا";
+    } else if (degree >= 75 && degree <= 79.99) {
+        shortMark = "ج";
+        longMark = "جيد";
+    } else if (degree < 75) {
+        shortMark = "د";
+        longMark = "راسب";
+    }
+    if (MarkType == "short") {
+        return shortMark;
+    } else if (MarkType == "long") {
+        return longMark;
+    }
+}
+//خاص بمرتقى الفاتحة
+function GetMarkMony20(MarkShortName) {
+    var money = 0;
+    if (MarkShortName == "أ") {
+        money = 5000;
+    } else if (MarkShortName == "ب") {
+        money = 4700;
+    } else if (MarkShortName == "ج") {
+        money = 4500;
+    } else if (MarkShortName == "د") {
+        money = 0;
+    }
+    return money;
+}
+//خاص بمرتقى الفاتحة
+//مكافأة المعلم
+function GetMarkMonyForTeacher20(MarkShortName) {
+    var money = 0;
+    if (MarkShortName == "أ") {
+        money = 1000;
+    } else if (MarkShortName == "ب") {
+        money = 1000;
+    } else if (MarkShortName == "ج") {
+        money = 1000;
+    } else if (MarkShortName == "د") {
+        money = 0;
+    }
+    return money;
+}
+
 //صغية الريجكس للتاريخ الهجري
 /*function HijriDate(value) {
-	try{
-        return /(^13|^14)\d\d([- \/.\\])([1-9]|0[1-9]|1[012])(\2)([1-9]|0[1-9]|[12][0-9]|30)$/.test(value);
-	}catch(er){
-		alert(err.message);
-	}
-}*/
+ try{
+ return /(^13|^14)\d\d([- \/.\\])([1-9]|0[1-9]|1[012])(\2)([1-9]|0[1-9]|[12][0-9]|30)$/.test(value);
+ }catch(er){
+ alert(err.message);
+ }
+ }*/
 
 //اضهار تنبيه إذا كان الفورم خطأ
 function showError() {
     $('#form1,#form2').parsley({
         listeners: {
-            onFormSubmit: function (isFormValid,event) {
+            onFormSubmit: function (isFormValid, event) {
                 if (!isFormValid) {
                     alertify.error("يرجى التحقق من البيانات");
                 } else {
@@ -203,30 +259,45 @@ function GetBra3mMoney(Darajah) {
     }
 }
 
-function ExamPoints(ErtiqaID,Degree){
-	//alert(ErtiqaID);
-	//alert(Degree);
-	ErtiqaP=0;
-	switch (ErtiqaID)
-	{
-		case '1' :ErtiqaP=1.5;break;
-		case '2' :ErtiqaP=2;  break;
-		case '3' :ErtiqaP=2.5;break;
-		case '4' :ErtiqaP=3;  break;
-		case '5' :ErtiqaP=3.5;break;
-		case '6' :ErtiqaP=4;  break;
-		case '7' :ErtiqaP=4.5;break;
-		case '8' :ErtiqaP=5;  break;
-	}
-	//alert(ErtiqaP);
-	return parseFloat((Degree / 100) * ErtiqaP).toFixed(2);
+function ExamPoints(ErtiqaID, Degree) {
+    //alert(ErtiqaID);
+    //alert(Degree);
+    ErtiqaP = 0;
+    switch (ErtiqaID) {
+        case '1' :
+            ErtiqaP = 1.5;
+            break;
+        case '2' :
+            ErtiqaP = 2;
+            break;
+        case '3' :
+            ErtiqaP = 2.5;
+            break;
+        case '4' :
+            ErtiqaP = 3;
+            break;
+        case '5' :
+            ErtiqaP = 3.5;
+            break;
+        case '6' :
+            ErtiqaP = 4;
+            break;
+        case '7' :
+            ErtiqaP = 4.5;
+            break;
+        case '8' :
+            ErtiqaP = 5;
+            break;
+    }
+    //alert(ErtiqaP);
+    return parseFloat((Degree / 100) * ErtiqaP).toFixed(2);
 }
 
-function roundMe(n,sig) {
+function roundMe(n, sig) {
     if (n === 0) return 0;
-    var mult = Math.pow(10,sig - Math.floor(Math.log(n < 0 ? -n: n) / Math.LN10) - 1);
+    var mult = Math.pow(10, sig - Math.floor(Math.log(n < 0 ? -n : n) / Math.LN10) - 1);
     return Math.round(n * mult) / mult;
- }
+}
 /* ================================ 
 
-ِAuto complate list */
+ ِAuto complate list */

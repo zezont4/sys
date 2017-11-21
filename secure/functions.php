@@ -7,6 +7,7 @@ if (! function_exists ( "zlog" )) {
 	<?php }
 }
 //SECURE SESSION START FUNCTION
+/*
 if (! function_exists ( "sec_session_start" )) {
 	function sec_session_start() {
 		if (!isset($_SESSION)) {
@@ -29,6 +30,7 @@ if (! function_exists ( "sec_session_start" )) {
 		}
 	}
 }
+*/
 //SECURE LOGIN FUNCTION
 if (! function_exists ( "login" )) {
 	function login($username,$password) {

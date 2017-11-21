@@ -17,7 +17,7 @@ $murtaqa_name = array(
     array("6", "مرتقى يونس"),
     array("7", "مرتقى المائدة"),
     array("8", "مرتقى الفاتحة"),
-    array("9", "شهادة إتمام الحفظ")
+    array("9", "شهادة إتمام الحفظ"),
 );
 $f_14a = array(
     array("0", "لايوجد مشاركات"),
@@ -184,4 +184,11 @@ function get_fahd_year_name($h_date)
         return $row_fahd_year["year_name"];
         mysqli_free_result($fahd_year);
     }
+}
+
+function string_to_tooltip($string,$title='الشرح')
+{
+    echo '<div class="tooltip"><img src="/sys/_images/info.png" height="20" width="20" alt="info">
+               <span class="tooltiptext">'.$string.'</span>
+          </div>';
 }

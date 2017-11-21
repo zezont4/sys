@@ -24,12 +24,13 @@ mysqli_select_db($localhost,$database_localhost);
 $query_RsTPoints = sprintf("SELECT
 							 O_TeacherName
 							,O_Edarah
+							,teacher_hide
 							,sum(FinalExamDegree) as sum_final_degree
 							,sum(TestExamDegree) as sum_test_degree
 							,sum(ExamPoints) as sumP
 							,count(ExamPoints) as countp
 							  FROM view_er_ertiqaexams
-							  where teacher_hide=0 %s and FinalExamStatus=2 %s %s 
+							  where teacher_hide>=0 %s and FinalExamStatus=2 %s %s
 							  group by TeacherID 
 							  order by sum(ExamPoints) desc",
 							  $sql_sex,
@@ -85,7 +86,7 @@ $totalRows_RsTPoints = mysqli_num_rows($RsTPoints);
 			<br class="clear">
 			<div class="sixteen">
 			<br>
-			<p>احصائية <?php echo (($_POST['Date1']=='' && $_POST['Date2']=='') ? ' للعام الدراسي ( '.$_SESSION ['default_year_name'].' ) ': '' );?> خلال الفترة من <?php echo (($_POST['Date1']!='') ? $_POST['Date1'] : StringToDate($_SESSION ['default_start_date']).' هـ ') ; ?> إلى <?php echo  (($_POST['Date2']!='') ? $_POST['Date2'] : StringToDate($_SESSION ['default_end_date']).' هـ ') ; ?> </p></div>
+			<p>احصائية <?php echo ((@$_POST['Date1']=='' && @$_POST['Date2']=='') ? ' للعام الدراسي ( '.$_SESSION ['default_year_name'].' ) ': '' );?> خلال الفترة من <?php echo ((@$_POST['Date1']!='') ? @$_POST['Date1'] : StringToDate($_SESSION ['default_start_date']).' هـ ') ; ?> إلى <?php echo  ((@$_POST['Date2']!='') ? @$_POST['Date2'] : StringToDate($_SESSION ['default_end_date']).' هـ ') ; ?> </p></div>
 			<?php } ?>
 		
 </div>
@@ -101,14 +102,16 @@ $totalRows_RsTPoints = mysqli_num_rows($RsTPoints);
 					<td>متوسط درجات<br>الاختبار التجريبي</td>
 					<td>متوسط درجات<br>الاختبار النهائي</td>
 				</tr>
-				<?php do { 
+				<?php do {
+					$hidden_string= $row_RsTPoints['teacher_hide']>0 ? ' <span style="color: #ff3835">(مطوي قيده)</span>' : '';
+
 					$sum_test_degree =  round($row_RsTPoints['sum_test_degree']/$row_RsTPoints['countp'],2);
 					$sum_final_degree = round($row_RsTPoints['sum_final_degree']/$row_RsTPoints['countp'],2);
 					$Edarah_name = str_replace("مجمع","",$row_RsTPoints['O_Edarah']);
 					$Edarah_name = str_replace("دار ","",$row_RsTPoints['O_Edarah']);
 				?>
 					<tr>
-						<td><?php echo $row_RsTPoints['O_TeacherName']; ?></td>
+						<td><?php echo $row_RsTPoints['O_TeacherName'].$hidden_string;?></td>
 						<td><?php echo $Edarah_name; ?></td>
 						<td><?php echo $row_RsTPoints['sumP']; ?></td>
 						<td><?php echo $row_RsTPoints['countp']; ?></td>

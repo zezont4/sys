@@ -21,7 +21,7 @@
             </div>
             <div id="siteName">
                 <p id="p1">
-                    <a href="/sys/index.php" tabindex="-1"> <img src="/sys/_images/techcloud-19.png"" alt="النظام الإلكتروني"></a>
+                    <a href="/sys/index.php" tabindex="-1"> <img src="/sys/_images/techcloud-19.png" alt="النظام الإلكتروني"></a>
                 </p>
                 <!--<p id="p2">لجمعية تحفيظ القرآن بالزلفي</p>-->
 

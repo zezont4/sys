@@ -3,11 +3,18 @@ function do_calculate() {
     $('.bnd_degree').each(function (i, obj) {
         var i_val = $(this).val();
         if (i_val > 0) {
-            bnd_total += parseInt($(this).val(), 10);
+            bnd_total += parseFloat($(this).val());
         }
     });
     //console.log(bnd_total);
-    $('#full_degree').val(bnd_total);
+    //التأكد من أن مجموع المرتقيات والبراعم لا يتجاوز ٢٠
+    var ertiqa_degree = $('#f_2a_d').val();
+    var bra3m_degree = $('#f_2b_d').val();
+    var ertiqa_and_bra3m_over_flow = (parseFloat(ertiqa_degree) + parseFloat(bra3m_degree)) - 20;
+    var over_20 = ertiqa_and_bra3m_over_flow > 0 ? Math.abs(ertiqa_and_bra3m_over_flow) : 0;
+    //console.log(over_20);
+
+    $('#full_degree').val(parseFloat(bnd_total) - parseFloat(over_20));
 }
 
 
@@ -74,8 +81,8 @@ function cmbo_change(cmbo_id, cmbo_values) {
 
 function get_teachers_st_count(teacher_no) {
     $.get("/sys/basic/ajax_students_count.php", {
-        TID: teacher_no
-    })
+            TID: teacher_no
+        })
         .done(function (data) {
             $('#f_2a_t,#f_2b_t').val(data);
             $('#f_2a_t,#f_2b_t').trigger('keyup');
@@ -84,9 +91,9 @@ function get_teachers_st_count(teacher_no) {
 
 function get_ertiqa_st_count(teacher_no, f_t_date1) {
     $.get("/sys/ertiqa/ajax_success_count.php", {
-        TID: teacher_no,
-        f_t_date: f_t_date1
-    })
+            TID: teacher_no,
+            f_t_date: f_t_date1
+        })
         .done(function (data) {
             $('#f_2a_n').val(data);
             $('#f_2a_n').trigger('keyup');
@@ -95,9 +102,9 @@ function get_ertiqa_st_count(teacher_no, f_t_date1) {
 
 function get_bra3m_st_count(teacher_no, f_t_date1) {
     $.get("/sys/ertiqa/ajax_bra3m_count.php", {
-        TID: teacher_no,
-        f_t_date: f_t_date1
-    })
+            TID: teacher_no,
+            f_t_date: f_t_date1
+        })
         .done(function (data) {
             $('#f_2b_n').val(data);
             $('#f_2b_n').trigger('keyup');

@@ -12,7 +12,7 @@ mysqli_select_db($localhost, $database_localhost);
 $query_Recordset1 = sprintf("SELECT ex.AutoNo,ex.O_StudentName,ex.O_TeacherName,ex.O_Edarah,ex.O_HName,ex.O_MurtaqaName,ex.FinalExamDate,ex.H_SolokGrade,ex.H_MwadabahGrade,ex.
 Sora1Name,ex.Sora1Discount,ex.Sora2Name,ex.Sora2Discount,ex.Sora3Name,ex.Sora3Discount,ex.Sora4Name,ex.Sora4Discount,ex.Sora5Name,ex.Sora5Discount,ex.Ek_mwathbah,ex.Ek_slok,ex.MarkName_Short,ex.
 MarkName_Long,ex.Money,ex.FinalExamDegree,
-u1.arabic_name  MukhtaberTeacher,u2.arabic_name MukhtaberTeacher2
+u1.arabic_name  MukhtaberTeacher,u1.id  MukhtaberTeacherId,u2.arabic_name MukhtaberTeacher2
 FROM view_er_ertiqaexams AS ex
 LEFT JOIN 0_users u1 ON u1.id=ex.MukhtaberTeacher
 LEFT JOIN 0_users u2 ON u2.id=ex.MukhtaberTeacher2
@@ -442,6 +442,17 @@ $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 			text-align: right;
 		}
 
+		#apDiv34_sign {
+			position: absolute;
+			left: 490px;
+			top: 720px;
+			width: 228px;
+			height: 26px;
+			z-index: 1;
+			font-size: 90%;
+			text-align: right;
+		}
+
 		#apDiv36 {
 			position: absolute;
 			left: 355px;
@@ -576,7 +587,17 @@ $totalRows_Recordset1 = mysqli_num_rows($Recordset1);
 
 
 	<div id="apDiv34"><?php echo $row_Recordset1['MukhtaberTeacher']; ?></div>
-	<div id="apDiv_34"><?php echo $row_R['MukhtaberTeacher2']; ?></div>
+	<!--	توقيع المعلم المختبر-->
+	<?php
+	$image_file = "../../_images/mktbr_sign_{$row_Recordset1['MukhtaberTeacherId']}.png";
+	$mktbr_id=$row_Recordset1['MukhtaberTeacherId'];
+	if (file_exists($image_file)) { ?>
+		<div id="apDiv34_sign">
+			<img src="../../_images/mktbr_sign_<?php echo $mktbr_id; ?>.png" height="40">
+		</div>
+	<?php } ?>
+
+	<div id="apDiv_34"><?php echo $row_Recordset1['MukhtaberTeacher2']; ?></div>
 </div>
 </body>
 </html>

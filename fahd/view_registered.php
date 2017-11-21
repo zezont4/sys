@@ -158,7 +158,7 @@ body {
                 <td><?php echo get_student_name($row_ReRegistered['StID']); ?></td>
                 <td><?php echo get_halakah_name($row_ReRegistered['HalakahID']); ?></td>
                 <td><?php echo get_edarah_name($row_ReRegistered['EdarahID']); ?></td>
-                <td><?php echo get_array_1($MsbkhType, $row_ReRegistered['MsbkhID']); ?></td>
+                <td><?php echo get_array_1($fahd_MsbkhType, $row_ReRegistered['MsbkhID']); ?></td>
                 <td><?php echo get_array_1($MtsabikType, $row_ReRegistered['st_type']); ?></td>
                 <td><?php echo get_array_1($SchoolLevelNameAll, $row_ReRegistered['SchoolLevelID']); ?></td>
             </tr>

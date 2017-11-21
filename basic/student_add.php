@@ -28,8 +28,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         <br><br><br>
         <div style="direction:rtl;text-align:center;font-size:22px;">
             <p>
-                السجل المدني(<?php echo $row_RsIfExistSt['StID'];?>) موجود سابقا,وهو تابع
-                للطالب/ـة:( <?php echo get_student_name($row_RsIfExistSt['StID']);?>)
+                السجل المدني(<?php echo $row_RsIfExistSt['StID']; ?>) موجود سابقا,وهو تابع
+                للطالب/ـة:( <?php echo get_student_name($row_RsIfExistSt['StID']); ?>)
             </p>
             <br>
 
@@ -46,8 +46,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
 
 
     $insertSQL = sprintf("INSERT INTO 0_students (StID,StName1,StName2,StName3,StName4,
-StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah)
-  						 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
+StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah,school_level,nationality)
+  						 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",
         GetSQLValueString($_POST['StID'], "double"),
         GetSQLValueString($_POST['StName1'], "text"),
         GetSQLValueString($_POST['StName2'], "text"),
@@ -58,10 +58,12 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah)
         GetSQLValueString($_POST['FatherMNo'], "text"),
         GetSQLValueString($_POST['guardian_name'], "text"),
         GetSQLValueString(str_replace('/', '', $_POST['StBurthDate']), "int"),
-        GetSQLValueString($_POST['HalaqatID'], "int")
+        GetSQLValueString($_POST['HalaqatID'], "int"),
+        GetSQLValueString($_POST['school_level'], "int"),
+        GetSQLValueString($_POST['nationality'], "int")
     );
-    //echo $insertSQL;
-    //exit;
+//    echo $insertSQL;
+//    exit;
     mysqli_select_db($localhost, $database_localhost);
     $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error($localhost));
     if ($Result1) {
@@ -84,29 +86,6 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah)
 
 <div class="content lp">
     <form method="post" id="form1" name="form1" action="<?php echo $editFormAction; ?>" data-validate="parsley">
-        <div class="four columns alpha">
-            <div class="LabelContainer">
-                <label for="EdaratID"><?php echo get_gender_label('e', 'ال'); ?></label>
-            </div>
-            <?php create_edarah_combo(); ?>
-        </div>
-        <div class="four columns">
-            <div class="LabelContainer">
-                <label for="HalaqatID">الحلقة</label>
-            </div>
-            <select name="HalaqatID" class="FullWidthCombo" id="HalaqatID" data-required="true">
-                <option VALUE>--</option>
-            </select>
-        </div>
-        <div class="four columns">
-            <div class="LabelContainer">
-                <label for="StID">السجل المدني</label>
-            </div>
-            <input name="StID" type="tel" id="StID" data-required="true" data-type="digits" data-maxlength="10"
-                   data-minlength="10">
-        </div>
-        <br class="clear"/>
-
         <div class="four columns alpha">
             <div class="LabelContainer">
                 <label for="StName1">الاسم</label>
@@ -132,6 +111,44 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah)
             </div>
             <input type="text" name="StName4" id="StName4" data-required="true">
         </div>
+
+        <br class="clear"/>
+
+        <div class="four columns alpha">
+            <div class="LabelContainer">
+                <label for="StID">السجل المدني</label>
+            </div>
+            <input name="StID" type="tel" id="StID" data-required="true" data-type="digits" data-maxlength="10"
+                   data-minlength="10">
+        </div>
+
+        <div id="duplicate_student" style="display: none">
+
+            <br class="clear"/>
+
+            <div class="sixteen columns alpha omega"
+                 style="color: red; padding: 10px 5px;border-bottom: 1px solid #ddd">
+                <p id="msg">تكرار</p>
+            </div>
+            <br class="clear"/>
+        </div>
+        <div class="four columns">
+            <div class="LabelContainer">
+                <label for="StBurthDate">تاريخ الميلاد</label>
+            </div>
+            <input name="StBurthDate" type="text" id="StBurthDate" data-required="true" zezo_date="true">
+        </div>
+
+        <div class="four columns ">
+            <div class="LabelContainer">الجنسية</div>
+            <?php echo create_combo("nationality", $nationality, 0, 0, 'data-required="true"'); ?>
+        </div>
+
+        <div class="four columns omega">
+            <div class="LabelContainer">المرحلة الدراسية</div>
+            <?php echo create_combo("school_level", $SchoolLevelNameAll, 0, '', 'data-required="true"'); ?>
+        </div>
+
         <br class="clear"/>
 
         <div class="four columns alpha">
@@ -144,14 +161,6 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah)
 
         <div class="four columns">
             <div class="LabelContainer">
-                <label for="StBurthDate">تاريخ الميلاد</label>
-            </div>
-            <input name="StBurthDate" type="text" id="StBurthDate" data-required="true" zezo_date="true">
-        </div>
-
-        <br class="clear"/>
-        <div class="four columns alpha">
-            <div class="LabelContainer">
                 <label for="FatherMNo">جوال ولي الأمر</label>
             </div>
             <input name="FatherMNo" type="tel" id="FatherMNo" data-required="true" data-type="digits"
@@ -162,6 +171,26 @@ StEdarah,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHalaqah)
                 <label for="guardian_name">اسم ولي الأمر</label>
             </div>
             <input name="guardian_name" type="text" id="guardian_name">
+        </div>
+
+        <br class="clear"/>
+
+
+        <div class="four columns alpha">
+            <div class="LabelContainer">
+                <label for="EdaratID"><?php echo get_gender_label('e', 'ال'); ?></label>
+            </div>
+            <?php create_edarah_combo(); ?>
+        </div>
+
+
+        <div class="four columns">
+            <div class="LabelContainer">
+                <label for="HalaqatID">الحلقة</label>
+            </div>
+            <select name="HalaqatID" class="FullWidthCombo" id="HalaqatID" data-required="true">
+                <option VALUE>--</option>
+            </select>
         </div>
 
         <br class="clear"/>
@@ -203,3 +232,37 @@ if (isset($_SESSION['u1'])) {
 <?php } else {
     include('../templates/restrict_msg.php');
 } ?>
+<script>
+    var st_id = $('#StID');
+    st_id.on('keyup blur change', function (e) {
+        var st_id_char_count = st_id.val().length;
+
+        if (st_id_char_count == 10) {
+            $.get("/sys/basic/ajax_student_exists.php", {
+                StID: st_id.val()
+            })
+                .done(function (data) {
+                    if (data) {
+                        var msg = [
+                            'هذا السجل المدني مسجل من قبل بالنظام الإلكتروني وهو بإسم',
+                            '(',
+                            data.StName1,
+                            data.StName2,
+                            data.StName3,
+                            data.StName4,
+                            ') , ',
+                            'لتقديم طلب نقل اضغط',
+                            "<a style='display: inline;' href='/sys/basic/transfer_st_add.php?StID=" + data.StID +" '>هنا</a>"
+                        ].join(' ');
+                        console.log(data.StID);
+                        $('#msg').html(msg);
+                        $('#duplicate_student').show();
+                    } else {
+                        $('#duplicate_student').hide();
+                    }
+                });
+        } else {
+            $('#duplicate_student').hide();
+        }
+    });
+</script>

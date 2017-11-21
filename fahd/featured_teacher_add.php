@@ -4,7 +4,7 @@
 <?php
 
 $open_g = true;//السماح للتسجيل للبنات
-$open_b = false;//السماح للتسجيل للبنين
+$open_b = true;//السماح للتسجيل للبنين
 //متغير يحفظ نتيجة السماح بالتسجيل بحث يفحص جنس المستخدم الحالي مع المتغيرات في الأعلى
 $open = false;
 
@@ -48,9 +48,9 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     }
     $field_names = '';
     $field_values = '';
-    $f_t_chkbx_array = array('3a', '3b', '4b', '5a', '5b', '5c', '7a', '9a', '15a', '15b', '12a', '13a');
+    $f_t_chkbx_array = ['3a', '3b', '4b', '5a', '5b', '5c', '7a', '9a', '15a', '15b', '12a', '13a'];
     $length = count($f_t_chkbx_array);
-    for ($i = 0; $i < $length; $i ++) {
+    for ($i = 0; $i < $length; $i++) {
         $f_0_1 = ($_POST['f_' . $f_t_chkbx_array[$i] . '_n'] == 1) ? '1' : '0';
         $field_names = $field_names . ',f_' . $f_t_chkbx_array[$i] . '_n ';
         $field_values = $field_values . ',' . $f_0_1;
@@ -60,9 +60,9 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         $field_values = $field_values . ',' . $f_0_1;
     }
 
-    $f_t_txt2bx_array = array('4a', '8a', '10a', '11a');
+    $f_t_txt2bx_array = ['4a', '8a', '10a', '11a'];
     $length = count($f_t_txt2bx_array);
-    for ($i = 0; $i < $length; $i ++) {
+    for ($i = 0; $i < $length; $i++) {
         $field_names = $field_names . ',f_' . $f_t_txt2bx_array[$i] . '_n';
         $f_0_1 = ($_POST['f_' . $f_t_txt2bx_array[$i] . '_n'] > 0) ? $_POST['f_' . $f_t_txt2bx_array[$i] . '_n'] : '0';
         $field_values = $field_values . ',' . $f_0_1;
@@ -72,9 +72,9 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         $field_values = $field_values . ',' . $f_0_1;
     }
 
-    $f_t_txt3bx_array = array('2a', '2b');
+    $f_t_txt3bx_array = ['2a', '2b'];
     $length = count($f_t_txt3bx_array);
-    for ($i = 0; $i < $length; $i ++) {
+    for ($i = 0; $i < $length; $i++) {
         $field_names = $field_names . ',f_' . $f_t_txt3bx_array[$i] . '_n';
         $f_0_1 = ($_POST['f_' . $f_t_txt3bx_array[$i] . '_n'] > 0) ? $_POST['f_' . $f_t_txt3bx_array[$i] . '_n'] : '0';
         $field_values = $field_values . ',' . $f_0_1;
@@ -93,17 +93,21 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
     $result_increment = mysqli_query($localhost, "SHOW TABLE STATUS WHERE `Name` = 'ms_fahd_featured_teacher'");
     $data = mysqli_fetch_assoc($result_increment);
     $next_increment = $data['Auto_increment'];
+    mysqli_select_db($localhost, $database_localhost);
     $insertSQL = sprintf("insert into ms_fahd_featured_teacher
- (auto_no,teacher_id,f_t_date,t_edarah,full_degree,max_degree %s)
+ (auto_no,teacher_id,f_t_date,teacher_type,t_edarah,full_degree,max_degree %s)
 values
- (%s,%s,%s,%s,%s,110 %s)", $field_names, $next_increment, $_GET['TID'], str_replace("/", "", $_POST['f_t_date']),
+ (%s,%s,%s,%s,%s,%s,110 %s)",
+        $field_names,
+        $next_increment, $_GET['TID'],
+        str_replace("/", "", $_POST['f_t_date']),
+        $_POST['teacher_type'],
         $_POST['t_edarah'],
         $_POST['full_degree'],
         $field_values);
 
-    //echo $insertSQL;
-    //exit;
-    mysqli_select_db($localhost, $database_localhost);
+//	echo $insertSQL;
+//	exit;
     $Result1 = mysqli_query($localhost, $insertSQL) or die(' insertSQL 1 : ' . mysqli_error($localhost));
     if ($Result1) {
         $_SESSION['u1'] = "u1";
@@ -126,7 +130,8 @@ if (isset($_SESSION['user_id'])) {
 ?>
 <?php
 //انشاء عنوان القسم
-function create_f_t_block_head($array_index) {
+function create_f_t_block_head($array_index)
+{
     global $featured_teacher_dep, $featured_teacher_title;
     $b1 = '
 	<div class="content">
@@ -137,7 +142,8 @@ function create_f_t_block_head($array_index) {
 }
 
 //انشاء بند نصي
-function create_f_t_block_bnd_txt($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '') {
+function create_f_t_block_bnd_txt($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '')
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 				<div class="six columns alpha omega top_padding">' . $bnd_title . '</div>
@@ -155,11 +161,12 @@ function create_f_t_block_bnd_txt($bnd_title, $db_feild_name, $last_bnd = true, 
 }
 
 //انشاء عدد (2) بند نصي
-function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '') {
+function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $last_bnd = true, $ex_index = 0, $readonly = '')
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 				<div class="three columns alpha omega top_padding">' . $bnd_title1 . '</div>
-				<div class="two columns alpha">' . create_text("f_" . $db_feild_name . "_n",  $readonly) . '</div>
+				<div class="two columns alpha">' . create_text("f_" . $db_feild_name . "_n", $readonly) . '</div>
 				
 				<div class="three columns omega top_padding">' . $bnd_title2 . '</div>
 				<div class="two columns">' . create_text("f_" . $db_feild_name . "_t", 'value="5"  readonly') . '</div>
@@ -177,7 +184,8 @@ function create_f_t_block_bnd_txt2($bnd_title1, $bnd_title2, $db_feild_name, $la
 }
 
 //انشاء بند مربع اختيار
-function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0) {
+function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, $ex_index = 0)
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 				
@@ -196,7 +204,8 @@ function create_f_t_block_bnd_chk($bnd_title, $db_feild_name, $last_bnd = true, 
 }
 
 //انشاء بند نصي
-function create_f_t_block_bnd_cmbo($bnd_title, $db_feild_name, $vals, $last_bnd = true, $ex_index = 0, $readonly = '') {
+function create_f_t_block_bnd_cmbo($bnd_title, $db_feild_name, $vals, $last_bnd = true, $ex_index = 0, $readonly = '')
+{
     global $degree_title, $row_rs_f_teacher, $featured_teacher_ex;
     $b1 = '
 				<div class="four columns alpha omega top_padding">' . $bnd_title . '</div>';
@@ -239,6 +248,8 @@ if ($_SESSION['sex'] == 1 && $open_b == true) {
     $open = true;
 } elseif ($_SESSION['sex'] == 0 && $open_g == true) {
     $open = true;
+} elseif ($_SESSION['sex'] == 2) {
+    $open = true;
 }
 
 if ($open === true) { ?>
@@ -272,11 +283,17 @@ if ($open === true) { ?>
         </div>
         <div class="content">
             <div class="LabelContainer">
-                <div class="FieldsTitle">التاريخ</div>
+                <div class="FieldsTitle"></div>
             </div>
             <div class="three columns alpha top_padding">تاريخ تسجيل البيانات</div>
             <div class="three columns"><input name="f_t_date" type="text" id="f_t_date" readonly data-required="true"/>
             </div>
+
+            <div class="two columns">&nbsp;</div>
+
+            <div class="three columns alpha top_padding">تصنيف المعلم</div>
+            <div
+                class="four columns"><?php echo create_combo('teacher_type', $teacher_types, 1, 0, 'class="full-width"') ?></div>
         </div>
         <?php
 
@@ -310,8 +327,8 @@ if ($open === true) { ?>
         create_f_t_block_head(6);
         create_f_t_block_bnd_txt("عدد الاجتماعات(يضاف من قبل المسؤول)", "6a", true, 1, 'readonly');
 
-//        create_f_t_block_head(6);
-//        create_f_t_block_bnd_txt2("عدد الاجتماعات واللقاءات", "اجمالي الاجتماعات واللقاءات", "6a", true, 6, 'readonly');
+        //        create_f_t_block_head(6);
+        //        create_f_t_block_bnd_txt2("عدد الاجتماعات واللقاءات", "اجمالي الاجتماعات واللقاءات", "6a", true, 6, 'readonly');
 
         //المشاركة في الدورات التدريبية السابقة أو الخارجية
         create_f_t_block_head(10);
@@ -349,7 +366,7 @@ if ($open === true) { ?>
 
         //المسابقات الخارجية
         create_f_t_block_head(14);
-        create_f_t_block_bnd_cmbo("المشاركة أو الفوز بالمسابقات الخارجية (يضاف من قبل المسؤول)", "14a", $f_14a, true, 14, 'readonly');        ?>
+        create_f_t_block_bnd_cmbo("المشاركة أو الفوز بالمسابقات الخارجية (يضاف من قبل المسؤول)", "14a", $f_14a, true, 14, 'readonly'); ?>
 
         <div class="content">
             <div class="four columns omega left"><input name="submit" type="submit" class="button-primary" id="submit"
@@ -359,9 +376,9 @@ if ($open === true) { ?>
         <input name="t_edarah" id="t_edarah" type="hidden" value="<?php echo $row_Rs_T['TEdarah']; ?>"/>
     </form>
 
-<?php } else {?>
+<?php } else { ?>
     <hr>
-    <h1 class="WrapperMSG" >عفوا .. انتهت فترة التسجيل في مسابقة المعلم المتميز</h1>
+    <h1 class="WrapperMSG">عفوا .. انتهت فترة التسجيل في مسابقة المعلم المتميز</h1>
     <br>
 <?php } ?>
 

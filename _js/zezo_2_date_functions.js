@@ -76,6 +76,12 @@ if (typeof get_formated_hijri_date != 'function') {
 		return hijri_array_date[3];
 	 }
  }
+
+function rawToFormattedDate(rawDate) {
+    rawDate = String(rawDate);
+    return String(rawDate.substring(0, 4) + '/' + rawDate.substring(4, 6) + '/' + rawDate.substring(6, 8));
+}
+
  //get deffrence between to grogorian days
 var _MS_PER_DAY = 1000 * 60 * 60 * 24;
 if (typeof date_diff_in_days != 'function') { 

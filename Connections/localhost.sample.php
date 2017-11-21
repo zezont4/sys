@@ -68,7 +68,16 @@ if (!function_exists("sec_session_start")) {
 sec_session_start();
 //}
 
-$smsUser = '9665555555';
-$smsPass = 'password';
-$smsSender = 'QuranZulfi';
+function env($env_label)
+{
+
+	$env = [
+		'SMS_USERNAME'    => 'quranzulfioooo',
+		'SMS_PASSWORD'    => '0500511556',
+		'SMS_SENDER_NAME' => 'Quranzulfi',
+	];
+
+	return $env[$env_label];
+}
+
 ?>

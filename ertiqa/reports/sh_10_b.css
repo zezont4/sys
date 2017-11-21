@@ -407,6 +407,16 @@ body {
     font-size: 100%;
     text-align: right;
 }
+#apDiv34_sign {
+    position: absolute;
+    left: 634px;
+    top: 484px;
+    width: 262px;
+    height: 26px;
+    z-index: 1;
+    font-size: 100%;
+    text-align: right;
+}
 #apDiv35 {
     position: absolute;
     left: 241px;

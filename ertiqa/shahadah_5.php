@@ -2,7 +2,6 @@
 <?php require_once('../functions.php'); ?>
 <?php require_once '../secure/functions.php'; ?>
 <?php sec_session_start(); ?>
-<?php include('../mobily_ws/includeSettings.php'); ?>
 <?php
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
@@ -69,13 +68,13 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
         $sex = $row_RsMobile['edarah_sex'];
         $StName1 = $row_RsMobile['StName1'];
         $MarkName_Long = $row_RsMobile['MarkName_Long'];
-        $O_MurtaqaName = $row_RsMobile['O_MurtaqaName'];
+        $murtaqa_name = $row_RsMobile['O_MurtaqaName'];
         if ($sex == 1) {
-            $msg_2 = utf2win(sprintf("نبارك لنا ولكم اجتياز ابنكم (%s) مرتقى (%s) بتقدير (%s), جعله الله قرة عين لكم.", $StName1, $O_MurtaqaName, $MarkName_Long));
-            $msg_3 = utf2win(sprintf("ابنكم (%s) لم يوفق في اجتياز مرتقى (%s),نسأل الله له التوفيق في الاختبار القادم.", $StName1, $O_MurtaqaName));
+            $msg_2 = sprintf("نبارك لنا ولكم اجتياز ابنكم (%s) مرتقى (%s) بتقدير (%s), جعله الله قرة عين لكم.", $StName1, $murtaqa_name, $MarkName_Long);
+            $msg_3 = sprintf("ابنكم (%s) لم يوفق في اجتياز مرتقى (%s),نسأل الله له التوفيق في الاختبار القادم.", $StName1, $murtaqa_name);
         } elseif ($sex == 0) {
-            $msg_2 = utf2win(sprintf("نبارك لنا ولكم اجتياز ابنتكم (%s) مرتقى (%s) بتقدير (%s), جعلها الله قرة عين لكم.", $StName1, $O_MurtaqaName, $MarkName_Long));
-            $msg_3 = utf2win(sprintf("ابنتكم (%s) لم توفق في اجتياز مرتقى (%s),نسأل الله لها التوفيق في الاختبار القادم.", $StName1, $O_MurtaqaName));
+            $msg_2 = sprintf("نبارك لنا ولكم اجتياز ابنتكم (%s) مرتقى (%s) بتقدير (%s), جعلها الله قرة عين لكم.", $StName1, $murtaqa_name, $MarkName_Long);
+            $msg_3 = sprintf("ابنتكم (%s) لم توفق في اجتياز مرتقى (%s),نسأل الله لها التوفيق في الاختبار القادم.", $StName1, $murtaqa_name);
         }
         if ($_POST['RadioStatus'] == 2) {
             $msg = $msg_2;
@@ -83,7 +82,7 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
             $msg = $msg_3;
         }
         if ($msg != '') {
-            $SendingAnswer = sendSMS($smsUser, $smsPass, $numbers, 'QuranZulfi', $msg, 0, 0, 0, 0);
+            $SendingAnswer = sendSMS($numbers,  $msg);
             if ($SendingAnswer == 1) {
                 $_SESSION['msgFatherSent'] = '';
             } else {

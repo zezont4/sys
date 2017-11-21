@@ -5,11 +5,11 @@
 		  بسم الله الرحمن الرحيم<br>
 			  المملكة العربية السعودية
 			  <br />
-			  وزارة الشؤون الإسلامية والأوقاف والدعوة والإرشاد
+			  وزارة الشؤون الإسلامية والدعوة والإرشاد
 			  <br />
-			  <?php echo $jameiahName; ?>
+			  <?php echo isset($jameiahName) ? $jameiahName : ''; ?>
 			  <br />
-			  <?php echo $deptName; ?>
+			  <?php echo isset($deptName) ? $deptName : ''; ?>
 		  </p>
 			<?php if ($secondLogo==true){echo $secondLogoURL;} ?>
 	  </div><!-- reportHeader -->

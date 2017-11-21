@@ -8,6 +8,7 @@ $EdarahIDS = $_SESSION['user_id'];
 <?php
 $maxRows_ReExams = 20;
 $pageNum_ReExams = 0;
+$currentPage = $_SERVER["PHP_SELF"];
 if (isset($_GET['pageNum_ReExams'])) {
     $pageNum_ReExams = $_GET['pageNum_ReExams'];
 }
@@ -114,25 +115,25 @@ $totalPages_ReExams = ceil($totalRows_ReExams / $maxRows_ReExams) - 1;
         <div class="button-group">
 
             <?php if ($pageNum_ReExams > 0) { // Show if not first page ?>
-                <a title="الصفحة الأولى" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d%s", $currentPage, 0, $queryString_ReExams); ?>" tabindex="-1"> << </a>
+                <a title="الصفحة الأولى" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d", $currentPage, 0); ?>" tabindex="-1"> << </a>
             <?php } else { // Show if not first page ?>
                 <a title="الصفحة الأولى" class="button-primary is-disabled" href="#" tabindex="-1"> << </a>
             <?php } ?>
 
             <?php if ($pageNum_ReExams > 0) { // Show if not first page ?>
-                <a title="السابق" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d%s", $currentPage, max(0, $pageNum_ReExams - 1), $queryString_ReExams); ?>" tabindex="-1"> < </a>
+                <a title="السابق" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d", $currentPage, max(0, $pageNum_ReExams - 1)); ?>" tabindex="-1"> < </a>
             <?php } else { // Show if not first page ?>
                 <a title="السابق" class="button-primary is-disabled" href="#" tabindex="-1"> < </a>
             <?php } // Show if not first page ?>
 
             <?php if ($pageNum_ReExams < $totalPages_ReExams) { // Show if not last page ?>
-                <a title="التالي" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d%s", $currentPage, min($totalPages_ReExams, $pageNum_ReExams + 1), $queryString_ReExams); ?>" tabindex="-1"> > </a>
+                <a title="التالي" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d", $currentPage, min($totalPages_ReExams, $pageNum_ReExams + 1)); ?>" tabindex="-1"> > </a>
             <?php } else { // Show if not first page ?>
                 <a title="التالي" class="button-primary is-disabled" href="#" tabindex="-1"> > </a>
             <?php } // Show if not last page ?>
 
             <?php if ($pageNum_ReExams < $totalPages_ReExams) { // Show if not last page ?>
-                <a title="الصفحة الأخيرة" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d%s", $currentPage, $totalPages_ReExams, $queryString_ReExams); ?>" tabindex="-1"> >> </a>
+                <a title="الصفحة الأخيرة" class="button-primary" href="<?php printf("%s?pageNum_ReExams=%d", $currentPage, $totalPages_ReExams); ?>" tabindex="-1"> >> </a>
             <?php } else { // Show if not first page ?>
                 <a title="الصفحة الأخيرة" class="button-primary is-disabled" href="#" tabindex="-1"> >> </a>
             <?php } // Show if not last page ?>

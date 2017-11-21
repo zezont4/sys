@@ -1,9 +1,11 @@
-<?php require_once('../Connections/localhost.php'); ?>
-<?php require_once('../functions.php'); ?>
-<?php require_once '../secure/functions.php'; ?>
-<?php require_once('fahd_functions.php'); ?>
-<?php sec_session_start(); ?>
-<?php $PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في مسابقة الفهد'; ?>
+<?php
+require_once('../Connections/localhost.php');
+require_once('../functions.php');
+require_once '../secure/functions.php';
+require_once('fahd_functions.php');
+sec_session_start();
+
+$PageTitle = 'تعديل بيانات ' . get_gender_label('st', '') . ' في مسابقة الفهد'; ?>
 <?php if (login_check('admin,ms') == true) { ?>
     <?php
     $userType = 0;
@@ -13,11 +15,11 @@
     ?>
     <?php
     $auto_no = "-1";
-    if (isset($_GET['AutoNo'])) {
-        $auto_no = $_GET['AutoNo'];
+    if (isset($_GET['auto_no'])) {
+        $auto_no = $_GET['auto_no'];
     }
 
-    //$editFormAction ="regester_edit.php?AutoNo=".$auto_no;
+    //$editFormAction ="register_edit.php?AutoNo=".$auto_no;
     $editFormAction = $_SERVER['PHP_SELF'];
     if (isset($_SERVER['QUERY_STRING'])) {
         $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
@@ -36,42 +38,56 @@
     $HalakahID2 = $row_RSFahdExam['HalakahID2'];
     $EdarahID = $row_RSFahdExam['EdarahID'];
     $RDate = $row_RSFahdExam['RDate'];
+    $date_of_memorize = $row_RSFahdExam['date_of_memorize'];
 
-    //zlog($StID);
-    //zlog($MsbkhID);
-    //zlog($ErtiqaID);
-    //zlog($SchoolLevelID);
+
     if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "form1")) {
         // search for dublicate musabakah ##############
-        //if ($OldMsbkhID!=$dublicate_RsMsbkhID){
-        //zlog("dublicate found");
         mysqli_select_db($localhost, $database_localhost);
         $study_fahd_start = get_fahd_year_start($RDate);
         $study_fahd_end = get_fahd_year_end($RDate);
         $study_fahd_name = get_fahd_year_name($RDate);
 
-        $query_Rsdublicate = sprintf("SELECT AutoNo,RDate FROM ms_fahd_rgstr WHERE StID=%s AND MsbkhID=%s AND AutoNo<>%s AND RDate>=%s AND RDate<=%s", GetSQLValueString($StID, "double"), GetSQLValueString($_POST['MsbkhID'], "int"), GetSQLValueString($auto_no, "int"), GetSQLValueString($study_fahd_start, "int"), GetSQLValueString($study_fahd_end, "int"));
-        echo($query_Rsdublicate);
+        $query_Rsdublicate = sprintf("SELECT * FROM ms_fahd_rgstr WHERE StID=%s AND MsbkhID=%s AND AutoNo<>%s AND RDate>=%s AND RDate<=%s", GetSQLValueString($StID, "double"), GetSQLValueString($_POST['MsbkhID'], "int"), GetSQLValueString($auto_no, "int"), GetSQLValueString($study_fahd_start, "int"), GetSQLValueString($study_fahd_end, "int"));
         $Rsdublicate = mysqli_query($localhost, $query_Rsdublicate) or die(mysqli_error($localhost));
         $row_Rsdublicate = mysqli_fetch_assoc($Rsdublicate);
         $totalRows_Rsdublicate = mysqli_num_rows($Rsdublicate);
+
+
         if ($totalRows_Rsdublicate > 0) {
             include('../templates/header1.php');
+            echo '<script> function goBack() { window.history.back(); } </script>';
             echo '<h1 style="text-align:center;margin:20px;font-size:22px;">' . "<br><br>" . get_gender_label('st', 'ال') . ' : ' . get_student_name($StID) . ' قام بالتسجيل سابقا في العام الدراسي : ' . $study_fahd_name . ' وذلك في تاريخ : ' . StringToDate($row_Rsdublicate['RDate']) . '<br><br><br>' . 'ولا يمكن تكرار المشاركة أكثر من مرة في العام الواحد' . '<br><br>' . '<a href="/sys/fahd/Register_edit.php?AutoNo=' . $row_Rsdublicate['AutoNo'] . '">' . 'وإذا أردت تعديل المسابقة، اضغط هنا' . '</a>' . "</h1>";
+            echo '<a href="" onclick="goBack()"><h1 style="text-align: center;font-size:18px;">رجوع لصفحة التسجيل</h1></a>';
             exit;
         }
-        //}
 
 
-        $insertSQL = sprintf("UPDATE  ms_fahd_rgstr SET st_type=%s,MsbkhID=%s,SchoolLevelID=%s,ErtiqaID=%s WHERE AutoNo=%s", GetSQLValueString($_POST['st_type'], "int"), GetSQLValueString($_POST['MsbkhID'], "int"), GetSQLValueString($_POST['SchoolLevelID'], "int"), GetSQLValueString($_POST['ErtiqaID'], "int"), GetSQLValueString($auto_no, "int"));
+        /*التأكد من ادخال تاريخ الختمة لأصغر حافظ*/
+        if ($_POST['MsbkhID'] == 8 && $_POST['date_of_memorize'] == null) {
+            include('../templates/header1.php');
+            echo '<script> function goBack() { window.history.back(); } </script>';
+            echo '<h1 style="text-align:center;margin:20px;font-size:22px;">' . "<br><br> يجب تسجيل تاريخ الختمة بالحلقة للمشاركين في مسابقة أصغر حافظ وحافظة</h1>";
+            echo '<a href="" onclick="goBack()"><h1 style="text-align: center;font-size:18px;">رجوع لصفحة التسجيل</h1></a>';
+            exit;
+        }
+
+        $insertSQL = sprintf("UPDATE  ms_fahd_rgstr SET st_type=%s,MsbkhID=%s,SchoolLevelID=%s,ErtiqaID=%s,date_of_memorize=%s   WHERE AutoNo=%s",
+            GetSQLValueString($_POST['st_type'], "int"),
+            GetSQLValueString($_POST['MsbkhID'], "int"),
+            GetSQLValueString($_POST['SchoolLevelID'], "int"),
+            GetSQLValueString($_POST['ErtiqaID'], "int"),
+            GetSQLValueString(str_replace('/', '', $_POST['date_of_memorize']), "int"),
+            GetSQLValueString($auto_no, "int")
+        );
+
+
         mysqli_select_db($localhost, $database_localhost);
         $Result1 = mysqli_query($localhost, $insertSQL) or die(mysqli_error($localhost));
         if ($Result1) {
             $_SESSION['u1'] = "u1";
             header("Location: " . $editFormAction);
-            exit;
-            //header("Location: ".$editFormAction);
-            //exit;
+//            exit;
         }
 
     }
@@ -80,29 +96,30 @@
     $RsHalakat = mysqli_query($localhost, $query_RsHalakat) or die(mysqli_error($localhost));
     $row_RsHalakat = mysqli_fetch_assoc($RsHalakat);
     $totalRows_RsHalakat = mysqli_num_rows($RsHalakat);
-    ?>
-    <?php
+
+
     if (isset($_SESSION['user_id'])) {
         $colname_RSEdarat = $_SESSION['user_id'];
     }
-    ?>
-    <?php include('../templates/header1.php'); ?>
-<title><?php echo $PageTitle; ?></title>
-<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/cupertino/jquery-ui.css"/>
-<link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>
-<style type="text/css">
-    .FieldsButton .note {
-        color: #4FA64B;
-    }
-</style>
-</head>
-<body>
-<?php include('../templates/header2.php'); ?>
-    <?php include('../templates/nav_menu.php'); ?>
-<div id="PageTitle"><?php echo $PageTitle; ?></div>
-<!--PageTitle-->
 
-<?php $closed = 'no';
+    include('../templates/header1.php'); ?>
+
+    <title><?php echo $PageTitle; ?></title>
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/themes/cupertino/jquery-ui.css"/>
+<!--    <link rel="stylesheet" href="../_css/del/ui-cupertino.calendars.picker.css"/>-->
+    <style type="text/css">
+        .FieldsButton .note {
+            color: #4FA64B;
+        }
+    </style>
+    </head>
+    <body>
+    <?php include('../templates/header2.php'); ?>
+    <?php include('../templates/nav_menu.php'); ?>
+    <div id="PageTitle"><?php echo $PageTitle; ?></div>
+    <!--PageTitle-->
+
+    <?php $closed = 'no';
     if ($closed == 'no') { ?>
         <form action="<?php echo $editFormAction; ?>" method="post" name="form1" id="form1" data-validate="parsley">
             <input name="MM_insert" type="hidden" value="form1">
@@ -154,26 +171,35 @@
                 </div>
 
                 <?php
-            //مؤقت
-            //البيانات الأساسية موجودة في ملف الفنكشن
+                //مؤقت
+                //البيانات الأساسية موجودة في ملف الفنكشن
 
-$MsbkhType = [
-	["", "حدد نوع المسابقة..."],
-	["0", "جزأين (دنيا)"],
-	["1", "جزأين (عليا)"],
-	["2", "خمس أجزاء"],
-	["3", "عشرة أجزاء"],
-	["4", "عشرون جزءاَ"],
-	["5", "القرآن كاملا"],
-	["6", "مزامير آل داود"],
-];
-            ?>
+                $MsbkhType = [
+                    ["", "حدد نوع المسابقة..."],
+                    [7, "حلقات"],
+                    [0, "جزأين (دنيا)"],
+                    [1, "جزأين (عليا)"],
+                    [2, "خمس أجزاء"],
+                    [3, "عشرة أجزاء"],
+                    [4, "عشرون جزءاَ"],
+                    [5, "القرآن كاملا"],
+                    [6, "مزامير آل داود"],
+                    [8, "أصغر حافظ"]
+                ];
+                ?>
                 <div class="four columns omega">
                     <div class="LabelContainer">نوع المسابقة</div>
                     <?php echo create_combo("MsbkhID", $MsbkhType, 0, $MsbkhID, 'class="full-width" data-required="true"'); ?>
                 </div>
                 <!--<div class="FieldsTitle">إذا كان الطالب ليس من طلاب الحلقة أعلاه، وتم نقله حتى يكمل العدد المسموح به في المسابقة، فيرجى كتابة اسم الحلقة المنقول منها (مؤقتا).</div>-->
                 <br class="clear">
+
+                <div class="six columns alpha">
+                    <div class="LabelContainer">تاريخ الختمة بالحلقة <span
+                            style="color: red">( خاص بأصغر حافظ وحافظة )</span></div>
+                    <input name="date_of_memorize" type="text" value="<?php echo StringToDate($date_of_memorize); ?>"
+                           id="date_of_memorize" zezo_date="true"/>
+                </div>
 
                 <div class="four columns omega left">
                     <input name="submit" type="submit" class="button-primary" id="submit" value="موافق"/>
@@ -200,9 +226,9 @@ $MsbkhType = [
     }
     ?>
 
-<script type="text/javascript">
-    showError();
-</script>
+    <script type="text/javascript">
+        showError();
+    </script>
 <?php } else {
     include('../templates/restrict_msg.php');
 } ?>

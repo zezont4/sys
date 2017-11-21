@@ -2,7 +2,6 @@
 require_once('../functions.php');
 require_once '../secure/functions.php';
 sec_session_start();
-include('../mobily_ws/includeSettings.php');
 $editFormAction = $_SERVER ['PHP_SELF'];
 if (isset ($_SERVER ['QUERY_STRING'])) {
 	$editFormAction .= "?" . ($_SERVER ['QUERY_STRING']);
@@ -85,13 +84,13 @@ WHERE AutoNo = % s", GetSQLValueString($colname_RsMobile, "int"));
 		$sex = $row_RsMobile['edarah_sex'];
 		$StName1 = $row_RsMobile['StName1'];
 		$MarkName_Long = $row_RsMobile['MarkName_Long'];
-		$O_MurtaqaName = $row_RsMobile['O_MurtaqaName'];
+		$murtaqa_name = $row_RsMobile['O_MurtaqaName'];
 		if ($sex == 1) {
-			$msg_2 = utf2win(sprintf("نبارك لنا ولكم اجتياز ابنكم (%s) مرتقى (%s) بتقدير (%s), جعله الله قرة عين لكم.", $StName1, $O_MurtaqaName, $MarkName_Long));
-			$msg_3 = utf2win(sprintf("ابنكم (%s) لم يوفق في اجتياز مرتقى (%s),نسأل الله له التوفيق في الاختبار القادم.", $StName1, $O_MurtaqaName));
+			$msg_2 = sprintf("نبارك لنا ولكم اجتياز ابنكم (%s) مرتقى (%s) بتقدير (%s), جعله الله قرة عين لكم.", $StName1, $murtaqa_name, $MarkName_Long);
+			$msg_3 = sprintf("ابنكم (%s) لم يوفق في اجتياز مرتقى (%s),نسأل الله له التوفيق في الاختبار القادم.", $StName1, $murtaqa_name);
 		} elseif ($sex == 0) {
-			$msg_2 = utf2win(sprintf("نبارك لنا ولكم اجتياز ابنتكم (%s) مرتقى (%s) بتقدير (%s), جعلها الله قرة عين لكم.", $StName1, $O_MurtaqaName, $MarkName_Long));
-			$msg_3 = utf2win(sprintf("ابنتكم (%s) لم توفق في اجتياز مرتقى (%s),نسأل الله لها التوفيق في الاختبار القادم.", $StName1, $O_MurtaqaName));
+			$msg_2 = sprintf("نبارك لنا ولكم اجتياز ابنتكم (%s) مرتقى (%s) بتقدير (%s), جعلها الله قرة عين لكم.", $StName1, $murtaqa_name, $MarkName_Long);
+			$msg_3 = sprintf("ابنتكم (%s) لم توفق في اجتياز مرتقى (%s),نسأل الله لها التوفيق في الاختبار القادم.", $StName1, $murtaqa_name);
 		}
 		if ($_POST['RadioStatus'] == 2) {
 			$msg = $msg_2;
@@ -99,7 +98,7 @@ WHERE AutoNo = % s", GetSQLValueString($colname_RsMobile, "int"));
 			$msg = $msg_3;
 		}
 		if ($msg != '') {
-			$SendingAnswer = sendSMS($smsUser, $smsPass, $numbers, 'QuranZulfi', $msg, 0, 0, 0, 0);
+			$SendingAnswer = sendSMS($numbers, $msg);
 			if ($SendingAnswer == 1) {
 				$_SESSION ['msgFatherSent'] = '';
 			} else {
@@ -114,12 +113,7 @@ if (isset ($_GET ['ExamNo'])) {
 	$colname_RsErExams = $_GET ['ExamNo'];
 }
 mysqli_select_db($localhost, $database_localhost);
-$query_RsErExams = sprintf("SELECT
-  AutoNo, O_StudentName, O_TeacherName, O_Edarah, O_HName, O_MurtaqaName, ErtiqaID, FinalExamStatus, H_SolokGrade, H_MwadabahGrade,
-  Sora1Name, Sora1Discount, Sora2Name, Sora2Discount, Sora3Name, Sora3Discount, Sora4Name, Sora4Discount, Sora5Name, Sora5Discount,
-  Sora6Name, Sora6Discount, Sora7Name, Sora7Discount, Sora8Name, Sora8Discount, Sora9Name, Sora9Discount, Sora10Name, Sora10Discount,
-  Ek_mwathbah, Ek_slok, MarkName_Short, MarkName_Long, Money, teacher_money, edarah_money, FinalExamDegree, MukhtaberTeacher, MukhtaberTeacher2
-FROM view_er_ertiqaexams
+$query_RsErExams = sprintf("SELECT * FROM view_er_ertiqaexams
 WHERE AutoNo = % s", GetSQLValueString($colname_RsErExams, "int"));
 $RsErExams = mysqli_query($localhost, $query_RsErExams) or die(mysqli_error($localhost));
 $row_RsErExams = mysqli_fetch_assoc($RsErExams);
@@ -718,7 +712,7 @@ if (isset ($_SESSION ['msgFatherNotSent'])) {
 	<script>
 		$(document).ready(function () {
 			alertify.set({delay: 60000});
-			alertify.error('<?php echo "لم ترسل رسالة لولي الأمر للسبب التالي:"."<br>".iconv("Windows-1256","UTF-8",$arraySendMsg[$_SESSION['msgFatherNotSent']]);?>');
+			alertify.error('<?php echo "لم ترسل رسالة لولي الأمر للسبب التالي:" . "<br>" . iconv("Windows-1256", "UTF-8", $arraySendMsg[$_SESSION['msgFatherNotSent']]);?>');
 		});
 	</script>
 	<?php

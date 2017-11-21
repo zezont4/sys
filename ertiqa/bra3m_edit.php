@@ -14,7 +14,7 @@ if (isset($_GET['AutoNo'])) {
     $auto_no = $_GET['AutoNo'];
 }
 
-//$editFormAction ="regester_edit.php?AutoNo=".$auto_no;
+//$editFormAction ="Register_edit.php?AutoNo=".$auto_no;
 $editFormAction = $_SERVER['PHP_SELF'];
 if (isset($_SERVER['QUERY_STRING'])) {
     $editFormAction .= "?" . ($_SERVER['QUERY_STRING']);
