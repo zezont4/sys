@@ -43,7 +43,7 @@ $PageTitle = 'الرئيسية'; ?>
         <?php } ?>
         <br><br>
         <hr>
-        <div class="sixteen columns alpha omega"><a class="inline_menu" href="http://sys.quranzulfi.com/">للإنتقال إلى نظام الحلقات (راصد) ، اضغط هنا</a></div>
+        <div class="sixteen columns alpha omega"><a class="inline_menu" href="https://rased.quranzulfi.com/">للإنتقال إلى نظام الحلقات (راصد) ، اضغط هنا</a></div>
     </div>
 <?php } else { ?>
 
@@ -56,7 +56,7 @@ $PageTitle = 'الرئيسية'; ?>
         </div>
         <div class="sixteen columns alpha omega"> إذا كنت أحد طلابنا أو طالباتنا ، فهذه <a class="inline_menu" href="/sys/ertiqa/statistics/studentexams.php"> صفحتكم.</a></div>
         <hr>
-        <div class="sixteen columns alpha omega"><a class="inline_menu" href="http://sys.quranzulfi.com/">للإنتقال إلى نظام الحلقات (راصد) ، اضغط هنا</a></div>
+        <div class="sixteen columns alpha omega"><a class="inline_menu" href="https://rased.quranzulfi.com/">للإنتقال إلى نظام الحلقات (راصد) ، اضغط هنا</a></div>
     </div>
 <?php } ?>
 <?php include('templates/footer.php'); ?>

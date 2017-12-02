@@ -33,7 +33,7 @@ StEdarah,transfer_from,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHa
             'نقل طالب / طالبة',
             '<div style="direction: rtl;font-size: 18px">' .
             'نرجوا نقل الطالب / الطالبة : ' . $_POST['StName1'] . ' ' . $_POST['StName2'] . ' ' . $_POST['StName3'] . ' ' . $_POST['StName4'] . '<br>' .
-            '<a href="http://quranzulfi.com/sys/basic/transfer_st_approve.php?_token=STW6gPk8QrrZdF1gW2tO">فتح صفحة الاعتماد</a>' .
+            '<a href="https://qz.org.sa/sys/basic/transfer_st_approve.php?_token=STW6gPk8QrrZdF1gW2tO">فتح صفحة الاعتماد</a>' .
             '</div>'
         );
         

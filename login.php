@@ -76,7 +76,7 @@ if (isset($_GET['error'])) {
 
     </form>
     <hr>
-    <div class="sixteen columns alpha omega"><a class="inline_menu" href="http://sys.quranzulfi.com/">للإنتقال إلى نظام الحلقات (راصد) ، اضغط هنا</a></div>
+    <div class="sixteen columns alpha omega"><a class="inline_menu" href="https://rased.quranzulfi.com/">للإنتقال إلى نظام الحلقات (راصد) ، اضغط هنا</a></div>
 </div>
 
 </body>

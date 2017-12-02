@@ -159,7 +159,7 @@ require_once("../../templates/report_header2.php"); ?>
     <br>
     * ملحوظة خاصة : لا يقبل اختبار <?php echo get_gender_label('st', 'ال'); ?> في مرتقى (يونس وما بعده) إلا بعد حضور برنامج (تحفة الأطفال)، وإحضار شهادة حضوره.
     <br>
-    * بإمكان <?php echo get_gender_label('st', 'ال'); ?> وولي الأمر الاطلاع على تفاصيل الاختبارات السابقة على الرابط التالي : www.quranzulfi.com/sys
+    * بإمكان <?php echo get_gender_label('st', 'ال'); ?> وولي الأمر الاطلاع على تفاصيل الاختبارات السابقة على الرابط التالي : www.qz.org.sa/sys
 </div>
 </div>
 </body>
