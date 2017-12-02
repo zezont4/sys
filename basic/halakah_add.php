@@ -32,7 +32,7 @@ $pageNum_RSHalaqat = 0;
 //if (isset($_GET['pageNum_RSHalaqat'])) {
 $pageNum_RSHalaqat = Input::get('pageNum_RSHalaqat');
 //}
-$startRow_RSHalaqat = $pageNum_RSHalaqat * $maxRows_RSHalaqat;
+$startRow_RSHalaqat = (int)$pageNum_RSHalaqat * (int)$maxRows_RSHalaqat;
 $sql_sex = sql_sex('Sex');
 $query_RSHalaqat = '';
 $user_group = isset($_SESSION['user_group']) ? $_SESSION['user_group'] : null;
@@ -161,14 +161,14 @@ include('../templates/nav_menu.php'); ?>
             <?php } ?>
             <?php if ($pageNum_RSHalaqat > 0) { // Show if not first page ?>
                 <a title="السابق" class="button-primary"
-                   href="<?php printf("%s?pageNum_RSHalaqat=%d%s", $currentPage, max(0, $pageNum_RSHalaqat - 1), $queryString_RSHalaqat); ?>"
+                   href="<?php printf("%s?pageNum_RSHalaqat=%d%s", $currentPage, max(0, (int)$pageNum_RSHalaqat - 1), $queryString_RSHalaqat); ?>"
                    tabindex="-1"> < </a>
             <?php } else { // Show if not first page ?>
                 <a title="السابق" class="button-primary is-disabled" href="#" tabindex="-1"> < </a>
             <?php } // Show if not first page ?>
             <?php if ($pageNum_RSHalaqat < $totalPages_RSHalaqat) { // Show if not last page ?>
                 <a title="التالي" class="button-primary"
-                   href="<?php printf("%s?pageNum_RSHalaqat=%d%s", $currentPage, min($totalPages_RSHalaqat, $pageNum_RSHalaqat + 1), $queryString_RSHalaqat); ?>"
+                   href="<?php printf("%s?pageNum_RSHalaqat=%d%s", $currentPage, min($totalPages_RSHalaqat, (int)$pageNum_RSHalaqat + 1), $queryString_RSHalaqat); ?>"
                    tabindex="-1">
                     > </a>
             <?php } else { // Show if not first page ?>
@@ -183,7 +183,7 @@ include('../templates/nav_menu.php'); ?>
             <?php } // Show if not last page ?>
         </div>
         <br>
-        السجلات <?php echo($startRow_RSHalaqat + 1) ?> إلى <?php echo min($startRow_RSHalaqat + $maxRows_RSHalaqat, $totalRows_RSHalaqat) ?>
+        السجلات <?php echo($startRow_RSHalaqat + 1) ?> إلى <?php echo min((int)$startRow_RSHalaqat + (int)$maxRows_RSHalaqat, $totalRows_RSHalaqat) ?>
         من <?php echo $totalRows_RSHalaqat ?>
     </center>
     <br/>

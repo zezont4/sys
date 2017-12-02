@@ -206,6 +206,12 @@ $PageTitle = 'بيانات الاختبار'; ?>
 include('../templates/nav_menu.php'); ?>
 <div id="PageTitle"><?php echo $PageTitle; ?></div>
 <!--PageTitle-->
+<?php
+// إذا قام المستخدم بتغيير رقم الاختبار بشريط العنوان إلى رقم آخر غير موجود
+if (!$totalRows_RsErExams) {
+    exit('<br><br><h1 style="font-size:22px;text-align:center;">عفوا... قد يكون هذا الإختبار محذوف<br><br></h1>');
+}
+?>
 <form method="post" name="form1" id="form1" data-validate="parsley" action="<?php echo $editFormAction; ?>">
     <div class="content CSSTableGenerator">
         <table>

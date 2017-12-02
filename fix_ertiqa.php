@@ -1,4 +1,5 @@
 <?php
+/*
 require_once('functions.php');
 ini_set('max_execution_time', 0);
 set_time_limit(0);
@@ -19,7 +20,7 @@ do {
         echo $Result1;
     }
 } while ($row_select = mysqli_fetch_assoc($select));
-
+*/
 //5 مقاطع
 /*
 $query_select = sprintf("SELECT * FROM er_shahadah sh, er_ertiqaexams ex where sh.ExamNo = ex.AutoNo and ex.ErtiqaID<=4",

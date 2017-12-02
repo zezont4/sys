@@ -36,6 +36,7 @@ StEdarah,transfer_from,StMobileNo,FatherMobileNo,guardian_name ,StBurthDate,StHa
             '<a href="http://quranzulfi.com/sys/basic/transfer_st_approve.php?_token=STW6gPk8QrrZdF1gW2tO">فتح صفحة الاعتماد</a>' .
             '</div>'
         );
+        
         header("Location: " . '/sys/basic/transfer_st_search.php');
         exit;
     }

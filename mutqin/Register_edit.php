@@ -86,7 +86,7 @@ if ($closed == 'no') { ?>
 
         <div class="content CSSTableGenerator">
             <table>
-                <caption>بيانات <?php echo get_gender_label('st', 'ال'); ?> الأساسية (وقت التسجيل بالمرتقى)</caption>
+                <caption>بيانات <?php echo get_gender_label('st', 'ال'); ?> الأساسية (وقت التسجيل بالمسابقة)</caption>
                 <tr>
                     <td>اسم <?php echo get_gender_label('st', 'ال'); ?></td>
                     <td>المجمع</td>

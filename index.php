@@ -1,7 +1,7 @@
 <?php
 require_once('functions.php');
 include_once('templates/header1.php');
-sendSMS('966559955', 'منتامنتامنا نتا تاما م');
+//sendSMS('966559955', 'منتامنتامنا نتا تاما م');
 $PageTitle = 'الرئيسية'; ?>
     <title><?php echo $PageTitle; ?></title>
     <style>

@@ -1,5 +1,5 @@
 <?php
-require_once('../functions.php');
+require_once '../functions.php';
 $sex = isset($_SESSION['sex']) ? $_SESSION['sex'] : 1;
 $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
@@ -97,7 +97,6 @@ if ((isset($_POST["MM_update"])) && ($_POST["MM_update"] == "form1")) {
         }
         updateMurajaahStatus($_POST['ExamNo'], $_POST['RadioStatus']);
 
-
 //إرسال رسال لمدير المجمع والدار
         sendMsgToModerator($row_RsMobile['StID'], $row_RsMobile['EdarahID'], $_POST['RadioStatus']);
         $_SESSION['u1'] = "";
@@ -109,7 +108,9 @@ $colname_RsErExams = "-1";
 if (isset($_GET['ExamNo'])) {
     $colname_RsErExams = $_GET['ExamNo'];
 }
-$query_RsErExams = sprintf("SELECT AutoNo,O_StudentName,FatherMobileNo,O_TeacherName,O_Edarah,O_HName,O_MurtaqaName,ErtiqaID,FinalExamStatus,Sora1Name,Sora1Discount,Sora2Name,Sora2Discount,Sora3Name,Sora3Discount,Sora4Name,Sora4Discount,Sora5Name,Sora5Discount,H_SolokGrade,H_MwadabahGrade,Ek_mwathbah,Ek_slok,MarkName_Short,MarkName_Long,Money,teacher_money,edarah_money,ExamPoints,FinalExamDegree,MukhtaberTeacher,MukhtaberTeacher2 FROM view_er_ertiqaexams WHERE AutoNo = %s", GetSQLValueString($colname_RsErExams, "int"));
+$query_RsErExams = sprintf("SELECT * FROM view_er_ertiqaexams WHERE AutoNo = %s",
+    GetSQLValueString($colname_RsErExams, "int"));
+
 $RsErExams = mysqli_query($localhost, $query_RsErExams) or die(mysqli_error($localhost));
 $row_RsErExams = mysqli_fetch_assoc($RsErExams);
 $totalRows_RsErExams = mysqli_num_rows($RsErExams);
@@ -120,8 +121,8 @@ $RsMukhtaber = mysqli_query($localhost, $query_RsMukhtaber) or die(mysqli_error(
 $row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber);
 $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
 ?>
-<?php include('../templates/header1.php'); ?>
-<?php $PageTitle = 'بيانات الاختبار'; ?>
+<?php include '../templates/header1.php';?>
+<?php $PageTitle = 'بيانات الاختبار';?>
 <title><?php echo $PageTitle; ?></title>
 <script src="../_js/jquery.select-to-autocomplete.min.js"></script>
 <script type="text/javascript" charset="utf-8">
@@ -182,13 +183,21 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
 </style>
 </head>
 <body>
-<?php include('../templates/header2.php'); ?>
-<?php include('../templates/nav_menu.php'); ?>
+<?php include '../templates/header2.php';?>
+<?php include '../templates/nav_menu.php';?>
 <div id="PageTitle"><?php echo $PageTitle; ?></div>
+
+<?php
+// إذا قام المستخدم بتغيير رقم الاختبار بشريط العنوان إلى رقم آخر غير موجود
+if (!$totalRows_RsErExams) {
+    exit('<br><br><h1 style="font-size:22px;text-align:center;">عفوا... قد يكون هذا الإختبار محذوف<br><br></h1>');
+}
+?>
 
 <!--PageTitle-->
 <form method="post" name="form1" id="form1" data-validate="parsley" action="<?php echo $editFormAction; ?>">
     <div class="content CSSTableGenerator">
+
         <table>
             <caption>
                 بيانات <?php echo get_gender_label('st', 'ال'); ?>
@@ -210,36 +219,36 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
     <div class="content FieldsButton">
         <div class="FieldsTitle">حالة الاختبار</div>
         <?php
-        $count_statusName = count($statusName);
-        for ($i = 0; $i < $count_statusName; $i++) {
-            ?>
+$count_statusName = count($statusName);
+for ($i = 0; $i < $count_statusName; $i++) {
+    ?>
             <?php if ($statusName[$i][0] == '0') {
-                echo '<div class="three columns alpha">';
-            } else if ($statusName[$i][0] == '3' || $statusName[$i][0] == '4') {
-                echo '<div class="two columns alpha omega">';
-            } else if ($statusName[$i][0] == '5') {
-                echo '<div class="three columns">';
-            } else if ($statusName[$i][0] == '6') {
-                echo '<div class="three columns omega">';
-            } else {
-                echo '<div class="two columns alpha">';
-            } ?>
+        echo '<div class="three columns alpha">';
+    } else if ($statusName[$i][0] == '3' || $statusName[$i][0] == '4') {
+        echo '<div class="two columns alpha omega">';
+    } else if ($statusName[$i][0] == '5') {
+        echo '<div class="three columns">';
+    } else if ($statusName[$i][0] == '6') {
+        echo '<div class="three columns omega">';
+    } else {
+        echo '<div class="two columns alpha">';
+    }?>
             <label>
                 <input <?php if ($row_RsErExams['FinalExamStatus'] == $statusName[$i][0]) {
-                    echo "checked='checked'";
-                } ?>
+        echo "checked='checked'";
+    }?>
                         type="radio" data-required="true" name="RadioStatus" value="<?php echo $statusName[$i][0]; ?>"
                         id="RadioStatus_<?php echo $statusName[$i][0]; ?>">
                 <?php echo $statusName[$i][1]; ?> </label>
             <?php echo '</div>'; ?>
         <?php }
-        unset($StatusN); ?>
+unset($StatusN);?>
     </div>
     <?php
-    $TotalDiscount = $row_RsErExams['Sora1Discount'] + $row_RsErExams['Sora2Discount'] + $row_RsErExams['Sora3Discount'] + $row_RsErExams['Sora4Discount'] + $row_RsErExams['Sora5Discount'];
-    $TotalRremaining = (20 - $row_RsErExams['Sora1Discount']) + (20 - $row_RsErExams['Sora2Discount']) + (20 - $row_RsErExams['Sora3Discount']) + (20 - $row_RsErExams['Sora4Discount']) + (20 - $row_RsErExams['Sora5Discount']);
+$TotalDiscount = $row_RsErExams['Sora1Discount'] + $row_RsErExams['Sora2Discount'] + $row_RsErExams['Sora3Discount'] + $row_RsErExams['Sora4Discount'] + $row_RsErExams['Sora5Discount'];
+$TotalRremaining = (20 - $row_RsErExams['Sora1Discount']) + (20 - $row_RsErExams['Sora2Discount']) + (20 - $row_RsErExams['Sora3Discount']) + (20 - $row_RsErExams['Sora4Discount']) + (20 - $row_RsErExams['Sora5Discount']);
 
-    ?>
+?>
     <input type="hidden" name="MM_update" value="form1">
     <input type="hidden" name="ExamNo" value="<?php echo $row_RsErExams['AutoNo']; ?>">
 
@@ -259,15 +268,15 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                                 tabindex="1">
                             <option value>حدد السورة</option>
                             <?php $ii = 114;
-                            do { ?>
+do {?>
                                 <option value="<?php echo $ii; ?>"<?php if ($row_RsErExams['Sora1Name'] == $ii) {
-                                    echo 'selected="selected"';
-                                } ?>> <?php echo $soraName[$ii] ?></option>
+    echo 'selected="selected"';
+}?>> <?php echo $soraName[$ii] ?></option>
                                 <?php if ($ii == $murtaqaEndSora[$row_RsErExams['ErtiqaID']]) {
-                                    break;
-                                }
-                                $ii--;
-                            } while ($ii > 0); ?>
+    break;
+}
+    $ii--;
+} while ($ii > 0);?>
                         </select></td>
                     <td><input name="Sora1Discount" id="Sora1Discount" class="soraDiscount Enbl_Dsbl" type="number"
                                step="0.5"
@@ -282,15 +291,15 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                                 tabindex="3">
                             <option value>حدد السورة</option>
                             <?php $ii = 114;
-                            do { ?>
+do {?>
                                 <option value="<?php echo $ii; ?>"<?php if ($row_RsErExams['Sora2Name'] == $ii) {
-                                    echo 'selected="selected"';
-                                } ?>> <?php echo $soraName[$ii] ?></option>
+    echo 'selected="selected"';
+}?>> <?php echo $soraName[$ii] ?></option>
                                 <?php if ($ii == $murtaqaEndSora[$row_RsErExams['ErtiqaID']]) {
-                                    break;
-                                }
-                                $ii--;
-                            } while ($ii > 0); ?>
+    break;
+}
+    $ii--;
+} while ($ii > 0);?>
                         </select></td>
                     <td><input name="Sora2Discount" id="Sora2Discount" class="soraDiscount Enbl_Dsbl" type="number"
                                step="0.5"
@@ -305,15 +314,15 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                                 tabindex="5">
                             <option value>حدد السورة</option>
                             <?php $ii = 114;
-                            do { ?>
+do {?>
                                 <option value="<?php echo $ii; ?>"<?php if ($row_RsErExams['Sora3Name'] == $ii) {
-                                    echo 'selected="selected"';
-                                } ?>> <?php echo $soraName[$ii] ?></option>
+    echo 'selected="selected"';
+}?>> <?php echo $soraName[$ii] ?></option>
                                 <?php if ($ii == $murtaqaEndSora[$row_RsErExams['ErtiqaID']]) {
-                                    break;
-                                }
-                                $ii--;
-                            } while ($ii > 0); ?>
+    break;
+}
+    $ii--;
+} while ($ii > 0);?>
                         </select></td>
                     <td><input name="Sora3Discount" id="Sora3Discount" class="soraDiscount Enbl_Dsbl" type="number"
                                step="0.5"
@@ -328,15 +337,15 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                                 tabindex="7">
                             <option value>حدد السورة</option>
                             <?php $ii = 114;
-                            do { ?>
+do {?>
                                 <option value="<?php echo $ii; ?>"<?php if ($row_RsErExams['Sora4Name'] == $ii) {
-                                    echo 'selected="selected"';
-                                } ?>> <?php echo $soraName[$ii] ?></option>
+    echo 'selected="selected"';
+}?>> <?php echo $soraName[$ii] ?></option>
                                 <?php if ($ii == $murtaqaEndSora[$row_RsErExams['ErtiqaID']]) {
-                                    break;
-                                }
-                                $ii--;
-                            } while ($ii > 0); ?>
+    break;
+}
+    $ii--;
+} while ($ii > 0);?>
                         </select></td>
                     <td><input name="Sora4Discount" id="Sora4Discount" class="soraDiscount Enbl_Dsbl" type="number"
                                step="0.5"
@@ -351,15 +360,15 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                                 tabindex="9">
                             <option value>حدد السورة</option>
                             <?php $ii = 114;
-                            do { ?>
+do {?>
                                 <option value="<?php echo $ii; ?>"<?php if ($row_RsErExams['Sora5Name'] == $ii) {
-                                    echo 'selected="selected"';
-                                } ?>> <?php echo $soraName[$ii] ?></option>
+    echo 'selected="selected"';
+}?>> <?php echo $soraName[$ii] ?></option>
                                 <?php if ($ii == $murtaqaEndSora[$row_RsErExams['ErtiqaID']]) {
-                                    break;
-                                }
-                                $ii--;
-                            } while ($ii > 0); ?>
+    break;
+}
+    $ii--;
+} while ($ii > 0);?>
                         </select></td>
                     <td><input name="Sora5Discount" id="Sora5Discount" class="soraDiscount Enbl_Dsbl" type="number"
                                step="0.5"
@@ -394,51 +403,47 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                                 tabindex="13">
                             <option value>حدد المعلم المختبر</option>
                             <?php
-                            if ($row_RsErExams['MukhtaberTeacher'] > 0) {
-                                $selected_mktbr = $row_RsErExams['MukhtaberTeacher'];
-                            } else {
-                                $selected_mktbr = $user_id;
-                            }
-                            do {
-
-                                ?>
+if ($row_RsErExams['MukhtaberTeacher'] > 0) {
+    $selected_mktbr = $row_RsErExams['MukhtaberTeacher'];
+} else {
+    $selected_mktbr = $user_id;
+}
+do {?>
                                 <option value="<?php echo $row_RsMukhtaber['id'] ?>"<?php if ($row_RsMukhtaber['id'] == $selected_mktbr) {
-                                    echo 'selected="selected"';
-                                } ?>><?php echo $row_RsMukhtaber['arabic_name'] ?></option>
+    echo 'selected="selected"';
+}?>><?php echo $row_RsMukhtaber['arabic_name'] ?></option>
                                 <?php
-                            } while ($row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber));
-                            $rows = mysqli_num_rows($RsMukhtaber);
-                            if ($rows > 0) {
-                                mysqli_data_seek($RsMukhtaber, 0);
-                                $row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber);
-                            }
-                            ?>
+} while ($row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber));
+$rows = mysqli_num_rows($RsMukhtaber);
+if ($rows > 0) {
+    mysqli_data_seek($RsMukhtaber, 0);
+    $row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber);
+}
+?>
                         </select></td>
                 </tr>
-                <?php if ($sex == 0) { ?>
+                <?php if ($sex == 0) {?>
                     <tr>
                         <th><?php echo get_gender_label('mktbr', '') . ' [2]'; ?></th>
                         <td><select name="MukhtaberTeacher2" class="Enbl_Dsbl" id="MukhtaberTeacher2"
                                     data-required="true" tabindex="14">
                                 <option value>حدد المعلم المختبر</option>
                                 <?php
-                                do {
-
-                                    ?>
+do {?>
                                     <option value="<?php echo $row_RsMukhtaber['id'] ?>" <?php if ($row_RsMukhtaber['id'] == $row_RsErExams['MukhtaberTeacher2']) {
-                                        echo 'selected="selected"';
-                                    } ?>><?php echo $row_RsMukhtaber['arabic_name'] ?></option>
+    echo 'selected="selected"';
+}?>><?php echo $row_RsMukhtaber['arabic_name'] ?></option>
                                     <?php
-                                } while ($row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber));
-                                $rows = mysqli_num_rows($RsMukhtaber);
-                                if ($rows > 0) {
-                                    mysqli_data_seek($RsMukhtaber, 0);
-                                    $row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber);
-                                }
-                                ?>
+} while ($row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber));
+    $rows = mysqli_num_rows($RsMukhtaber);
+    if ($rows > 0) {
+        mysqli_data_seek($RsMukhtaber, 0);
+        $row_RsMukhtaber = mysqli_fetch_assoc($RsMukhtaber);
+    }
+    ?>
                             </select></td>
                     </tr>
-                <?php } ?>
+                <?php }?>
             </table>
         </div>
         <input type="hidden" name="Money" id="Money" value="<?php echo $row_RsErExams['Money']; ?>">
@@ -446,9 +451,9 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
                value="<?php echo $row_RsErExams['teacher_money']; ?>">
         <input type="hidden" name="EdarahMoney" id="EdarahMoney" value="<?php echo $row_RsErExams['edarah_money']; ?>">
         <input type="hidden" name="TotalMwathabah" id="TotalMwathabah"
-               value="<?php echo($row_RsErExams['H_MwadabahGrade'] + $row_RsErExams['Ek_mwathbah']); ?>">
+               value="<?php echo ($row_RsErExams['H_MwadabahGrade'] + $row_RsErExams['Ek_mwathbah']); ?>">
         <input type="hidden" name="TotalSolok" id="TotalSolok"
-               value="<?php echo($row_RsErExams['H_SolokGrade'] + $row_RsErExams['Ek_slok']); ?>">
+               value="<?php echo ($row_RsErExams['H_SolokGrade'] + $row_RsErExams['Ek_slok']); ?>">
         <input type="hidden" name="MarkName_Short" id="MarkName_Short"
                value="<?php echo $row_RsErExams['MarkName_Short']; ?>">
         <input type="hidden" name="MarkName_Long" id="MarkName_Long"
@@ -483,13 +488,13 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
             <p class="note">(يجب حفظ البيانات قبل الطباعة)</p>
         </div>
         <?php
-        $female_lbl = '';
-        if ($sex == 0) {
-            $female_lbl = '_g';
-        } else {
-            $female_lbl = '';
-        }
-        ?>
+$female_lbl = '';
+if ($sex == 0) {
+    $female_lbl = '_g';
+} else {
+    $female_lbl = '';
+}
+?>
         <div class="two columns alpha">&nbsp;</div>
         <div class="four columns"><a
                     href="reports/shahadah_5<?php echo $female_lbl; ?>.php?ExamNo=<?php echo $row_RsErExams['AutoNo']; ?>"
@@ -504,7 +509,7 @@ $totalRows_RsMukhtaber = mysqli_num_rows($RsMukhtaber);
     </div>
 </form>
 <!--content-->
-<?php include('../templates/footer.php'); ?>
+<?php include '../templates/footer.php';?>
 <?php
 
 if (isset($_SESSION['msgFatherSent'])) {
@@ -517,7 +522,7 @@ if (isset($_SESSION['msgFatherSent'])) {
 
     </script>
     <?php
-    $_SESSION['msgFatherSent'] = NULL;
+$_SESSION['msgFatherSent'] = null;
     unset($_SESSION['msgFatherSent']);
 }
 
@@ -526,11 +531,11 @@ if (isset($_SESSION['msgFatherNotSent'])) {
     <script>
         $(document).ready(function () {
             alertify.set({delay: 60000});
-            alertify.error('<?php echo "لم ترسل رسالة لولي الأمر للسبب التالي:" . "<br>" . $_SESSION['msgFatherNotSent'];?>');
+            alertify.error('<?php echo "لم ترسل رسالة لولي الأمر للسبب التالي:" . "<br>" . $_SESSION['msgFatherNotSent']; ?>');
         });
     </script>
     <?php
-    $_SESSION['msgFatherNotSent'] = NULL;
+$_SESSION['msgFatherNotSent'] = null;
     unset($_SESSION['msgFatherNotSent']);
 }
 
@@ -544,7 +549,7 @@ if (isset($_SESSION['u1'])) {
 
     </script>
     <?php
-    $_SESSION['u1'] = NULL;
+$_SESSION['u1'] = null;
     unset($_SESSION['u1']);
 }
 ?>

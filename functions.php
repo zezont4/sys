@@ -90,10 +90,10 @@ if (!function_exists("isLocal")) {
 
 $GLOBALS['config'] = [
     'root_dir' => '/sys/',
-    'host'     => 'mysql501.opentransfer.com',
-    'user'     => 'C277890_qprogram',
-    'pass'     => 'Kli124816',
-    'db_name'  => 'C277890_qprogram',
+    'host'     => 'localhost',
+    'user'     => 'quranzul_zezont4',
+    'pass'     => 'Kla124816',
+    'db_name'  => 'quranzul_sys',
 ];
 
 if (isLocal()) {
@@ -238,6 +238,8 @@ function zlog($MSG)
 
 function get_st_info($StID)
 {
+    if (!$StID ) return null;
+
     global $database_localhost, $localhost;
     mysqli_select_db($localhost, $database_localhost);
     $query_RS_all = sprintf("SELECT Stfullname,O_BurthDate,arabic_name,HName,StMobileNo,StID,StEdarah,StHalaqah,TID FROM view_0_students WHERE StID = %s", GetSQLValueString($StID, "double"));
@@ -280,6 +282,8 @@ function get_st_info($StID)
 
 function get_edarah_name($sent_value)
 {
+    if (!$sent_value ) return null;
+
     global $database_localhost, $localhost;
     mysqli_select_db($localhost, $database_localhost);
     $query_RS_all = sprintf("SELECT arabic_name FROM 0_users WHERE id=%s", $sent_value);
@@ -296,6 +300,8 @@ function get_edarah_name($sent_value)
 
 function get_halakah_name($sent_value)
 {
+    if (!$sent_value ) return null;
+
     global $database_localhost, $localhost;
     mysqli_select_db($localhost, $database_localhost);
     $query_RS_all = sprintf("SELECT HName FROM 0_halakat WHERE AutoNo=%s", $sent_value);
@@ -312,34 +318,33 @@ function get_halakah_name($sent_value)
 
 function get_teacher_name($TID, $only_three = false)
 {
-    if ($TID > 0) {
-        global $database_localhost, $localhost;
-        mysqli_select_db($localhost, $database_localhost);
-        if ($only_three) {
-            $query_RS_all = sprintf("SELECT concat_ws(' ',TName1,TName2,TName4) AS t_name FROM 0_teachers WHERE TID=%s", $TID);
-        } else {
-            $query_RS_all = sprintf("SELECT concat_ws(' ',TName1,TName2,TName3,TName4) AS t_name FROM 0_teachers WHERE TID=%s", $TID);
-        }
-        $RS_all = mysqli_query($localhost, $query_RS_all) or die('get_teacher_name ' . mysqli_error($localhost));
-        $row_RS_all = mysqli_fetch_assoc($RS_all);
-        $totalRows_RS_all = mysqli_num_rows($RS_all);
-        if ($totalRows_RS_all > 0) {
-            $returned_value = $row_RS_all["t_name"];
-            mysqli_free_result($RS_all);
+    if (!$TID ) return null;
 
-            return $returned_value;
-        }
+    global $database_localhost, $localhost;
+    mysqli_select_db($localhost, $database_localhost);
+    if ($only_three) {
+        $query_RS_all = sprintf("SELECT concat_ws(' ',TName1,TName2,TName4) AS t_name FROM 0_teachers WHERE TID=%s", $TID);
     } else {
-        return "";
+        $query_RS_all = sprintf("SELECT concat_ws(' ',TName1,TName2,TName3,TName4) AS t_name FROM 0_teachers WHERE TID=%s", $TID);
+    }
+    $RS_all = mysqli_query($localhost, $query_RS_all) or die('get_teacher_name ' . mysqli_error($localhost));
+    $row_RS_all = mysqli_fetch_assoc($RS_all);
+    $totalRows_RS_all = mysqli_num_rows($RS_all);
+    if ($totalRows_RS_all > 0) {
+        $returned_value = $row_RS_all["t_name"];
+        mysqli_free_result($RS_all);
+
+        return $returned_value;
     }
 }
 
 function get_student_name($sent_value)
 {
+    if(!$sent_value) return null;
     global $database_localhost, $localhost;
     mysqli_select_db($localhost, $database_localhost);
     $query_RS_all = sprintf("SELECT concat_ws(' ',StName1,StName2,StName3,StName4) AS St_name FROM 0_students WHERE StID=%s", $sent_value);
-    $RS_all = mysqli_query($localhost, $query_RS_all) or die('get_student_name' . mysqli_error($localhost));
+    $RS_all = mysqli_query($localhost, $query_RS_all) or die('get_student_name :' . mysqli_error($localhost));
     $row_RS_all = mysqli_fetch_assoc($RS_all);
     $totalRows_RS_all = mysqli_num_rows($RS_all);
     if ($totalRows_RS_all > 0) {
@@ -706,42 +711,22 @@ function get_halakah_types($halakah_db_row_string)
     ];
 }
 
-function send_mail($to, $subject, $body)
-{
-    require 'PHPMailer/PHPMailerAutoload.php';
-    $mail = new PHPMailer;
 
-//$mail->SMTPDebug = 3;                                  // Enable verbose debug output
+function send_mail($to, $subject, $message)
+    {
+    
+    // To send HTML mail, the Content-type header must be set
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'Content-type: text/html; charset=utf-8';
 
-    $mail->isSMTP();                                      // Set mailer to use SMTP
-    $mail->setLanguage('ar', 'PHPMailer/language/');
-    $mail->Host = 'smtp.gmail.com';                       // Specify main and backup SMTP servers
-//    $mail->Host = 'localhost';                       // Specify main and backup SMTP servers
-    $mail->SMTPAuth = true;                               // Enable SMTP authentication
-    $mail->Username = env('MAIL_EMAIL');                  // SMTP username
-    $mail->Password = env('MAIL_PASSWORD');               // SMTP password
-    $mail->SMTPSecure = 'ssl';                            // Enable TLS encryption, `ssl` also accepted
-    $mail->Port = 465;                                    // TCP port to connect to
-//    $mail->Port = 25;                                    // TCP port to connect to
+    // Additional headers
+    $headers[] = 'To: عبدالعزيز الطيار <zezont@gmail.com>';
+    $headers[] = 'From: تحفيظ القرآن بالزلفي <admin@qz.org.sa>';
 
-    $mail->setFrom(env('MAIL_EMAIL'), env('MAIL_LABEL'));
-    $mail->addAddress($to);                               // Name is optional
-
-    $mail->isHTML(true);                                  // Set email format to HTML
-
-    $mail->Subject = $subject;
-    $mail->Body = $body;
-//    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
-    if (!$mail->send()) {
-//        echo 'Message could not be sent.';
-//        echo 'Mailer Error: ' . $mail->ErrorInfo;
-        return false;
-    } else {
-//        echo 'Message has been sent';
-        return true;
-    }
+    // Mail it
+    mail($to, $subject, $message, implode("\r\n", $headers));
 }
+
 
 function sendMsgToModerator($student_id, $edarah_id, $exam_status)
 {

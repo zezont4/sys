@@ -64,10 +64,10 @@ $totalPages_Rs_St = ceil($totalRows_Rs_St / $maxRows_Rs_St) - 1;
                     </tr>
 
                     <?php
-                    if ($pageNum_Rs_St == 0) {
-                        $_SESSION['EdarahIndex'] = 0;
-                        $_SESSION['HalakahIndex'] = 0;
-                    }
+                    // if ($pageNum_Rs_St == 0) {
+                    $_SESSION['EdarahIndex'] = 0;
+                    $_SESSION['HalakahIndex'] = 0;
+                    // }
                     $_SESSION['LastEdarahName'] = $row_Rs_St['arabic_name'];
                     $_SESSION['LastHalakahName'] = $row_Rs_St['HName'];
                     do {
